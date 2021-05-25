@@ -24,7 +24,7 @@ You will also need these programs to be installed in the server (already done) o
 - matplotlib 3.3.3
 
 the 4 files required should be as followed:
-
+```
 - Snakefile:
 	do not edit it
 	
@@ -58,7 +58,7 @@ the 4 files required should be as followed:
 	"time"= maximum amount of time allowed on the server
 	"mem"= maximum memory allocated fo your computation
 	Both variables, "time" and "mem", may also be edited by the user.
-
+```
 
 ## Use 
 
