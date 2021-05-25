@@ -80,19 +80,19 @@ The following variables of the above script may be edited
 (path-2)	path where user's cluster.json file is located. Ideally, this file is located at the same place as your Snakefile, or with the user's Genome ID list and Seed files.
 				If the cluster.json file is present in your current location, leave this blank.
 (path-3)	path where user's protein and genome data are. Always specify the full path to avoid problems.
-	(1)			name of user's project provided in single or double quotes. Avoid spaces, replace any spaces with an underscore.
-	(2)			name of user's file containing your list of NCBI Genome IDs, with the extension .txt or .csv (e.g. "file_name.txt" or 'file_name.txt').
-	(3)			name of user's file containing the ID of user's protein of interest (seed file), with the extension .txt or .csv, in between single or double quotes.
-	(4)			In addition, some optional inputs may be added and edited by the user:
-					eval=(float)	Used to change the e-value threshold for BLAST. Can be on the 0.000001 (decimal) format or 10**-6 (exponential) format.
+	(1)	name of user's project provided in single or double quotes. Avoid spaces, replace any spaces with an underscore.
+	(2)	name of user's file containing your list of NCBI Genome IDs, with the extension .txt or .csv (e.g. "file_name.txt" or 'file_name.txt').
+	(3)	name of user's file containing the ID of user's protein of interest (seed file), with the extension .txt or .csv, in between single or double quotes.
+	(4)	In addition, some optional inputs may be added and edited by the user:
+			eval=(float)	Used to change the e-value threshold for BLAST. Can be on the 0.000001 (decimal) format or 10**-6 (exponential) format.
 						DEFAULT = 1E-6
-					id=(int)		Used to change the percentage of identity over the alignment threshold for SILIX. It should be an integer between 1 and 100.
+			id=(int)		Used to change the percentage of identity over the alignment threshold for SILIX. It should be an integer between 1 and 100.
 						DEFAULT = 35
-					cov=(int)		Used to change the coverage of the alignment threshold for SILIX. It should be an integer between 1 and 100.
+			cov=(int)		Used to change the coverage of the alignment threshold for SILIX. It should be an integer between 1 and 100.
 						DEFAULT = 80
 ```	
 
-*!* It is recommended that the user copy and paste this complete line and description of its components into user's notebook, changing the inputs as desired separately prior to copy-pasting into the command line for the relevant server.
+/!\ It is recommended that the user copy and paste this complete line and description of its components into user's notebook, changing the inputs as desired separately prior to copy-pasting into the command line for the relevant server.
 
 ### Important Notes 
 	
@@ -115,7 +115,7 @@ The following variables of the above script may be edited
 
 This pipeline consists of 6 steps called rules that take input files and create output files. Here is a description of the pipeline.
 
-*!* As snakemake is set up, there is a 7th rule, called all, that serves to call the last output files and make sure they were created.
+/!\ As snakemake is set up, there is a 7th rule, called all, that serves to call the last output files and make sure they were created.
 
 ### Rule 1 : sequence_fetcher 
 	
@@ -127,7 +127,7 @@ This pipeline consists of 6 steps called rules that take input files and create 
 		This rule will download the GenBank using the user-provided Genome ID list, recording the genome ID and name, as well as the protein ID and sequence of all the CDS of each genome.
 		Then if the user's protein of interest has been detected across any of the genomes called, they will be downloaded from NCBI and the protein sequence recorded.
 		All sequences recorded will be printed in a single FASTA file.
-		*!* this step's length will increase linearly with the number of genomes contained in user's provided Genome ID list.
+		/!\ this step's length will increase linearly with the number of genomes contained in user's provided Genome ID list.
 	
 	- output files:
 		- genome_prot_table: 	type = tabulated table with headers
