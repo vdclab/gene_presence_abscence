@@ -11,15 +11,17 @@ The primary output will be the table of presence-absence protein data filled usi
 To run this software you will need 4 files: the Snakefile, the user's seed file (format?), the user's file containing a list of NCBI Genome IDs, and a cluster.json file for appropriate connection to the appropriate dedicated clusters for running of the program.
 
 You will also need these programs to be installed in the server (already done) or locally, on your computer:
-```
+
+### Software 
+- python 3.8
 - Snakemake 5.17.0
-- python 2.8
-- biopython 1.78	(python package)
-- pandas 1.1.5		(python package)
-- matplotlib 3.3.3	(python package)
 - BLAST 2.10.1
 - SILIX 1.2.11
-```
+
+### Python libraries
+- biopython 1.78
+- pandas 1.1.5	
+- matplotlib 3.3.3
 
 the 4 files required should be as followed:
 
@@ -87,11 +89,11 @@ The following variables of the above script may be edited
 	3)	name of user's file containing the ID of user's protein of interest (seed file), with the extension .txt or .csv, in between single or double quotes.
 	4)	In addition, some optional inputs may be added and edited by the user:
 			eval=(float)	Used to change the e-value threshold for BLAST. Can be on the 0.000001 (decimal) format or 10**-6 (exponential) format.
-						DEFAULT = 1E-6
+					DEFAULT = 1E-6
 			id=(int)	Used to change the percentage of identity over the alignment threshold for SILIX. It should be an integer between 1 and 100.
-						DEFAULT = 35
+					DEFAULT = 35
 			cov=(int)	Used to change the coverage of the alignment threshold for SILIX. It should be an integer between 1 and 100.
-						DEFAULT = 80
+					DEFAULT = 80
 ```	
 
 /!\ It is recommended that the user copy and paste this complete line and description of its components into user's notebook, changing the inputs as desired separately prior to copy-pasting into the command line for the relevant server.
@@ -121,128 +123,128 @@ This pipeline consists of 6 steps called rules that take input files and create 
 
 ### Rule 1 : sequence_fetcher 
 	
-- input files:
-	- ncbi_id_list: user's list of NCBI Genome IDs [input ncbi_id_list]
-	- seed: user's table containing the protein of interest [input gene_tab]
-	
-- description:
-	This rule will download the GenBank using the user-provided Genome ID list, recording the genome ID and name, as well as the protein ID and sequence of all the CDS of each genome.
-	Then if the user's protein of interest has been detected across any of the genomes called, they will be downloaded from NCBI and the protein sequence recorded.
-	All sequences recorded will be printed in a single FASTA file.
-	/!\ this step's length will increase linearly with the number of genomes contained in user's provided Genome ID list.
-	
-- output files:
-	- genome_prot_table: 	type = tabulated table with headers
-				name = (input project_name)_all_protein.csv 
-				format = genome_id | genome name | protein_id | sequence
-				note = the seed not present in ypur dataset will have their genome id and name set to "Seed", not to be changed.
-				
-	- fasta_file:	type = multifasta
-			name = (input project_name)_all_protein.fasta
-			format = >protein_id
-				 sequence
+	- input files:
+		- ncbi_id_list: user's list of NCBI Genome IDs [input ncbi_id_list]
+		- seed: user's table containing the protein of interest [input gene_tab]
+
+	- description:
+		This rule will download the GenBank using the user-provided Genome ID list, recording the genome ID and name, as well as the protein ID and sequence of all the CDS of each genome.
+		Then if the user's protein of interest has been detected across any of the genomes called, they will be downloaded from NCBI and the protein sequence recorded.
+		All sequences recorded will be printed in a single FASTA file.
+		/!\ this step's length will increase linearly with the number of genomes contained in user's provided Genome ID list.
+
+	- output files:
+		- genome_prot_table: 	type = tabulated table with headers
+					name = (input project_name)_all_protein.csv 
+					format = genome_id | genome name | protein_id | sequence
+					note = the seed not present in ypur dataset will have their genome id and name set to "Seed", not to be changed.
+
+		- fasta_file:	type = multifasta
+				name = (input project_name)_all_protein.fasta
+				format = >protein_id
+					 sequence
 						
 						
 
 ### Rule 2 : blast 
 	
-- input file: sequence_fetcher fasta_file
-	
-- decsription:
-	Blast proteins created in rule 1, all against all, with a e_value threshold of 1E-3.
-	This step lenght is exponentially increasing with the number of proteins.
-	
-- output file:	type = blast out 6 file, tabulated table format, no headers
-		name = blastall_(input project_name).out
-		format = qseqid | sseqid | pident | length | mismatch | gapopen | qstart | qend | sstart | send | evalue | bitscore
-	
-- miscelenious files created: all file requiered to be created for a blast, a.k.a. the database files:
-			(input project_name)_all_protein.fasta.pdb
-			(input project_name)_all_protein.fasta.phr
-			(input project_name)_all_protein.fasta.pin
-			(input project_name)_all_protein.fasta.pot
-			(input project_name)_all_protein.fasta.psq
-			(input project_name)_all_protein.fasta.ptf
-			(input project_name)_all_protein.fasta.pto
+	- input file: sequence_fetcher fasta_file
+
+	- decsription:
+		Blast proteins created in rule 1, all against all, with a e_value threshold of 1E-3.
+		This step lenght is exponentially increasing with the number of proteins.
+
+	- output file:	type = blast out 6 file, tabulated table format, no headers
+			name = blastall_(input project_name).out
+			format = qseqid | sseqid | pident | length | mismatch | gapopen | qstart | qend | sstart | send | evalue | bitscore
+
+	- miscelenious files created: all file requiered to be created for a blast, a.k.a. the database files:
+				(input project_name)_all_protein.fasta.pdb
+				(input project_name)_all_protein.fasta.phr
+				(input project_name)_all_protein.fasta.pin
+				(input project_name)_all_protein.fasta.pot
+				(input project_name)_all_protein.fasta.psq
+				(input project_name)_all_protein.fasta.ptf
+				(input project_name)_all_protein.fasta.pto
 
 	
 
 ### Rule 3 : filter_blast
 
 	
-- input file: blast output
+	- input file: blast output
 
-- input parameter: input eval
+	- input parameter: input eval
 
-- decsription:
-	Filter the blast out file to remove all match higher than the e-value threshold (1E-6 if unchanged).
-	Create a new folder for the rest of the analysis : (project_name)_eval(e_val)_id(id)_cov(cov), rfered as (new_dir) alter in this Readme.
+	- decsription:
+		Filter the blast out file to remove all match higher than the e-value threshold (1E-6 if unchanged).
+		Create a new folder for the rest of the analysis : (project_name)_eval(e_val)_id(id)_cov(cov), rfered as (new_dir) alter in this Readme.
 
-- output files:	type = blast out 6 file, tabulated table format, with headers
-				name = (new_dir[see description])/blastall_(input project_name)_eval(input eval).out
-	
+	- output files:	type = blast out 6 file, tabulated table format, with headers
+					name = (new_dir[see description])/blastall_(input project_name)_eval(input eval).out
+
 
 ### Rule 4 : silix 
 	
-- input files:
-	- fasta: sequence_fetcher fasta_file output
-	- blast_out: filter_blast output
+	- input files:
+		- fasta: sequence_fetcher fasta_file output
+		- blast_out: filter_blast output
 
-- input parameters:
-	- id: input id
-	- cov: input cov
-	- eval: input eval
-	- new_dir: new_dir defined in filter_blast
+	- input parameters:
+		- id: input id
+		- cov: input cov
+		- eval: input eval
+		- new_dir: new_dir defined in filter_blast
 
-- decsription:
-	Uses graph theory to cluster proteins based on the input covergage and percentage of identity of the alignments.
-	Each cluster is attributed a family number, and this info is recorded in a fnode file fo each protein.
-	For each family a multifasta will be created with the family number containing the sequence of all the proteins of this family.
+	- decsription:
+		Uses graph theory to cluster proteins based on the input covergage and percentage of identity of the alignments.
+		Each cluster is attributed a family number, and this info is recorded in a fnode file fo each protein.
+		For each family a multifasta will be created with the family number containing the sequence of all the proteins of this family.
 
-- output files:	type = fnodes, tabulated table, no headers
-				name = (new_dir)/(project_name)_eval(e_val)_id(id)_cov(cov).fnodes
-				format = family | protein_id
+	- output files:	type = fnodes, tabulated table, no headers
+					name = (new_dir)/(project_name)_eval(e_val)_id(id)_cov(cov).fnodes
+					format = family | protein_id
 
-- miscelenious files created: one multifasta (name = cluster(family number)) per protein family in the directory (new_dir)/family_eval(e_val)_id(id)_cov(cov)
+	- miscelenious files created: one multifasta (name = cluster(family number)) per protein family in the directory (new_dir)/family_eval(e_val)_id(id)_cov(cov)
 
 
 ### Rule 5 : make_table 
 
-- input files:
-	- fnodes: silix output
-	- seeds: your table of protein of interest [input gene_tab]
-	- genome_prot_table: sequence_fetcher genome_prot_table output
+	- input files:
+		- fnodes: silix output
+		- seeds: your table of protein of interest [input gene_tab]
+		- genome_prot_table: sequence_fetcher genome_prot_table output
 
-- decsription:
-	Locate in wich silix family the given seeds are, and gather these families, using the fnodes file and the seeds file.
-	Identify what protein is linked to what genome, using the genome_prot_table file.
-	Complete a table of presence/absence based on these results, with the seed sin column, and the genomes in lines. 
-	If a seed is not detected, the column will not be created.
+	- decsription:
+		Locate in wich silix family the given seeds are, and gather these families, using the fnodes file and the seeds file.
+		Identify what protein is linked to what genome, using the genome_prot_table file.
+		Complete a table of presence/absence based on these results, with the seed sin column, and the genomes in lines. 
+		If a seed is not detected, the column will not be created.
 
-- output files:
-	- gene_table:	type = tabulated table, with headers
-					name = (new_dir)/gene_table_(project_name)_eval(e_val)_id(id)_cov(cov).csv
-					format = genome_id | genome_name | seed_name_1 | seed_name_2 | ... | seed_name_n
-					note = the seed columns are filled with ncbi protein ids
-	- seed_table:	type = tabulated table, with headers
-					name = (new_dir)/familied_seeds_table_(project_name)_eval(e_val)_id(id)_cov(cov).csv
-					format = seed_name | seed_ncbi_id | color | silix_family
+	- output files:
+		- gene_table:	type = tabulated table, with headers
+						name = (new_dir)/gene_table_(project_name)_eval(e_val)_id(id)_cov(cov).csv
+						format = genome_id | genome_name | seed_name_1 | seed_name_2 | ... | seed_name_n
+						note = the seed columns are filled with ncbi protein ids
+		- seed_table:	type = tabulated table, with headers
+						name = (new_dir)/familied_seeds_table_(project_name)_eval(e_val)_id(id)_cov(cov).csv
+						format = seed_name | seed_ncbi_id | color | silix_family
 
 ### Rule 6 : plot 
 	
-- input files:
-	- gene_table: make_table gene_table output
-	- seed_table: make_table seed_table output
+	- input files:
+		- gene_table: make_table gene_table output
+		- seed_table: make_table seed_table output
 
-- decsription:
-	This rule will make a graphic representation of the gene_table input, after removing the genome_id column.
-	The graphic will be colored squared proteins are present, white square if absent.
-	The color will be assigned by the seed_table input.
+	- decsription:
+		This rule will make a graphic representation of the gene_table input, after removing the genome_id column.
+		The graphic will be colored squared proteins are present, white square if absent.
+		The color will be assigned by the seed_table input.
 
-- output files:
-	- pdf:	type = pdf file
-			name = (new_dir)/gene_table_(project_name)_eval(e_val)_id(id)_cov(cov).pdf
-			format = graphic image of the input gene_table without the genome_id column
-	- png:	type = png file
-			name = (new_dir)/gene_table_(project_name)_eval(e_val)_id(id)_cov(cov).png
-			format = graphic image of the input gene_table without the genome_id column
+	- output files:
+		- pdf:	type = pdf file
+				name = (new_dir)/gene_table_(project_name)_eval(e_val)_id(id)_cov(cov).pdf
+				format = graphic image of the input gene_table without the genome_id column
+		- png:	type = png file
+				name = (new_dir)/gene_table_(project_name)_eval(e_val)_id(id)_cov(cov).png
+				format = graphic image of the input gene_table without the genome_id column
