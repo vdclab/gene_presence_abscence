@@ -68,15 +68,18 @@ The first will load the pipeline software, snakemake, that is required to read t
 The second will load python v3.8 (release), which is the programmatic interpreter for snakemake.
 
 To start the program, provide the following in the command line:
+
 ```
-	python3.8 -m (path-1)/snakemake --cluster-config (path-2)/cluster.json --cluster "sbatch -c {cluster.c} --qos={cluster.qos} --time={cluster.time} --account={cluster.account} --mail-type={cluster.mail-type} --mail-user={cluster.mail-user} --mem={cluster.mem}"  -j 5 -d (path-3) -C project_name=(1) ncbi_id_list=(2) gene_tab=(3) (4)
+python3.8 -m (path-1)/snakemake --cluster-config (path-2)/cluster.json --cluster "sbatch -c {cluster.c} --qos={cluster.qos} --time={cluster.time} --account={cluster.account} --mail-type={cluster.mail-type} --mail-user={cluster.mail-user} --mem={cluster.mem}"  -j 5 -d (path-3) -C project_name=(1) ncbi_id_list=(2) gene_tab=(3) (4)
 ```
-	The following variables of the above script may be edited
+
+The following variables of the above script may be edited
+
 ```
-	(path-1)	path where user's snakefile is located. Ideally, this can be skipped if your are working within the same address that the file is stored (using the command cd)
-	(path-2)	path where user's cluster.json file is located. Ideally, this file is located at the same place as your Snakefile, or with the user's Genome ID list and Seed files.
+(path-1)	path where user's snakefile is located. Ideally, this can be skipped if your are working within the same address that the file is stored (using the command cd)
+(path-2)	path where user's cluster.json file is located. Ideally, this file is located at the same place as your Snakefile, or with the user's Genome ID list and Seed files.
 				If the cluster.json file is present in your current location, leave this blank.
-	(path-3)	path where user's protein and genome data are. Always specify the full path to avoid problems.
+(path-3)	path where user's protein and genome data are. Always specify the full path to avoid problems.
 	(1)			name of user's project provided in single or double quotes. Avoid spaces, replace any spaces with an underscore.
 	(2)			name of user's file containing your list of NCBI Genome IDs, with the extension .txt or .csv (e.g. "file_name.txt" or 'file_name.txt').
 	(3)			name of user's file containing the ID of user's protein of interest (seed file), with the extension .txt or .csv, in between single or double quotes.
@@ -88,9 +91,8 @@ To start the program, provide the following in the command line:
 					cov=(int)		Used to change the coverage of the alignment threshold for SILIX. It should be an integer between 1 and 100.
 						DEFAULT = 80
 ```	
-	*!* It is recommended that the user copy and paste this complete line and description of its components into user's notebook, changing the inputs as desired separately prior to copy-pasting into the command line for the relevant server.
 
-
+*!* It is recommended that the user copy and paste this complete line and description of its components into user's notebook, changing the inputs as desired separately prior to copy-pasting into the command line for the relevant server.
 
 ### Important Notes 
 	
@@ -112,6 +114,7 @@ To start the program, provide the following in the command line:
 ## Walk-Through and File Production
 
 This pipeline consists of 6 steps called rules that take input files and create output files. Here is a description of the pipeline.
+
 *!* As snakemake is set up, there is a 7th rule, called all, that serves to call the last output files and make sure they were created.
 
 ### Rule 1 : sequence_fetcher 
