@@ -96,30 +96,30 @@ The following variables of the above script may be edited
 					DEFAULT = 80
 ```	
 
-/!\ It is recommended that the user copy and paste this complete line and description of its components into user's notebook, changing the inputs as desired separately prior to copy-pasting into the command line for the relevant server.
+**/!\ It is recommended that the user copy and paste this complete line and description of its components into user's notebook, changing the inputs as desired separately prior to copy-pasting into the command line for the relevant server.**
 
 ### Important Notes 
 	
-1) To work on the HiPerGator server, user must first open a terminal (for unix) or command prompt (for windows).
-	   User must access the server by entering the following command: ssh hpg2.rc.ufl.edu -l (GatorLink ID)
-	   User will be required to enter their GatorLink account password. No double tap verification needed.
+1) To work on the HiPerGator server, user must first open a terminal (for unix) or command prompt (for windows).  
+	   User must access the server by entering the following command: ssh hpg2.rc.ufl.edu -l (GatorLink ID)  
+	   User will be required to enter their GatorLink account password. No double tap verification needed.  
 	   
-2) User will require access to files on the server. To access these files via command line, use the following: cd /blue/lagard
-	   From here, if it has not already be done, user may create a working file to be associated with user using: mkdir (dir_name)
-	   Then you can access it by using: cd /blue/lagard/(dir_name)
-	   You can access these file on your computer by adding a server. The adresse is as follow: \\exasmb.rc.ufl.edu
-	   For more info : *insert link*
+2) User will require access to files on the server. To access these files via command line, use the following: cd /blue/lagard  
+	   From here, if it has not already be done, user may create a working file to be associated with user using: mkdir (dir_name)  
+	   Then you can access it by using: cd /blue/lagard/(dir_name)  
+	   You can access these file on your computer by adding a server. The adresse is as follow: \\exasmb.rc.ufl.edu  
+	   For more info : *insert link*  
 	   
-3) The efficacy of snakemake is dependent upon pre-existing output files, but, without supply of these files by the user, the rule will not be triggered.
-	   To trigger a rule again you can delete the output files of the rule, or change there names.
-	   Alternatively, you can force a rule by adding it to the end of the user-entered command (in command line): --force (rule_name)
+3) The efficacy of snakemake is dependent upon pre-existing output files, but, without supply of these files by the user, the rule will not be triggered.  
+	   To trigger a rule again you can delete the output files of the rule, or change there names.  
+	   Alternatively, you can force a rule by adding it to the end of the user-entered command (in command line): --force (rule_name)  
 
 
 ## Walk-Through and File Production
 
 This pipeline consists of 6 steps called rules that take input files and create output files. Here is a description of the pipeline.
 
-/!\ As snakemake is set up, there is a 7th rule, called all, that serves to call the last output files and make sure they were created.
+**/!\ As snakemake is set up, there is a 7th rule, called all, that serves to call the last output files and make sure they were created.**
 
 ### Rule 1 : sequence_fetcher 
 	
