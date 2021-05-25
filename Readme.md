@@ -123,8 +123,10 @@ cd /blue/lagard/(dir_name)
 You can access these file on your computer by adding a server. The adresse is as follow: `\\exasmb.rc.ufl.edu`  
 For more info : *insert link*  
 	   
-3) The efficacy of snakemake is dependent upon pre-existing output files, but, without supply of these files by the user, the rule will not be triggered.  
-To trigger a rule again you can delete the output files of the rule, or change there names.  
+3) The efficacy of snakemake is dependent upon pre-existing output files, but, without supply of these files by the user, the rule will not be triggered.
+
+To trigger a rule again you can delete the output files of the rule, or change there names.
+
 Alternatively, you can force a rule by adding it to the end of the user-entered command (in command line): `--force (rule_name)`
 
 
