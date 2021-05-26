@@ -13,15 +13,15 @@ To run this software you will need 4 files: the Snakefile, the user's seed file 
 You will also need these programs to be installed in the server (already done) or locally, on your computer:
 
 ### Software 
-- python 3.8
-- Snakemake 5.17.0
-- BLAST 2.10.1
-- SILIX 1.2.11
+- python == 3.8
+- Snakemake == 5.17.0
+- BLAST == 2.10.1
+- SILIX == 1.2.11
 
 ### Python libraries
-- biopython 1.78
-- pandas 1.1.5	
-- matplotlib 3.3.3
+- biopython == 1.78
+- pandas == 1.1.5	
+- matplotlib == 3.3.3
 
 The 4 files required should be as followed:
 
