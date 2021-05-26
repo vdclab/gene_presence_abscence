@@ -25,7 +25,7 @@ gene_tab = config['gene_tab']
 e_val = config['e_val'] if 'e_val' in config else 0.000001
 
 #Blast percentage of identity threshold, 35% by default but can be changed in -C
-id = config['id'] if 'id' in config else 0.35
+perc_id = config['id'] if 'id' in config else 0.35
 
 #Blast percentage of coverage threshold, 80% by default but can be changed in -C
 cov = config['cov'] if 'cov' in config else 0.8
@@ -49,7 +49,7 @@ import os
 ##########################################################################
 
 
-new_dir = f"{project_name}_eval{e_val}_id{id}_cov{cov}"
+new_dir = f"{project_name}_eval{e_val}_id{perc_id}_cov{cov}"
 
 if not os.path.exists(new_dir):
     os.mkdir(new_dir)
@@ -64,8 +64,7 @@ if not os.path.exists(new_dir):
 
 rule all:
     input:
-         pdf=f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{id}_cov{cov}.pdf",
-         png=f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{id}_cov{cov}.png"
+        multiext(f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{perc_id}_cov{cov}", '.png', '.pdf')
 
 ##########################################################################
 ##########################################################################
@@ -156,12 +155,12 @@ rule sequence_fetcher:
         id_list = []
         removed = []
 
-        for id in id_table[0].to_list():
+        for ncbi_id in id_table[0].to_list():
             try:
-                Entrez.read(Entrez.esummary(db='nucleotide',id=id))
-                id_list += [id]
+                Entrez.read(Entrez.esummary(db='nucleotide',id=ncbi_id))
+                id_list.append(ncbi_id)
             except:
-                removed += [id]
+                removed.append(ncbi_id)
 
         if len(removed) > 0:
             pd.DataFrame(removed).to_csv('ncbi_id_removed_from_analysis.txt', header=False, index=False)
@@ -217,16 +216,20 @@ rule sequence_fetcher:
 
 rule blast:
     input:
-         f'{project_name}_all_protein.fasta'
+        f'{project_name}_all_protein.fasta'
     output:
-          f"blastall_{project_name}.out"
-    threads: 5
+        f"blastall_{project_name}.out"
+    threads: 
+        5
     shell:
-         """
-         module load ncbi_blast/2.10.1
-         makeblastdb -dbtype prot -in {input}
-         blastp -query {input} -db {input} -evalue 0.001 -outfmt 6 -out {output} -num_threads 5 -num_alignments 25000
-         """
+        """
+        module load ncbi_blast/2.10.1
+
+        makeblastdb -dbtype prot -in {input}
+        
+        blastp -query {input} -db {input} -evalue 0.001 -outfmt 6 -out {output} -num_threads {threads} -num_alignments 25000
+        """
+
 ##########################################################################
 ##########################################################################
 
@@ -252,34 +255,38 @@ rule filter_blast:
 
 rule silix:
     input:
-         fasta = f'{project_name}_all_protein.fasta',
-         blast_out = f"{new_dir}/blastall_{project_name}_eval{e_val}.out"
+        fasta = f'{project_name}_all_protein.fasta',
+        blast_out = f"{new_dir}/blastall_{project_name}_eval{e_val}.out"
     output:
-        f"{new_dir}/{project_name}_eval{e_val}_id{id}_cov{cov}.fnodes"
+        f"{new_dir}/{project_name}_eval{e_val}_id{perc_id}_cov{cov}.fnodes"
     params:
-          id = id,
-          cov = cov,
-          e_val = e_val,
-          new_dir = new_dir
+        id = id,
+        cov = cov,
+        e_val = e_val,
+        new_dir = new_dir
     shell:
-         """
-         module load silix/1.2.11
-         sh -c 'silix {input.fasta} {input.blast_out} -f FAM -i {params.id} -r {params.cov} >{output}'
-         mkdir -p {new_dir}/family_eval{params.e_val}_id{params.id}_cov{params.cov}
-         sh -c 'silix-split -p {new_dir}/family_eval{params.e_val}_id{params.id}_cov{params.cov}/cluster -n 2 {input.fasta} {output}' 
-         """
+        """
+        module load silix/1.2.11
+
+        sh -c 'silix {input.fasta} {input.blast_out} -f FAM -i {params.id} -r {params.cov} > {output}'
+
+        # Don't think it is needed as Snakemake should create the directory when lanchung the rule
+        # mkdir -p {new_dir}/family_eval{params.e_val}_id{params.id}_cov{params.cov}
+
+        sh -c 'silix-split -p {new_dir}/family_eval{params.e_val}_id{params.id}_cov{params.cov}/cluster -n 2 {input.fasta} {output}' 
+        """
 
 ##########################################################################
 ##########################################################################
 
 rule make_table:
     input:
-        fnodes = f"{new_dir}/{project_name}_eval{e_val}_id{id}_cov{cov}.fnodes",
+        fnodes = f"{new_dir}/{project_name}_eval{e_val}_id{perc_id}_cov{cov}.fnodes",
         seeds = gene_tab,
         genome_prot_table = f'{project_name}_all_protein.csv'
     output:
-          gene_table = f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{id}_cov{cov}.csv",
-          seed_table = f"{new_dir}/famillied_seeds_{project_name}_eval{e_val}_id{id}_cov{cov}.txt"
+        gene_table = f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{perc_id}_cov{cov}.csv",
+        seed_table = f"{new_dir}/famillied_seeds_{project_name}_eval{e_val}_id{perc_id}_cov{cov}.txt"
     run:
         import pandas as pd
 
@@ -347,11 +354,11 @@ rule make_table:
 
 rule plot:
     input:
-         gene_table = f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{id}_cov{cov}.csv",
-         seed_table = f"{new_dir}/famillied_seeds_{project_name}_eval{e_val}_id{id}_cov{cov}.txt"
+        gene_table = f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{perc_id}_cov{cov}.csv",
+        seed_table = f"{new_dir}/famillied_seeds_{project_name}_eval{e_val}_id{perc_id}_cov{cov}.txt"
     output:
-          pdf = f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{id}_cov{cov}.pdf",
-          png = f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{id}_cov{cov}.png"
+        pdf = f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{perc_id}_cov{cov}.pdf",
+        png = f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{perc_id}_cov{cov}.png"
     run:
         import matplotlib.pyplot as plt
         import pandas as pd
