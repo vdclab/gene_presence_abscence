@@ -4,33 +4,71 @@
 # -d : directory of the files
 # -C : configuration of values bellow:
 
+##########################################################################
+##########################################################################
+##
+##                                Options
+##
+##########################################################################
+##########################################################################
+
 #name your project
 project_name = config['project_name']
 
 #name of the polyfasta containing your proteins
 ncbi_id_list = config['ncbi_id_list']
+
 #name of the file containing the gene and color table
 gene_tab = config['gene_tab']
+
 #Blast e-value thershold, 0.000001 by default but can be changed in -C
 e_val = config['e_val'] if 'e_val' in config else 0.000001
+
 #Blast percentage of identity threshold, 35% by default but can be changed in -C
 id = config['id'] if 'id' in config else 0.35
+
 #Blast percentage of coverage threshold, 80% by default but can be changed in -C
 cov = config['cov'] if 'cov' in config else 0.8
 
+##########################################################################
+##########################################################################
+##
+##                                Library
+##
+##########################################################################
+##########################################################################
+
 import os
+
+##########################################################################
+##########################################################################
+##
+##                                Variables
+##
+##########################################################################
+##########################################################################
+
 
 new_dir = f"{project_name}_eval{e_val}_id{id}_cov{cov}"
 
 if not os.path.exists(new_dir):
     os.mkdir(new_dir)
 
+##########################################################################
+##########################################################################
+##
+##                                Rules
+##
+##########################################################################
+##########################################################################
 
 rule all:
     input:
          pdf=f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{id}_cov{cov}.pdf",
          png=f"{new_dir}/gene_table_{project_name}_eval{e_val}_id{id}_cov{cov}.png"
 
+##########################################################################
+##########################################################################
 
 rule sequence_fetcher:
     input:
@@ -173,7 +211,9 @@ rule sequence_fetcher:
 
         print(f'{genome_prot_table.shape[0]} proteins recorded')
         del genome_prot_table
-
+        
+##########################################################################
+##########################################################################
 
 rule blast:
     input:
@@ -187,6 +227,8 @@ rule blast:
          makeblastdb -dbtype prot -in {input}
          blastp -query {input} -db {input} -evalue 0.001 -outfmt 6 -out {output} -num_threads 5 -num_alignments 25000
          """
+##########################################################################
+##########################################################################
 
 rule filter_blast:
     input:
@@ -205,6 +247,8 @@ rule filter_blast:
         blast_out_filtered = blast_out[blast_out.evalue <= params.e_val].reset_index(drop=True)
         blast_out_filtered.to_csv(str(output), index=False, sep='\t')
 
+##########################################################################
+##########################################################################
 
 rule silix:
     input:
@@ -225,6 +269,8 @@ rule silix:
          sh -c 'silix-split -p {new_dir}/family_eval{params.e_val}_id{params.id}_cov{params.cov}/cluster -n 2 {input.fasta} {output}' 
          """
 
+##########################################################################
+##########################################################################
 
 rule make_table:
     input:
@@ -296,6 +342,8 @@ rule make_table:
         #print the table
         patab.to_csv(str(output.gene_table), index=False, sep='\t')
 
+##########################################################################
+##########################################################################
 
 rule plot:
     input:
@@ -355,3 +403,6 @@ rule plot:
         plt.ylim(-0.5, patab.shape[0] - 0.5)
         plt.savefig(str(output.png), bbox_inches="tight", dpi=300)
         plt.savefig(str(output.pdf), bbox_inches="tight", dpi=300)
+
+##########################################################################
+##########################################################################
