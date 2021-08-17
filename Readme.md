@@ -14,7 +14,7 @@ You will also need these programs to be installed in the server (already done) o
 
 ### Software 
 - python == 3.8
-- Snakemake == 5.17.0
+- Snakemake == 6.4.1
 - BLAST == 2.10.1
 - SILIX == 1.2.11
 
@@ -61,37 +61,40 @@ The 4 files required should be as followed:
 	Both variables, "time" and "mem", may also be edited by the user.
 ```
 
+These 4 files should be in the same folder, hereafter your woking folder
+
 ## Use 
 
 Before starting the program, you will need to load other required software; this required software is listed as follows:
 
 ```
-module load snakemake/5.17.0
-module load python/3.8
+module load python/3.8 snakemake/6.4.1
 ```
 
 The first will load the pipeline software, snakemake, that is required to read the Snakefile.
 The second will load python3.8 (release), which is the programmatic interpreter for snakemake.
 
+Before running the program, you need to be in your working folder. To do so use this command line:
+
+```
+cd /blue/lagard/(GatorLink ID)/(woking folder)
+```
+
 To start the program, provide the following in the command line:
 
 ```
-python3.8 -m (path-1)/snakemake --cluster-config (path-2)/cluster.json --cluster "sbatch -c {cluster.c} --qos={cluster.qos} --time={cluster.time} --account={cluster.account} --mail-type={cluster.mail-type} --mail-user={cluster.mail-user} --mem={cluster.mem}"  -j 5 -d (path-3) -C project_name=(1) ncbi_id_list=(2) gene_tab=(3) (4)
+python3.8 -m snakemake --cluster-config cluster.json --cluster "sbatch -c {cluster.c} --qos={cluster.qos} --time={cluster.time} --account={cluster.account} --mail-type={cluster.mail-type} --mail-user={cluster.mail-user} --mem={cluster.mem}"  -j 5 -d (working path) -C project_name=(1) ncbi_id_list=(2) gene_tab=(3) (4)
 ```
+If you want to prevent the software from sending you e-mail, you can remove the --mail-user option
 
 The following variables of the above script may be edited
 
-```
-(path-1)	path where user's snakefile is located. Ideally, this can be skipped if your are working within the same address that the file is stored (using the command cd)
-
-(path-2)	path where user's cluster.json file is located. Ideally, this file is located at the same place as your Snakefile, or with the user's Genome ID list and Seed files.
-		If the cluster.json file is present in your current location, leave this blank.
-				
-(path-3)	path where user's protein and genome data are. Always specify the full path to avoid problems.
-	1)	name of user's project provided in single or double quotes. Avoid spaces, replace any spaces with an underscore.
-	2)	name of user's file containing your list of NCBI Genome IDs, with the extension .txt or .csv (e.g. "file_name.txt" or 'file_name.txt').
-	3)	name of user's file containing the ID of user's protein of interest (seed file), with the extension .txt or .csv, in between single or double quotes.
-	4)	In addition, some optional inputs may be added and edited by the user:
+```			
+(working path)	path where user's protein and genome data are. Always specify the full path to avoid problems.
+	(1)	name of user's project provided in single or double quotes. Avoid spaces, replace any spaces with an underscore.
+	(2)	name of user's file containing your list of NCBI Genome IDs, with the extension .txt or .csv (e.g. "file_name.txt" or 'file_name.txt').
+	(3)	name of user's file containing the ID of user's protein of interest (seed file), with the extension .txt or .csv, in between single or double quotes.
+	(4)	In addition, some optional inputs may be added and edited by the user:
 			eval=(float)	Used to change the e-value threshold for BLAST. Can be on the 0.000001 (decimal) format or 10**-6 (exponential) format.
 					DEFAULT = 1E-6
 			id=(int)	Used to change the percentage of identity over the alignment threshold for SILIX. It should be an integer between 1 and 100.
@@ -107,21 +110,21 @@ The following variables of the above script may be edited
 1) To work on the HiPerGator server, user must first open a terminal (for unix) or command prompt (for windows).  
 User must access the server by entering the following command:  
 ```
-ssh hpg2.rc.ufl.edu -l (GatorLink ID)
+ssh (GatorLink ID)@hpg.rc.ufl.edu -l 
 ```
 User will be required to enter their GatorLink account password. **No double tap verification needed.**  
 	  
 2) User will require access to files on the server. To access these files via command line, use the following:  
 ```
-cd /blue/lagard
+cd /blue/lagard/(GatorLink ID)
 ```
 From here, if it has not already be done, user may create a working file to be associated with user using: mkdir (dir_name)  
 Then you can access it by using:  
 ```
-cd /blue/lagard/(dir_name)
+cd (dir_name)
 ```
 You can access these file on your computer by adding a server. The adresse is as follow: `\\exasmb.rc.ufl.edu`  
-For more info : *insert link*  
+For more info : https://help.rc.ufl.edu/doc/Samba_Access
 	   
 3) The efficacy of snakemake is dependent upon pre-existing output files, but, without supply of these files by the user, the rule will not be triggered.
 
