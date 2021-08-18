@@ -151,9 +151,9 @@ This pipeline consists of 12 steps called rules that take input files and create
 
 1. As snakemake is set up, there is a 13th rule, called `all`, that serves to call the last output files and make sure they were created.
 
-2. A folder containing you work will be created with two folder inside, if not already existing: _processing_file_ and _results_. You will find any result files in the _results_ folder (in bold hereafter).
+2. A folder containing your work will be created with two folder inside, if not already existing: `processing_file` and `results`. You will find any result files in the `results` folder.
 
-3. Before strating the pipeline, your taxids will be chcked and updated for the lowest levels. This will create a file of checked taxids. It will skip this step if this file already exists.
+3. Before starting the pipeline, your taxids will be checked and updated for the lowest levels. This will create a file of checked taxids. It will skip this step if this file already exists.
 
 4. When restarting the pipeline, the software will check if you made any changes in the seed file before running. If changes have been made, it will run what is necessary, else nothing will happen.
 
