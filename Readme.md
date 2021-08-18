@@ -159,7 +159,7 @@ This pipeline consists of 12 steps called rules that take input files and create
 
 ### Rule 1 : fetch_fasta_from_seed
 
-Rule description: 
+Rule description  
 : Fetch the fasta of the seed from the seed table. Then they are writen in the output file.  
 
 ```
