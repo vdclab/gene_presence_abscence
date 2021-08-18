@@ -149,13 +149,13 @@ Alternatively, you can force a rule by adding it to the end of the user-entered 
 
 This pipeline consists of 12 steps called rules that take input files and create output files. Here is a description of the pipeline.
 
-**/!\ As snakemake is set up, there is a 13th rule, called all, that serves to call the last output files and make sure they were created.**
+1. As snakemake is set up, there is a 13th rule, called `all`, that serves to call the last output files and make sure they were created.
 
-**/!\ A folder containing you work will be created with two folder inside, if not already existing: _processing_file_ and _results_. You will find any result files in the _results_ folder (in bold hereafter).**
+2. A folder containing you work will be created with two folder inside, if not already existing: _processing_file_ and _results_. You will find any result files in the _results_ folder (in bold hereafter).
 
-/!\ Before strating the pipeline, your taxids will be chcked and updated for the lowest levels. This will create a file of checked taxids. It will skip this step if this file already exists.
+3. Before strating the pipeline, your taxids will be chcked and updated for the lowest levels. This will create a file of checked taxids. It will skip this step if this file already exists.
 
-/!\ When restarting the pipeline, the software will check if you made any changes in the seed file before running. If changes have been made, it will run what is necessary, else nothing will happen.
+4. When restarting the pipeline, the software will check if you made any changes in the seed file before running. If changes have been made, it will run what is necessary, else nothing will happen.
 
 ### Rule 1 : fetch_fasta_from_seed
 
