@@ -159,43 +159,34 @@ This pipeline consists of 12 steps called rules that take input files and create
 
 ### Rule 1 : fetch_fasta_from_seed
 
+Rule description : fetch the fasta of the seed from the seed table. Then they are writen in the output file.
+
 ```
-· input file: 
-	- seed file 
-		- type = str
-		- format = name | protein id | e-value | percentage of identity | coverage | color
-		- note = no header on this file.
+· input file (aka seed file): type = str
+                              format = name | protein id | e-value | percentage of identity | coverage | color
+                              note = no header on this file.
 
-· description:
-	- fetch the fasta of the seed from the seed table. Then they are writen in the output file.
-
-· output file: 
-	- multifasta output of the seed sequences
-		- type = str
+· output file: type = str
+	             description = multifasta output of the seed sequences 
 ```        
         
        
 ### Rule 2 : psiblast
 
-  - input files:
-    - seed: 
-      - type = str
-      - description = multifasta of the seed sequences
-    - taxid:
-      - type = str
-      - description = list of taxid in columns, no header
+Rule description : Use the sequences of the seeds to make a psiBLAST against all the taxid
+
+```
+· input files:
+    - seed: type = str
+            description = multifasta of the seed sequences
+    - taxid: type = str 
+             description = list of taxid in columns, no header
         
-  - description:
-    - Use the sequences of the seeds to make a psiBLAST against all the taxid
-        
-  - output file: 
-    - blast out
-      - type = str
-      - format = query accession | query length | query sequence | query start position | querry end position |
-                subject accession | subject length | subject sequence| subject start position | subject end position | 
-                length of alignment | percentage of identity | e-value | bitscore | querry coverage
-      - description = blast out format in tabulation, no header
-        
+· output file (aka blast out):  type = str
+                                format = query accession | query length | query sequence | query start position | querry end position | subject accession | subject length | subject sequence| subject start position | subject end position | length of alignment | percentage of identity | e-value | bitscore | querry coverage
+                                description = blast out format in tabulation, no header
+```        
+  
         
         
 ### Rule 3 : read_psiblast
