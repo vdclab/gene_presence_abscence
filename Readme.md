@@ -176,8 +176,7 @@ Rule description:
        
 ### Rule 2 : psiblast
 
-Rule description: 
-- Use the sequences of the seeds to make a psiBLAST against all the taxid. 
+Rule description: Use the sequences of the seeds to make a psiBLAST against all the taxid. 
  
 ```
 · input files:
@@ -195,8 +194,7 @@ Rule description:
         
 ### Rule 3 : read_psiblast
 
-Rule description: 
-- Read the psiBLAST, remove unwanted lines ane extract the list of matches. 
+Rule description: Read the psiBLAST, remove unwanted lines ane extract the list of matches. 
 
 ```
 · input file : 
@@ -223,8 +221,7 @@ Rule description:
         
 ### Rule 4 : split_taxid_file
 
-Rule description: 
-- Split the taxid file into 3. 
+Rule description: Split the taxid file into 3. 
 
 ```
 
@@ -244,10 +241,7 @@ Rule description:
         
 ### Rule 5 : fetch_proteins_info
 
-Rule description: 
-- Fetch the information for each protein of each genome in the taxid list.   
-- That includes: the protein ncbi id, sequence, length and annotation, as well as in which genome is found.  
-- Information for the genome include genome ncbi id, name, taxid and if complete or partial.  
+Rule description: Fetch the information for each protein of each genome in the taxid list. That includes: the protein ncbi id, sequence, length and annotation, as well as in which genome is found. Information for the genome include genome ncbi id, name, taxid and if complete or partial.  
  
 ```
 
@@ -266,9 +260,7 @@ Rule description:
   
 ### Rule 6 : cat_proteins_info
 
-Rule description: 
-- Concatenate the different table of protein info created in the rule fetch_proteins_info. 
-- Then remove all file created in the rules split_taxid_file and fetch_proteins_info. 
+Rule description: Concatenate the different table of protein info created in the rule fetch_proteins_info. Then remove all file created in the rules split_taxid_file and fetch_proteins_info. 
 
 ```
 
@@ -287,8 +279,7 @@ Rule description:
 
 ### Rule 7 : make_fasta
 
-Rule description: 
-- Create a fasta file from the psiblast results and the result of the protein information in the rule cat_proteins_info. 
+Rule description: Create a fasta file from the psiblast results and the result of the protein information in the rule cat_proteins_info. 
 
 ```
 
@@ -311,8 +302,7 @@ Rule description:
 
 ### Rule 8 : blast
 
-Rule description: 
-- Blast all versus all of the fasta of all protein generated in the rule make_fasta. 
+Rule description: Blast all versus all of the fasta of all protein generated in the rule make_fasta. 
 
 ```
 
@@ -338,10 +328,7 @@ Rule description:
 
 ### Rule 9 : prepare_for_silix
 
-Rule description: 
-- Filter the blast results from the rule blast with the threshold specified for each seed in the seed file.  
-- Filters include the identity score, coverage and e-value, decided by the user.  
-- Create one new filtered blast result for each seed.  
+Rule description: Filter the blast results from the rule blast with the threshold specified for each seed in the seed file. Filters include the identity score, coverage and e-value, decided by the user. Create one new filtered blast result for each seed.  
 
 ```
 
@@ -368,9 +355,7 @@ Rule description:
 
 ### Rule 10 : silix
 
-Rule description: 
-- Uses Silix to create a network of protein and give a file of the protein segregated in groups.  
-- If the blast output file is empty, just create an empty file. 
+Rule description: Uses Silix to create a network of protein and give a file of the protein segregated in groups.  If the blast output file is empty, just create an empty file. 
 
 ```
 
@@ -395,8 +380,7 @@ Rule description:
 
 ### Rule 11 : find_family
  
-Rule description: 
-- Find the group of each seed in each individual seed and record it. 
+Rule description: Find the group of each seed in each individual seed and record it. 
 
 ```
 
@@ -415,9 +399,7 @@ Rule description:
 
 ### Rule 12 : make_table
 
-Rule description: 
-- Check the presence of protein similar to the seed in each taxid and create a table of presence abscence. 
-- This table is then plotted in a colored table.
+Rule description: Check the presence of protein similar to the seed in each taxid and create a table of presence abscence. This table is then plotted in a colored table.
 
 ```
 
