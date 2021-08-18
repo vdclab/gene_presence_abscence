@@ -159,21 +159,23 @@ This pipeline consists of 12 steps called rules that take input files and create
 
 ### Rule 1 : fetch_fasta_from_seed
 
-Rule description : fetch the fasta of the seed from the seed table. Then they are writen in the output file.
+Rule description: Fetch the fasta of the seed from the seed table. Then they are writen in the output file.
 
 ```
-· input file (aka seed file): type = str
+· input file: 
+    - seed file: type = str
                               format = name | protein id | e-value | percentage of identity | coverage | color
                               note = no header on this file.
 
-· output file: type = str
-	             description = multifasta output of the seed sequences 
+· output file: 
+    - multi fasta file: type = str
+	                    description = multifasta output of the seed sequences 
 ```        
         
        
 ### Rule 2 : psiblast
 
-Rule description : Use the sequences of the seeds to make a psiBLAST against all the taxid
+Rule description: Use the sequences of the seeds to make a psiBLAST against all the taxid
 
 ```
 · input files:
@@ -182,284 +184,244 @@ Rule description : Use the sequences of the seeds to make a psiBLAST against all
     - taxid: type = str 
              description = list of taxid in columns, no header
         
-· output file (aka blast out):  type = str
-                                format = query accession | query length | query sequence | query start position | querry end position | subject accession | subject length | subject sequence| subject start position | subject end position | length of alignment | percentage of identity | e-value | bitscore | querry coverage
-                                description = blast out format in tabulation, no header
+· output file (aka blast out):  
+    - blast out: type = str
+                 format = query accession | query length | query sequence | query start position | querry end position | subject accession | subject length | subject sequence| subject start position | subject end position | length of alignment | percentage of identity | e-value | bitscore | querry coverage
+                 description = blast out format in tabulation, no header
 ```        
-  
         
         
 ### Rule 3 : read_psiblast
 
-  - input file: 
-    - psiblast output
-      - type = str
-      - format = query accession | query length | query sequence | query start position | querry end position |
-                subject accession | subject length | subject sequence| subject start position | subject end position | 
-                length of alignment | percentage of identity | e-value | bitscore | querry coverage
-      - description = blast out format in tabulation, no header
+Rule description: Read the psiBLAST, remove unwanted lines ane extract the list of matches
+
+```
+· input file : 
+    - psiblast output: type = str
+                       format = query accession | query length | query sequence | query start position | querry end position | subject accession | subject length | subject sequence| subject start position | subject end position | length of alignment | percentage of identity | e-value | bitscore | querry coverage
+                       description = blast out format in tabulation, no header
     
-  - params:
-    - e-val:
-      - type = int
-      - description =  e-value threshold chosen by user
-    - blast version:
-      - type = str
-      - description = blast version to use  
+· params:
+    - e-val: type = int
+             description =  e-value threshold chosen by user
+    - blast version: type = str
+                     description = blast version to use  
         
-  - description:
-    - Read the psiBLAST, remove unwanted lines ane extract the list of matches
         
-  - output files:
-    - clean blast:
-      - type = str
-      - format = query accession | query length | query sequence | query start position | querry end position |
-                subject accession | subject length | subject sequence| subject start position | subject end position | 
-                length of alignment | percentage of identity | e-value | bitscore | querry coverage
-      - description = cleaned blast out format in tabulation, no header
-    - list all prot:
-      - type = str
-      - description = list of all potein identifications gathered in the psiBLAST in column
-        
+· output files:
+    - clean blast: type = str
+                   format = query accession | query length | query sequence | query start position | querry end position | subject accession | subject length | subject sequence| subject start position | subject end position | length of alignment | percentage of identity | e-value | bitscore | querry coverage
+                   description = cleaned blast out format in tabulation, no header
+    - list all prot: type = str
+                     description = list of all potein identifications gathered in the psiBLAST in column
+```
+
         
         
 ### Rule 4 : split_taxid_file
 
-  - input file: 
-    - taxid file
-      - type = str
-      - description = verified taxid file, list of taxid in column, no header
-        
-  - params:
-    - nb_per_file:
-      - type = int
-      - description = number of taxid per file, detrmined by the fetch_splitter function.
-        
-  - description:
-    - Split the taxid file into 3
+Rule description: Split the taxid file into 3
 
-  - output file:
-    - taxid files: 
-      - type = list of str
-      - description = three files of list of taxid in column, no header, determined by the fetch_splitter function.
+```
+
+· input file (aka ): 
+    - taxid file: type = str
+                  description = verified taxid file, list of taxid in column, no header
         
+· params:
+    - nb_per_file: type = int
+                   description = number of taxid per file, detrmined by the fetch_splitter function.
+
+· output file:
+    - taxid files: type = list of str
+                   description = three files of list of taxid in column, no header, determined by the fetch_splitter function.
+```       
         
         
 ### Rule 5 : fetch_proteins_info
 
-  - input file: 
-    - taxid file
-      - type = str
-      - description = list of taxid in column, no header, from the rule plit_taxid_file (one file)
+Rule description: Fetch the information for each protein of each genome in the taxid list. 
+                   That includes: the protein ncbi id, sequence, length and annotation, as well as in which genome is found.
+                   Information for the genome include genome ncbi id, name, taxid and if complete or partial.
+
+```
+
+· input file: 
+    - taxid file: type = str
+                  description = list of taxid in column, no header, from the rule plit_taxid_file (one file)
+
   
-  - description:
-    - Fetch the information for each protein of each genome in the taxid list. 
-    - That includes: the protein ncbi id, sequence, length and annotation, as well as in which genome is found.
-    - Information for the genome include genome ncbi id, name, taxid and if complete or partial.
+· output file: 
+    - table of protein informations: type = str
+                                     format = protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
+                                     description = table of the information collected on the proteins, without header.
   
-  - output file: 
-    - table of protein informations
-      - type = str
-      - format = protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
-      - description = table of the information collected on the proteins, without header.
-  
+```
   
   
 ### Rule 6 : cat_proteins_info
-  
-  - input file: 
-    - all protein information files
-      - type = list of str
-      - format = protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
-      - description = list of tables of the information collected on the proteins, without header.
-  
-  - description:
-    - Concatenate the different table of protein info created in the rule fetch_proteins_info
-    - Then remove all file created in the rules split_taxid_file and fetch_proteins_info
-        
-  - output file: 
-    - concatenated all protein information file
-      - type = str
-      - format = protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
-      - description = final table of protein information, without header.
 
+Rule description: Concatenate the different table of protein info created in the rule fetch_proteins_info
+                  Then remove all file created in the rules split_taxid_file and fetch_proteins_info
+
+```
+
+· input file: 
+    - all protein information files: type = list of str
+                                     format = protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
+                                     description = list of tables of the information collected on the proteins, without header.
+        
+· output file: 
+    - concatenated all protein information file: type = str
+                                                 format = protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
+                                                 description = final table of protein information, without header.
+
+```
 
 
 ### Rule 7 : make_fasta
 
-  - input files:
-    - protein table:
-      - type = str
-      - format = protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
-      - description = final table of protein information from the rule cat_proteins_info, without header.
-    - list all prot:
-      - trype = str
-      - description = list of all protein identifications gathered in the psiBLAST in column
-  
-  - description:
-    - Create a fasta file from the psiblast results and the result of the protein information in the rule cat_proteins_info
-  
-  - output file: 
-    - multifasta:
-      - type = str
-      - description = multifasta file of all the unique protein ids.
-    - **reduced protein table**:
-      - type = str
-      - format = protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
-      - description = final table of protein information with removed duplicates, without header.
+Rule description: Create a fasta file from the psiblast results and the result of the protein information in the rule cat_proteins_info
 
+```
+
+· input files:
+    - protein table: type = str
+                     format = protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
+                     description = final table of protein information from the rule cat_proteins_info, without header.
+    - list all prot: type = str
+                     description = list of all protein identifications gathered in the psiBLAST in column
+  
+· output file: 
+    - multifasta: type = str
+                  description = multifasta file of all the unique protein ids.
+    - reduced protein table: type = str
+                             format = protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
+                             description = final table of protein information with removed duplicates, without header.
+
+```
 
 
 ### Rule 8 : blast
 
-  - input files:
-    - **prot sequence**:
-      - type = str
-      - description =  multifasta file of all the unique protein ids from the rule make_fasta
-    - seed fasta:
-      - type = str
-      - description = multifasta file of all the seeds from the rule fetch_fasta_from_seed
+Rule description: blast all versus all of the fasta of all protein generated in the rule make_fasta
+
+```
+
+· input files:
+    - prot sequence: type = str
+                     description =  multifasta file of all the unique protein ids from the rule make_fasta
+    - seed fasta: type = str
+                  description = multifasta file of all the seeds from the rule fetch_fasta_from_seed
      
-  - params:
-    - blast version:
-      - type =str
-      - description = blast version to use 
+· params:
+    - blast version: type = str
+                     description = blast version to use 
   
-  - description:
-    - blast all versus all of the fasta of all protein generated in the rule make_fasta
-  
-  - output files:
-    - blast out:
-      - type = str
-      - format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen |
-                query start position | query end position | subject start position | subject end position |
-                e-value | bitscore
-      - description = output format of blast
-    - fasta for blast:
-      - type = str
-      - description = concatenation of the 2 input multifasta files
-     
-  - miscelenious file created:
-    - (working directory)/processing_files/all_protein_with_seeds_base_set_eval(eval parameter).fasta.pdb
-    - (working directory)/processing_files/all_protein_with_seeds_base_set_eval(eval parameter).fasta.phr
-    - (working directory)/processing_files/all_protein_with_seeds_base_set_eval(eval parameter).fasta.pin
-    - (working directory)/processing_files/all_protein_with_seeds_base_set_eval(eval parameter).fasta.pot
-    - (working directory)/processing_files/all_protein_with_seeds_base_set_eval(eval parameter).fasta.psq
-    - (working directory)/processing_files/all_protein_with_seeds_base_set_eval(eval parameter).fasta.ptf
-    - (working directory)/processing_files/all_protein_with_seeds_base_set_eval(eval parameter).fasta.pto
+· output files:
+    - blast out: type = str
+                 format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen | query start position | query end position | subject start position | subject end position | e-value | bitscore
+                 description = output format of blast
+    - fasta for blast: type = str
+                       description = concatenation of the 2 input multifasta files
+```
 
 
 
 ### Rule 9 : prepare_for_silix
 
-  - input file: 
-    - fasta:
-      - type = str
-      - description = multifasta of proteins with seed from the rule blast
-    - blast out:
-      - type = str
-      - format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen |
-                query start position | query end position | subject start position | subject end position |
-                e-value | bitscore
-      - description =  blast output from the rule blast  
+Rule description: Filter the blast results from the rule blast with the threshold specified for each seed in the seed file.
+                  Filters include the identity score, coverage and e-value, decided by the user.
+                  Create one new filtered blast result for each seed.
+
+```
+
+· input file: 
+    - fasta: type = str
+             description = multifasta of proteins with seed from the rule blast
+    - blast out: type = str
+                 format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen | query start position | query end position | subject start position | subject end position | e-value | bitscore
+                 description =  blast output from the rule blast  
   
-  - params:
-    - new dir:
-      - type = str
-      - description = work directory
-    - project name: 
-      - type = str
-      - description = project name determined by the user
-     
-  - description:
-    - Filter the blast results from the rule blast with the threshold specified for each seed in the seed file.
-    - Filters include the identity score, coverage and e-value, decided by the user.
-    - Create one new filtered blast result for each seed.
+· params:
+    - new dir: type = str
+               description = work directory
+    - project name: type = str
+                    description = project name determined by the user
   
   - output file: 
-    - blast output to send to silix
-      - type = list of str
-      - format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen |
-                query start position | query end position | subject start position | subject end position |
-                e-value | bitscore
-      - description = list of blast output filtered for each seed.
+    - blast output to send to silix: type = list of str
+                                     format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen | query start position | query end position | subject start position | subject end position | e-value | bitscore
+                                     description = list of blast output filtered for each seed.
 
+```
 
 
 ### Rule 10 : silix
 
-  - input files:
-    - blast out:
-      - type = str
-      - format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen |
-                query start position | query end position | subject start position | subject end position |
-                e-value | bitscore
-      - description = blast output filtered for a specific seed from the rule prepare_for_silix.
-    - fasta:
-      - type = str
-      - description = multifasta of proteins with seed from the rule blast
-     
-  - params:
-    - silix version:
-      - type = str
-      - description =  version of silix to use
-  
-  - description:
-    - Uses Silix to create a network of protein and give a file of the protein segregated in groups.
-    - If the blast output file is empty, just create an empty file
-  
-  - output file:
-    - fnodes:
-      - type = str 
-      - format = family | protein id
-      - description = fnodes file, table of protein id and family number, without headers.
+Rule description: Uses Silix to create a network of protein and give a file of the protein segregated in groups.
+                  If the blast output file is empty, just create an empty file
 
+```
+
+· input files:
+    - blast out: type = str
+                 format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen | query start position | query end position | subject start position | subject end position | e-value | bitscore
+                 description = blast output filtered for a specific seed from the rule prepare_for_silix.
+    - fasta: type = str
+             description = multifasta of proteins with seed from the rule blast
+     
+· params:
+    - silix version: type = str
+                     description =  version of silix to use
+  
+· output file:
+    - fnodes: type = str 
+              format = family | protein id
+              description = fnodes file, table of protein id and family number, without headers.
+
+```
 
 
 ### Rule 11 : find_family
 
-  - input file:
-    - fnodes:
-      - type = str
-      - format = family | protein id
-      - description = fnodes file, table of protein id and family number, without headers from the rule silix.
-  
-  - description:
-    - Find the group of each seed in each individual seed and record it
-  
-  - output file:
-    - updadted fnodes:
-      - type = str
-      - format = family | protein id | seed
-      - description = updated fnodes with only the family of the seed.
+Rule description: Find the group of each seed in each individual seed and record it
 
+```
+
+· input file:
+    - fnodes: type = str
+              format = family | protein id
+              description = fnodes file, table of protein id and family number, without headers from the rule silix.
+  
+· output file:
+    - updadted fnodes: type = str
+                       format = family | protein id | seed
+                       description = updated fnodes with only the family of the seed.
+
+```
 
 
 ### Rule 12 : make_table
 
-  - input files:
-    - protein table:
-      - type = str
-      - format = format: protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
-      - description = final table of protein information from the rule cat_proteins_info, without header.
-    - fnodes: 
-      - type = str
-      - format = concatenated fnodes with each seed family from 
-      - description = family | protein id | seed
+Rule description: Check the presence of protein similar to the seed in each taxid and create a table of presence abscence
+                  This table is then plotted in a colored table.
+```
+
+· input files:
+    - protein table: type = str
+                     format = protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
+                     description = final table of protein information from the rule cat_proteins_info, without header.
+    - fnodes: type = str
+              format = family | protein id | seed
+              description =  concatenated fnodes with each seed family
   
-  - description:
-    - Check the presence of protein similar to the seed in each taxid and create a table of presence abscence
-    - This table is then plotted in a colored table.
-  
-  - output files:
-    - **final table**:
-      - type = str
-      - format = genome id | genome name | seed 1 | seed 2 .. seed x
-      - description = presence/abscence table, with header. Each line is a genome, each column is a seed.
-    - **pdf**:
-      - type = list of str
-      - description = plots in pdf of the final table centered on one seed 
-    - **png**: 
-      - type = list of str
-      - description = plots in png of the final table centered on one seed
-      
+· output files:
+    - final table: type = str
+                   format = genome id | genome name | seed 1 | seed 2 .. seed x
+                   description = presence/abscence table, with header. Each line is a genome, each column is a seed.
+    - pdf: type = list of str
+           description = plots in pdf of the final table centered on one seed 
+    - png: type = list of str
+           description = plots in png of the final table centered on one seed
+```
