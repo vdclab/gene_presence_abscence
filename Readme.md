@@ -159,19 +159,20 @@ This pipeline consists of 12 steps called rules that take input files and create
 
 ### Rule 1 : fetch_fasta_from_seed
 
-   - input file: 
-     - seed file 
-       - type = str
-       - format = name | protein id | e-value | percentage of identity | coverage | color
-       - note = no header on this file.
-        
-   - description:
-     - fetch the fasta of the seed from the seed table. Then they are writen in the output file.
-        
-   - output file: 
-     - multifasta output of the seed sequences
-       - type = str
-        
+```
+· input file: 
+	- seed file 
+		- type = str
+		- format = name | protein id | e-value | percentage of identity | coverage | color
+		- note = no header on this file.
+
+· description:
+	- fetch the fasta of the seed from the seed table. Then they are writen in the output file.
+
+· output file: 
+	- multifasta output of the seed sequences
+		- type = str
+```        
         
        
 ### Rule 2 : psiblast
