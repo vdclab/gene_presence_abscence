@@ -1,0 +1,5 @@
+This is a test set to try the software.
+
+here is the comand line:
+
+python3.8 -m snakemake --cluster-config cluster.json --cluster "sbatch -c {cluster.c} --qos={cluster.qos} --time={cluster.time} --account={cluster.account} --mem-per-cpu={cluster.mem-per-cpu}"  -j 5 -d "/blue/lagard/ghutinet/base_set" -C project_name='base_set' e_val=0.01 taxid='base_set_taxid.txt'
