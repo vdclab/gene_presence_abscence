@@ -739,7 +739,7 @@ rule find_family:
         fnodes = fnodes[fnodes.family == gene_family]
 
         # Creation of a columns 'seed' to identify quickly the seed and familiy
-        fnodes['seed'] = fnodes.family.apply(lambda x: seed)
+        fnodes['seed'] = seed
 
         fnodes.to_csv(str(output), sep='\t', index=False)
 
