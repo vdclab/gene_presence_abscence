@@ -163,7 +163,6 @@ rule all:
         final_table = os.path.join(OUTPUT_FOLDER,'results',f'patab_{project_name}_psiblast_evalue_{e_val}.csv'),
         plots = expand(os.path.join(OUTPUT_FOLDER,'results','plots','gene_table_{project_name}_{gene}.{ext}'), 
                                                                                  project_name=project_name, 
-                                                                                 gene=gene, 
                                                                                  ext=['png','pdf']),
     shell:
         '''
@@ -772,16 +771,16 @@ rule make_table:
     """
 
     input:
-        protein_table = f'{new_dir}/results/list_protein_{project_name}_id_table.csv',
-        fnodes = expand(
-            '{new_dir}/processing_files/blast_out_per_gene/filtered_blast_{project_name}_{gene_constrains}_flushed.fnodes',
-            new_dir=new_dir, project_name=project_name, gene_constrains=gene_constrains)
+        protein_table = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'protein_table.tsv')
+        fnodes = expand(os.path.join(OUTPUT_FOLDER, 
+                                    'processing_files','blast_out_per_gene', 
+                                    'filtered_blast_{project_name}_{gene_constrains}_flushed.fnodes'),
+                        new_dir=new_dir, project_name=project_name, gene_constrains=gene_constrains)
     output:
-        final_table = f'{new_dir}/results/patab_{project_name}_psiblast_evalue{e_val}.csv',
-        pdf = expand('{new_dir}/results/plots/gene_table_{project_name}_{gene}.pdf',
-            new_dir=new_dir, project_name=project_name, gene=gene),
-        png = expand('{new_dir}/results/plots/gene_table_{project_name}_{gene}.png',
-                new_dir=new_dir, project_name=project_name, gene=gene)
+        final_table = os.path.join(OUTPUT_FOLDER, 'results', 'patab_{project_name}_psiblast_evalue{e_val}.csv'),
+        plots = expand(os.path.join(OUTPUT_FOLDER,'results','plots','gene_table_{project_name}.{ext}'), 
+                                                                                 project_name=project_name, 
+                                                                                 ext=['png','pdf'])
     run:
         import pandas as pd
         import numpy as np
