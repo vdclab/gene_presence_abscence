@@ -22,6 +22,46 @@ You will also need these programs to be installed in the server (already done) o
 - biopython == 1.78
 - pandas == 1.1.5	
 - matplotlib == 3.3.3
+- ete3 == 3.1.1
+- ncbi-genome-download == 0.3.0
+
+#### Known issues with ete3 NCBITaxa() 
+
+It could append that during the creation of the SQL database an error occured :
+
+```python
+~/.local/lib/python3.8/site-packages/ete3/ncbi_taxonomy/ncbiquery.py in upload_data(dbfile)
+    800             sys.stderr.flush()
+    801         taxid, spname = line.strip('\n').split('\t')
+--> 802         db.execute("INSERT INTO synonym (taxid, spname) VALUES (?, ?);", (taxid, spname))
+    803     print()
+    804     db.commit()
+
+IntegrityError: UNIQUE constraint failed: synonym.spname, synonym.taxid
+```
+
+1. To overpass this error first remove the files `~/.etetoolkit/taxa.sqlite*`
+
+```bash
+rm ~/.etetoolkit/taxa.sqlite*  
+```
+
+2. Replace in the file `~/.local/lib/python3.8/site-packages/ete3/ncbi_taxonomy/ncbiquery.py` the following part of code :
+
+```python 
+Replace at the line 802 :
+
+db.execute("INSERT INTO synonym (taxid, spname) VALUES (?, ?);", (taxid, spname))
+
+by this :
+
+try: 
+    db.execute("INSERT INTO synonym (taxid, spname) VALUES (?, ?);", (taxid, spname))
+except: 
+    print("Fail::",i,taxid,spname)
+```
+
+### Requiered files 
 
 The 4 files required should be as followed:
 

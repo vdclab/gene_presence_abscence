@@ -1,34 +1,34 @@
 # snakemake/5.17.0
 # pipeline to test the presence of some proteins (aka seeds) in genome (given in taxid)
-# usage: snakemake --cluster-config cluster.json --cluster "sbatch -c {cluster.c} --qos={cluster.qos} --time={cluster.time} --account={cluster.account} --mail-type={cluster.mail-type} --mail-user={cluster.mail-user} --mem_per_cpu={cluster.mem_per_cpu}"  -j 5 -d "/blue/lagard/ghutinet/modifications/trial_second" -C project_name='deazaguanine' e_val=0.01 id=0.1 cov=0.7
+# usage: snakemake --cluster-config cluster.json --cluster "sbatch -c {cluster.c} --qos={cluster.qos} --time={cluster.time} --account={cluster.account} --mail-type={cluster.mail-type} --mail-user={cluster.mail-user} --mem_per_cpu={cluster.mem_per_cpu}"  -j 5 -d "/blue/lagard/ghutinet/modifications/trial_second" -C project_name='deazaguanine' e_val=0.01 id=0.1 cov=0.7 taxid='base_set_taxid.txt'
 # -j : number of max core to use
 # -d : directory of the files
 # -C : configuration of values bellow:
 
+# ###############################################################################
+# This file is part of Presence-Abscence.                                       #
+#                                                                               #
+# Authors: Geoffrey Hutinet                                                     #
+# Copyright © 2021 University of Forida (Gainesville, Florida).                 #
+# See the COPYRIGHT file for details.                                           #
+#                                                                               #
+# Presence-Abscence is a software providing tools for ???                       #
+#                                                                               #
+# Presence-Abscence is free software: you can redistribute it and/or modify     #
+# it under the terms of the Affero GNU General Public License as published by   #
+# the Free Software Foundation, either version 3 of the License,                #
+# or (at your option) any later version.                                        #
+#                                                                               #
+# Presence-Abscence is distributed in the hope that it will be useful, but      #
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY    #
+# or FITNESSFOR A PARTICULAR PURPOSE. See the Affero GNU General Public License #
+# for more details.                                                             #
+#                                                                               #
+# You should have received a copy of the Affero GNU General Public License      #
+# along with Presence-Abscence (COPYING file).                                  #
+# If not, see <https://www.gnu.org/licenses/>.                                  #
+# ###############################################################################
 
-##########################################################################
-##########################################################################
-##
-##                                Options
-##
-##########################################################################
-##########################################################################
-
-# Taxid necessary to work
-txid = config['taxid']
-
-# Seed file input, default is seeds.txt
-seed_file = config['seed'] if 'seed' in config else 'seeds.txt'
-
-# Name your project, take the name of seed by default
-project_name = config['project_name'] if 'project_name' in config else seed_file[:-4]
-
-# Blast e-value thershold, 0.000001 by default but can be changed in -C
-e_val = config['e_val'] if 'e_val' in config else 0.000001
-
-# Software versions
-blast_version = config['blast'] if 'blast' in config else '2.10.1'
-silix_version = config['silix'] if 'silix' in config else '1.2.11'
 
 ##########################################################################
 ##########################################################################
@@ -38,12 +38,12 @@ silix_version = config['silix'] if 'silix' in config else '1.2.11'
 ##########################################################################
 ##########################################################################
 
-from Bio import Entrez
-from urllib.error import HTTPError
-from http.client import IncompleteRead
-import os
+from ete3 import NCBITaxa 
+import ncbi_genome_download as ngd  
+import os, sys
 import shutil
 import pandas as pd
+from textwrap import dedent
 
 ##########################################################################
 ##########################################################################
@@ -71,96 +71,39 @@ def create_folder(mypath):
 
 ##########################################################################
 ##########################################################################
-
-# Creating the wildcard necessary for latter use
-def fetch_splitter(file):
-
-    """
-    open the taxid file and count the number of lines, then split it into 3 lists (1 or 2 if less than 3 taxids)
-
-    return a list of file to create (list_to_return), and a number of line per file (per)
-
-    Parameters
-    ----------
-    file : str
-        the taxid file input.
-        list in column of the taxids
-    """
-
-    with open(file, 'r') as file_to_count:
-        file_len = len(file_to_count.read().split('\n'))
-
-    if file_len == 1 or file_len == 2:
-        divider = file_len
-    else:
-        divider = 3
-
-    list_to_return = []
-    count = 0
-    per = round(file_len/divider)
-
-    for _ in range(0, file_len, per):
-        to_add = str(count)
-        len_to_add = len(to_add)
-
-        if len_to_add < 6:
-            zeros = 'x'
-            for _ in range(0, 6 - len_to_add, 1):
-                zeros += '0'
-            to_add = zeros + to_add
-
-        list_to_return += [to_add]
-        count += 1
-
-    return list_to_return, per
-
+##
+##                                Options
+##
 ##########################################################################
 ##########################################################################
 
+# Taxid necessary to work
+if 'taxid' not in config:
+    sys.exit(dedent("""usage: snakemake [option] -C seed=<SEED_FILE> taxid=<TAXID_FILE>',
+    error: one of this arguments are required: You need to provide a taxid file"""))
+else :
+    taxid = config['taxid']
 
-def check(table, list_taxid):
+# Seed file input
+if 'seed' not in config :
+    sys.exit(dedent("""usage: snakemake [option] -C seed=<SEED_FILE> taxid=<TAXID_FILE>',
+    error: one of this arguments are required: You need to provide a seed file"""))
+else :
+    seed_file = config['seed'] 
 
-    """
-    Check each taxid of the taxid table o make sure they are the lowest level.
-    If not remove the taxid and add the lower taxid(s)
+# Name your project, take the name of seed by default
+project_name = config['project_name'] if 'project_name' in config else os.path.splitext(seed_file)[0]
 
-    return the verified table of taxids
 
-    Parameters
-    ----------
-    table : pandas DataFrame
-        the taxid file input
-        list in column of the taxids, column name is 'taxid'
-    list_taxid : list of taxids
-        taxid to be looked up.
-    """
 
-    for tx_id in list_taxid:
-        try:
-            esearch_result = Entrez.read(Entrez.esearch(db='taxonomy',term=f'txid{tx_id}[Orgn]'))
+# Blast e-value thershold, 0.000001 by default but can be changed in -C
+e_val = config['e_val'] if 'e_val' in config else 0.000001
 
-        except RuntimeError:
-            esearch_result = Entrez.read(Entrez.esearch(db='taxonomy',term=f'txid{tx_id}[Orgn]'))
+# Software versions
+blast_version = config['blast'] if 'blast' in config else '2.10.1'
+silix_version = config['silix'] if 'silix' in config else '1.2.11'
 
-        except HTTPError:
-            esearch_result = Entrez.read(Entrez.esearch(db='taxonomy',term=f'txid{tx_id}[Orgn]'))
 
-        except IncompleteRead:
-            esearch_result = Entrez.read(Entrez.esearch(db='taxonomy',term=f'txid{tx_id}[Orgn]'))
-
-        new_tx_id_list = esearch_result['IdList']
-        new_tx_id_list.remove(tx_id)
-
-        if len(esearch_result['IdList']) > 1:
-            # if not the minimum level of taxid, loop this rule on the lower taxids.
-            table = check(table, new_tx_id_list)
-            table.drop_duplicates(inplace=True)
-            table.drop(table.index[table['taxid'] == tx_id].to_list(),inplace=True)
-
-        elif tx_id not in table['taxid'].to_list():
-            table = table.append({'taxid':tx_id}, ignore_index=True)
-
-    return table
 
 ##########################################################################
 ##########################################################################
@@ -170,15 +113,21 @@ def check(table, list_taxid):
 ##########################################################################
 ##########################################################################
 
-Entrez.tool = 'draw presence/abscence v2'
-
 # Create folders to work in
-new_dir = f"{project_name}_eval{e_val}"
+new_dir = f"{project_name}_eval_{e_val}"
 
-if not os.path.exists(new_dir):
-    create_folder(f'{new_dir}/results')
-    create_folder(f'{new_dir}/processing_files')
+# Output folder :
+if 'output_folder' in config :
+    OUTPUT_FOLDER =  os.path.join(config['output_folder'], new_dir)
+else :
+    OUTPUT_FOLDER = os,path.join(os.getcwd(), new_dir)
 
+
+# Seepup option that create a reduce dataset using a psiblast step with the seed 
+if 'speedup' in config :
+    speedup = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid','seeds_{project_name}.fasta')
+else  :
+    speedup = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta')
 
 ##########################################################################
 ##########################################################################
@@ -188,36 +137,13 @@ if not os.path.exists(new_dir):
 ##########################################################################
 ##########################################################################
 
-# Check the taxids
-if not os.path.exists(f'{txid[:-4]}_verified.txt'):
-    taxid_table = pd.read_csv(txid, header=None, names=['taxid'] ,dtype={'taxid': str})
-    taxid_table = check(taxid_table, taxid_table.taxid.tolist())
-    taxid_table.to_csv(f'{txid[:-4]}_verified.txt', index=False, header=False)
-
-# Definition of the taxid splitter
-splitter, nb_per_file = fetch_splitter(f'{txid[:-4]}_verified.txt')
-
 # Definition of the list of seed
-seed_table = pd.read_csv(seed_file, sep='\t', header=None,
-                            names=['name', 'protein_id', 'evalue', 'pident', 'cov',  'color'])
-gene = seed_table.name.tolist()
+seed_table = pd.read_table(seed_file)
 
 # Definition of the requirements for each seed
-seed_table.set_index('name', inplace=True)
-gene_constrains = [ '{seed}_evalue{eval}_cov{cov}_pid{pid}'.format(
-                        seed=seed, eval=seed_table.at[seed,"evalue"], cov=seed_table.at[seed,"cov"],
-                        pid=seed_table.at[seed,"pident"]) for seed in gene ]
-seed_table.reset_index(inplace=True)
-
-# Comparing to previous results, deleting obsolete files
-if os.path.exists(f'{new_dir}/results/copied_seed_{project_name}_psiblast_evalue{e_val}.csv'):
-    copied_seed = pd.read_csv(f'{new_dir}/results/copied_seed_{project_name}_psiblast_evalue{e_val}.csv',
-                                sep='\t', header=None, names=['name', 'protein_id', 'evalue', 'pident', 'cov',  'color'])
-    if not copied_seed.equals(seed_table):
-        if os.path.exists(f'{new_dir}/results/plots'):
-            shutil.rmtree(f'{new_dir}/results/plots')
-
-shutil.copyfile(seed_file, f'{new_dir}/results/copied_seed_{project_name}_psiblast_evalue{e_val}.csv')
+gene_constrains = [ '{seed}_evalue_{eval}_cov_{cov}_pid_{pid}'.format(
+                        seed=row.name, eval=row.evalue, cov=row.cov,
+                        pid=row.pident) for index, row in seed_table.iterrows() ]
 
 
 ##########################################################################
@@ -229,23 +155,155 @@ shutil.copyfile(seed_file, f'{new_dir}/results/copied_seed_{project_name}_psibla
 ##########################################################################
 
 rule all:
-
     """
     Starts the pipeline by checking the presence abscence table and the plots in pdf and png exist.
     """
 
     input:
-        final_table = f'{new_dir}/results/patab_{project_name}_psiblast_evalue{e_val}.csv',
-        pdf = expand('{new_dir}/results/plots/gene_table_{project_name}_{gene}.pdf',
-                      new_dir=new_dir, project_name=project_name, gene=gene),
-        png = expand('{new_dir}/results/plots/gene_table_{project_name}_{gene}.png',
-                      new_dir=new_dir, project_name=project_name, gene=gene)
+        final_table = os.path.join(OUTPUT_FOLDER,'results',f'patab_{project_name}_psiblast_evalue_{e_val}.csv'),
+        plots = expand(os.path.join(OUTPUT_FOLDER,'results','plots','gene_table_{project_name}_{gene}.{ext}'), 
+                                                                                 project_name=project_name, 
+                                                                                 gene=gene, 
+                                                                                 ext=['png','pdf']),
+    shell:
+        '''
+        '''
+
+##########################################################################
+##########################################################################
+
+rule fetch_proteins_database:
+    """
+    Create the protein database with all the taxid given by the user. 
+    Also providing a tab-delimited file with genome metadata.
+
+    Input : str
+    -----
+        list of taxid in column, no header, from the rule plit_taxid_file
+        
+    Output : str
+    ------
+        table of the information collected on the proteins, without header.
+        format: protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
+    """
+
+    input:
+        taxid
+    output:
+        fasta_final = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta'),
+        assembly_output = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'summary_assembly_taxid.txt'),
+        new_taxid_file = os.path.join(OUTPUT_FOLDER, 'taxid_checked.txt'),
+        output_table_protein = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'protein_table.tsv')
+    params:
+        output_database_folder = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid')
+    threads :
+        5
+    run:
+        import pandas as pd
+        from ete3 import NCBITaxa 
+        import ncbi_genome_download as ngd 
+        import glob, os
+        import gzip
+        from Bio import SeqIO
+
+        # If never done, will download the last version of NCBI Taxonomy dump and create the SQL database
+        ncbi = NCBITaxa()  
+
+        # To update the database 
+        # ncbi.update_taxonomy_database()  
+
+        # If wanted the taxdump could be remove after the database is created
+        # if os.path.isfile('taxdump.tar.gz') :
+        #    os.remove('taxdump.tar.gz')
+
+        taxid_df = pd.read_table(str(input))
+
+        new_taxid_df = pd.DataFrame()
+
+        # For each item in the taxid file, check the lastest descendant taxa from the taxid
+        # If a taxid doesn't exist, it is not added in the dataframe
+        for index, row in taxid_df.iterrows():
+            try :
+                list_taxid = ncbi.get_descendant_taxa(row.TaxId)
+
+                tmp_df = pd.DataFrame({'TaxId':list_taxid,
+                                       'NCBIGroups': row.NCBIGroups})
+
+                new_taxid_df = pd.concat(new_taxid_df, tmp_df)
+            except ValueError :
+                pass
+        
+
+        # Drop duplicate in case user have multiple time the same taxonomic id
+        new_taxid_df.drop_duplicates('TaxId', inplace=True)
+        new_taxid_df.to_csv(str(output.new_taxid_file), index=False, sep='\t')
+
+        # Dictionnary of all the option of ncbi_genome_download
+        keyargs = { "section": 'refseq', 
+                    "file_formats": "protein-fasta", 
+                    'flat_output':True,  
+                    "output": str(params.output_database_folder), 
+                    "parallel": threads, 
+                    "metadata_table":str(output.assembly_output),
+                    "assembly_levels":'complete',
+                    "refseq_categories":"reference"}       
+        
+        # Create a dataframe that will contains all the assembly info
+        assembly_final_df = pd.DataFrame()
+
+        # If think it is better to search for all the same NCBI groups in the same time as the function can be parallized
+        for NCBIgroup, group in taxid_df.groupby('NCBIGroups'):
+            keyargs['groups'] = NCBIgroup
+            keyargs['taxids'] = group.TaxId.tolist()
+
+            ngd.download(**keyargs)  
+
+            # Read the information about the assembly and concatenate with previous one
+            tmp_assembly = pd.read_table(str(output.assembly_output))
+            assembly_final_df = pd.concat([assembly_final_df, tmp_assembly])
+
+        assembly_final_df.to_csv(str(output.assembly_output), index=False, sep='\t')
+
+        # Now handeling the last step that is concatenate the fasta files downloaded
+        all_fasta = glob.glob(os.path.join(str(params.output_database_folder), '*faa.gz'))
+
+        df_proteins = pd.DataFrame(columns = ['protein_id',
+                                              'protein_name',
+                                              'genome_name',
+                                              'genome_id',
+                                              'length'])
+
+        with open(str(output.fasta_final), 'w') as w_file :
+            for fasta in all_fasta :
+                with gzip.open(fasta, "rt") as handle:
+                    parser = SeqIO.parse(handle, "fasta")
+
+                    for protein in parser : 
+                        description_split = protein.description.split(' [')
+
+                        df_proteins.at[-1, 'protein_id']   = protein.id
+                        df_proteins.at[-1, 'protein_name'] = description_split[0]
+                        df_proteins.at[-1, 'genome_name']  = description_split[1].split(']')[0]
+                        df_proteins.at[-1, 'genome_id']    = os.path.basename(fasta).split('_')[0]
+                        df_proteins.at[-1, 'length']       = len(protein.seq)
+
+                        df_proteins.index += 1
+
+                        SeqIO.write(protein, w_file, 'fasta')
+
+
+
+                # Here to save space I decided to remove the file avec concatenation
+                os.remove(fasta)
+
+        df_proteins.to_csv(str(output.output_table_protein))
+
+
 
 ##########################################################################
 ##########################################################################
 
 rule fetch_fasta_from_seed:
-
     """
     from the seed table and fetch the fasta of the seed. Then they are writen in the output file.
 
@@ -259,26 +317,67 @@ rule fetch_fasta_from_seed:
     -------   
         multifasta output of the seed sequences
     """
-
+    input :
+        seed_file
     output:
-        f'seeds_{project_name}.fasta'
+        os.path.join(OUTPUT_FOLDER, 'seeds_{project_name}.fasta')
     run:
         from Bio import Entrez
-        from Bio import SeqIO
         import pandas as pd
 
         Entrez.tool = 'draw presence/abscence v2'
+        Entrez.email = 'decrecylab@gmail.com'
+
+        seed_table = pd.read_table(str(input))
+        id_list = seed_table.protein_id.to_list()
 
         # getting seed sequences and writing the fasta file
-        with Entrez.efetch(db='protein', id=seed_table.protein_id.to_list(), rettype='fasta', retmode='text') as handle:
+        with Entrez.efetch(db='protein', id=id_list, rettype='fasta', retmode='text') as handle:
             with open(str(output), 'w') as out_file:
                 out_file.write(handle.read())
+
+##########################################################################
+########################################################################## 
+
+rule makeblastdb :
+    """
+    Use makeblastdb to create the blast database from the taxid all together file
+    
+    Inputs
+    ------
+    seed : str
+        path to the all together taxid proteome
+        
+    Output
+    ------
+    dummy makeblastdb.done file : str
+        A file that is touch at the end of the makeblastbd to make sure the database is done
+                
+    Params
+    ------
+    blast_version : str
+        blast version to use
+    """
+
+    input :
+        os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta')
+    output :
+        os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta.makeblastdb.done')
+    params :
+        blast_version = blast_version
+    shell :
+        '''
+        # module load ncbi_blast/{params.blast_version}
+
+        makeblastdb -dbtype prot -in '{input}' -parse_seqids
+
+        touch '{output}'
+        '''
 
 ##########################################################################
 ##########################################################################
 
 rule psiblast:
-
     """
     Use the sequences of the seeds to make a psiBLAST against all the taxid
     
@@ -306,10 +405,10 @@ rule psiblast:
     """
 
     input:
-        seed = f'seeds_{project_name}.fasta',
-        taxid = f'{txid[:-4]}_verified.txt'
+        seed = os.path.join(OUTPUT_FOLDER, 'seeds_{project_name}.fasta'),
+        taxid_db = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta.makeblastdb.done')
     output:
-        f'{new_dir}/processing_files/psiblast_{project_name}_eval{e_val}_raw.out'
+        os.path.join(OUTPUT_FOLDER, 'processing_files','psiblast_{project_name}_eval_{e_val}_raw.out')
     params:
         e_val = e_val,
         blast_version = blast_version
@@ -317,18 +416,17 @@ rule psiblast:
         5
     shell:
         '''
-        module load ncbi_blast/{params.blast_version}
+        # module load ncbi_blast/{params.blast_version}
 
-        psiblast -query {input.seed} -db nr -taxidlist {input.taxid} -evalue {e_val}\
-                 -outfmt '6 qacc qlen qseq qstart qend sacc slen sseq sstart send length pident evalue bitscore qcovs'\
-                 -num_threads 5 -num_iterations 3 -out {output}
+        psiblast -query '{input.seed}' -db '{input.taxid_db}' -evalue {e_val} \
+                 -outfmt '7 qacc qlen qseq qstart qend sacc slen sseq sstart send length pident evalue bitscore qcovs' \
+                 -num_threads {threads} -num_iterations 3 -out '{output}'
         '''
 
 ##########################################################################
 ##########################################################################
 
 rule read_psiblast:
-
     """
     Read the psiBLAST, remove unwanted lines ane extract the list of matches
     
@@ -352,10 +450,10 @@ rule read_psiblast:
     """
 
     input:
-        psiblast = f'{new_dir}/processing_files/psiblast_{project_name}_eval{e_val}_raw.out'
+        psiblast = os.path.join(OUTPUT_FOLDER, 'processing_files','psiblast_{project_name}_eval_{e_val}_raw.out')
     output:
-        clean_blast = f'{new_dir}/processing_files/psiblast_{project_name}_eval{e_val}_cleaned.out',
-        list_all_prot = f'{new_dir}/processing_files/list_all_protein_{project_name}_eval{e_val}.csv'
+        clean_blast = os.path.join(OUTPUT_FOLDER, 'processing_files','psiblast_{project_name}_eval_{e_val}_cleaned.out'),
+        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files','list_all_protein_{project_name}_eval_{e_val}.csv')
     run:
         import pandas as pd
 
@@ -363,9 +461,8 @@ rule read_psiblast:
         blast_names = ['qacc', 'qlen', 'qseq','qstart', 'qend', 'sacc', 'slen', 'sseq', 'sstart', 'send','length',
                        'pident', 'evalue', 'bitscore', 'qcovs','qcovhsp', 'ssciname', 'sblastname', 'stitle']
 
-        psiblast_result = pd.read_csv(str(input.psiblast),
-                                      sep='\t',
-                                      header=None,
+        psiblast_result = pd.read_table(str(input.psiblast),
+                                      comment='#',
                                       names=blast_names
                                       )
 
@@ -374,215 +471,18 @@ rule read_psiblast:
         psiblast_result.to_csv(str(output.clean_blast), sep='\t', index=False)
 
         # Getting the list of protein matches
-        pd.Series(psiblast_result.sacc.unique()).to_csv(str(output.list_all_prot), index=False, header=False)
+        all_sacc = psiblast_result.sacc.unique()
 
-##########################################################################
-##########################################################################
+        with open(str(output.list_all_prot), 'w') as w_file :
+            w_file.write('protein_id\n')
 
-rule split_taxid_file:
-
-    """
-    Split the taxid file into 3
-    
-    Input : str
-    -----
-        verified taxid file, list of taxid in column, no header
-        
-    Output : list of str
-    ------
-        three files of list of taxid in column, no header, determined by the fetch_splitter function.
-        
-    Params
-    ------
-    nb_per_file : int
-        number of taxid per file, detrmined by the fetch_splitter function.
-    """
-
-    input:
-        f'{txid[:-4]}_verified.txt'
-    output:
-        expand('taxid_files/{splitter}.txt', txid=txid, splitter=splitter)
-    params:
-        nb_per_file = nb_per_file
-    shell:
-        '''
-        mkdir -p taxid_files
-        cd taxid_files
-        split -l {params.nb_per_file} --numeric-suffixes --suffix-length=6 --additional-suffix=.txt ../{input}
-        cd ..
-        '''
-##########################################################################
-##########################################################################
-
-
-rule fetch_proteins_info:
-
-    """
-    Fetch the information for each protein of each genome in the taxid list. 
-    That includes: the protein ncbi id, sequence, length and annotation, as well as in which genome is found.
-    Information for the genome include genome ncbi id, name, taxid and if complete or partial.
-    
-    Input : str
-    -----
-        list of taxid in column, no header, from the rule plit_taxid_file
-        
-    Output : str
-    ------
-        table of the information collected on the proteins, without header.
-        format: protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
-    """
-
-    input:
-        'taxid_files/{splitter}.txt'
-    output:
-        'taxid_files/prot_info_taxid_{splitter}.csv'
-    run:
-        from Bio import Entrez
-        from Bio import SeqIO
-        from urllib.error import HTTPError
-        from http.client import IncompleteRead
-        import pandas as pd
-
-        Entrez.tool = 'draw presence/abscence v2'
-
-        # Opening taxid list
-        taxid_table = pd.read_csv(str(input), header=None, names=['taxid'], dtype={'taxid': str})
-
-        # Creating the result table of information
-        result_taxid_table = pd.DataFrame(columns=['protein_id',
-                                                'protein_name',
-                                                'genome_name',
-                                                'genome_status',
-                                                'genome_id',
-                                                'taxid',
-                                                'length',
-                                                'sequence'])
-
-        ### FUNCTIONS ###
-
-        def entrez_esearch(db, term):
-            """
-            Use the esearch function of Entrez, but catch usual errors (Runtime and HTTP) to re-itterate the search
-
-            :param db: str, database to search
-            :param term: str, what term to search
-
-            :return: dict, result of esearch on the term search in the database
-            """
-            try:
-                esearch_to_return = Entrez.read(Entrez.esearch(db=db,term=term))
-
-            except RuntimeError:
-                esearch_to_return = entrez_esearch(db, term)
-
-            except HTTPError:
-                esearch_to_return = entrez_esearch(db,term)
-
-            return esearch_to_return
-
-
-        def entrez_efetch(db, id, rettype='gb', retmode='text', seqio_type='genbank'):
-            """
-            Use the efetch function of Entrez, but catch usual errors (Runtime, HTTP and incomplete file) to
-            re-itterate the fetch
-
-            :param db: str, on what database to fetch
-            :param id: str or int, what id to fetch
-            :param rettype: str, return type of efetch, default is genbank
-            :param retmode: str, return mode of efetch, default is text
-            :param seqio_type: str, tell the type of fetch made for SeqIO to read, default is genbank
-
-            :return: dict, result of efetch
-            """
-            try:
-                efetch_to_return = SeqIO.read(Entrez.efetch(db=db, id=id,
-                    rettype=rettype, retmode=retmode), seqio_type)
-
-            except RuntimeError:
-                efetch_to_return = entrez_efetch(db, id, rettype=rettype, retmode=retmode, seqio_type=seqio_type)
-
-            except HTTPError:
-                efetch_to_return = entrez_efetch(db, id, rettype=rettype, retmode=retmode, seqio_type=seqio_type)
-
-            except IncompleteRead:
-                efetch_to_return = entrez_efetch(db,id,rettype=rettype,retmode=retmode,seqio_type=seqio_type)
-
-            return efetch_to_return
-
-
-        ### MAIN ###
-
-        for tx_id in taxid_table['taxid'].to_list():
-            genome_search = entrez_esearch(db='nucleotide', term=f'txid{tx_id}[Orgn]')
-
-            for id in genome_search['IdList']:
-                genome_fetch = entrez_efetch(db='nucleotide', id=id)
-
-                for feature in genome_fetch.features:
-                    if feature.type == 'CDS':
-                        if 'products' in feature.qualifiers:
-                            prot_name = feature.qualifiers['product'][0]
-
-                        elif 'locus_tag' in feature.qualifiers:
-                            prot_name = feature.qualifiers['locus_tag'][0]
-
-                        else:
-                            prot_name = ''
-
-                        if 'protein_id' in feature.qualifiers and 'translation' in feature.qualifiers:
-                            # Creating the new line of table
-                            this_protein = pd.Series({'protein_id': feature.qualifiers['protein_id'][0],
-                                                      'protein_name': prot_name,
-                                                      'genome_name': genome_fetch.description.split(',')[0],
-                                                      'genome_status': genome_fetch.description.split(',')[-1],
-                                                      'genome_id': genome_fetch.id,
-                                                      'taxid': tx_id,
-                                                      'length': len(feature.qualifiers['translation'][0]),
-                                                      'sequence': feature.qualifiers['translation'][0]})
-                            result_taxid_table = result_taxid_table.append(this_protein, ignore_index=True)
-
-        # Writing the table
-        result_taxid_table.to_csv(str(output), sep='\t', index=False, header=False)
-
-
-##########################################################################
-##########################################################################
-
-rule cat_proteins_info:
-
-    """
-    Concatenate the different table of protein info created in the rule fetch_proteins_info
-    Then remove all file created in the rules split_taxid_file and fetch_proteins_info
-    
-    Input : list of str
-    -----
-        list of tables of the information collected on the proteins, without header.
-        format: protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
-        
-    Output : str
-    ------
-        final table of protein information, without header.
-        format: protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
-    """
-
-    input:
-        expand('taxid_files/prot_info_taxid_{splitter}.csv', splitter=splitter)
-    output:
-        f'{new_dir}/processing_files/list_protein_{project_name}_id_table.csv'
-    shell:
-        '''
-        for prot_info_taxid_file in {input}
-        do
-            cat $prot_info_taxid_file  >> {output}
-        done
-        
-        '''# rm -r taxid_files
+            for sacc in all_sacc :
+                w_file.write(f'{sacc}\n')
 
 ##########################################################################
 ##########################################################################
 
 rule make_fasta:
-
     """
     Create a fasta file from the psiblast results and the result of the protein information in the rule cat_proteins_info
     
@@ -602,53 +502,32 @@ rule make_fasta:
         final table of protein information with removed duplicates, without header.
         format: protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
     """
-
     input:
-        protein_table = f'{new_dir}/processing_files/list_protein_{project_name}_id_table.csv',
-        list_protein = f'{new_dir}/processing_files/list_all_protein_{project_name}_eval{e_val}.csv'
+        protein_fasta = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta')
+        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files','list_all_protein_{project_name}_eval_{e_val}.csv')
     output:
-        fasta = f'{new_dir}/results/all_protein_{project_name}_eval{e_val}.fasta',
-        reduced_protein_table = f'{new_dir}/results/list_protein_{project_name}_id_table.csv'
+        fasta = os.path.join(OUTPUT_FOLDER, 'results', 'all_protein_{project_name}_eval_{e_val}.fasta'),
     run:
         import pandas as pd
+        from Bio import SeqIO
 
-        # Opening the protein information table
-        all_protein_list = pd.read_csv(str(input.protein_table), sep='\t', header=None,
-            names=['protein_id',
-                   'protein_name',
-                   'genome_name',
-                   'genome_status',
-                   'genome_id',
-                   'taxid',
-                   'length',
-                   'sequence'])
-
-        # Removing duplicates and updating the table file
-        all_protein_list.drop_duplicates()
-        all_protein_list.to_csv(str(input.protein_table), sep='\t', header=False, index=False)
-        all_protein_list['protein_id'] = all_protein_list.protein_id.apply(lambda x: x.split('.')[0])
-        print(all_protein_list.head())
+        # Get all the proteins of the database inside a dict-like structure
+        all_index_fasta = SeqIO.index(str(input.protein_fasta), 'fasta')
 
         # Opening the list of protein of interests
-        protein_of_interest = pd.read_csv(str(input.list_protein), sep='\t', header=None, names=['protein_id'])
+        proteins_of_interest = pd.read_table(str(input.list_protein))
+        proteins_of_interest = proteins_of_interest.protein_id.tolist()
 
         # Filtering protein table and saving
-        protein_list = pd.merge(protein_of_interest, all_protein_list, how='left', on='protein_id')
-        print(protein_list.head())
-        protein_list.to_csv(str(output.reduced_protein_table), sep='\t', header=False, index=False)
+        with open(str(output.fasta), 'w') as w_file :
+            for protein in proteins_of_interest :
+                SeqIO.write(all_index_fasta[protein], w_file, 'fasta')
 
-        # Making the fasta file
-        protein_list.drop(columns=['protein_name', 'genome_name','genome_status', 'genome_id', 'taxid', 'length'],
-                        inplace=True)
-        protein_list['protein_id'] = protein_list.protein_id.apply(lambda x: '>{the_id}'.format(the_id=x.split('.')[0]))
-        print(protein_list.head())
-        protein_list.to_csv(str(output.fasta), sep='\n', header=False, index=False)
 
 ##########################################################################
 ##########################################################################
 
 rule blast:
-
     """
     blast all versus all of the fasta of all protein generated in the rule make_fasta
     
@@ -676,29 +555,31 @@ rule blast:
     """
 
     input:
-         prot_sequence = f'{new_dir}/results/all_protein_{project_name}_eval{e_val}.fasta',
-         seed_fasta = f'seeds_{project_name}.fasta'
+         taxid_fasta = speedup,
+         seed = os.path.join(OUTPUT_FOLDER, 'seeds_{project_name}.fasta')
     output:
-        blast_out = f'{new_dir}/processing_files/blastp_{project_name}_psiblast_evalue{e_val}.out',
-        fasta_for_blast = f'{new_dir}/processing_files/all_protein_with_seeds_{project_name}_eval{e_val}.fasta'
+        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}_psiblast_evalue_{e_val}.out'),
+        fasta_for_blast = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}_eval_{e_val}.fasta')
     params:
         blast_version = blast_version
     threads:
         5
     shell:
          """
-         module load ncbi_blast/{params.blast_version}
-         cat {input.prot_sequence} {input.seed_fasta} > {output.fasta_for_blast}
-         makeblastdb -dbtype prot -in {output.fasta_for_blast}
-         blastp -query {output.fasta_for_blast} -db {output.fasta_for_blast} -evalue 0.01\
-            -outfmt 6 -out {output.blast_out} -num_threads 5 -num_alignments 25000
+         # module load ncbi_blast/{params.blast_version}
+
+         cat '{input.prot_sequence}' '{input.seed_fasta}' > '{output.fasta_for_blast}'
+
+         makeblastdb -dbtype prot -in '{output.fasta_for_blast}'
+
+         blastp -query '{output.fasta_for_blast}' -db '{output.fasta_for_blast}' -evalue 0.01 \
+                -outfmt 6 -out '{output.blast_out}' -num_threads {threads} -num_alignments 25000
          """
 
 ##########################################################################
 ##########################################################################
 
 rule prepare_for_silix:
-
     """
     Filter the blast results from the rule blast with the threshold specified for each seed in the seed file.
     Filters include the identity score, coverage and e-value.
@@ -730,14 +611,10 @@ rule prepare_for_silix:
     """
 
     input:
-        fasta = f'{new_dir}/processing_files/all_protein_with_seeds_{project_name}_eval{e_val}.fasta',
-        blast_out = f'{new_dir}/processing_files/blastp_{project_name}_psiblast_evalue{e_val}.out',
+        fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', f'all_protein_with_seeds_{project_name}_eval_{e_val}.fasta'),
+        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', f'blastp_{project_name}_psiblast_evalue_{e_val}.out'),
     output:
-        expand('{new_dir}/processing_files/blast_out_per_gene/filtered_blast_{project_name}_{gene_constrains}.out',
-            new_dir=new_dir, project_name=project_name, gene_constrains=gene_constrains)
-    params:
-        new_dir = f'{new_dir}/processing_files',
-        project_name = project_name
+        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}.out'),
     run:
         from Bio import SeqIO
         import pandas as pd
@@ -747,51 +624,39 @@ rule prepare_for_silix:
         seed_list = seed_table.protein_id.to_list()
         seed_table.set_index('protein_id', inplace=True)
 
-        # Opening fasta
-        fasta = {}
-        for seq_record in SeqIO.parse(str(input.fasta), 'fasta'):
-            fasta[seq_record.id.split('.')[0]] = len(seq_record.seq)
+        # Indexing fasta
+        fasta_db = SeqIO.index(str(input.fasta), 'fasta')
 
         # Opening blast_out and preparation
         blast_names = ['qseqid', 'sseqid', 'pident', 'length', 'mismatch', 'gapopen', 'qstart', 'qend',
                        'sstart', 'send', 'evalue', 'bitscore']
+
         blast_out = pd.read_csv(str(input.blast_out), sep='\t', header=None, names=blast_names)
-        blast_out['qseqid'] = blast_out.qseqid.apply(lambda x: x.split('.')[0])
-        blast_out['sseqid'] = blast_out.sseqid.apply(lambda x: x.split('.')[0])
-        blast_out.drop_duplicates(inplace=True)
-        blast_out['cov'] = blast_out.apply(lambda x: x.length/fasta[x.qseqid], axis=1)
-
-        # Make dir to collect blast_out info
-        if not os.path.exists(f'{params.new_dir}/blast_out_per_gene'):
-            os.mkdir(f'{params.new_dir}/blast_out_per_gene')
         
-        # start filtering blast out on e-value, coverage and percent identity
-        for seed in seed_list:
-            filtered_blast_out = blast_out.copy()
-            filtered_blast_out['evalue'] = filtered_blast_out.evalue.apply(lambda x: \
-                x if x <= seed_table.at[seed,'evalue'] else np.nan)
-            filtered_blast_out['pident'] = filtered_blast_out.pident.apply(lambda x: \
-                x if x >= seed_table.at[seed,'pident'] else np.nan)
-            filtered_blast_out['cov'] = filtered_blast_out['cov'].apply(lambda x: \
-                x if x >= seed_table.at[seed,'cov'] else np.nan)
-            filtered_blast_out.dropna(inplace=True)
+        # Don't know if necessery see later 
+        # blast_out['qseqid'] = blast_out.qseqid.apply(lambda x: x.split('.')[0])
+        # blast_out['sseqid'] = blast_out.sseqid.apply(lambda x: x.split('.')[0])
+        
+        # I think it is totally useless
+        # blast_out.drop_duplicates(inplace=True)
 
-            # write new blast_out
-            filtered_blast_out.drop(columns='cov', inplace=True)
-            print(seed, filtered_blast_out)
-            seed_constrains = '{seed}_evalue{eval}_cov{cov}_pid{pid}'.format(seed=seed_table.at[seed, "name"],
-                                                                            eval=seed_table.at[seed, "evalue"],
-                                                                            cov=seed_table.at[seed, "cov"],
-                                                                            pid=seed_table.at[seed, "pident"])
-            filtered_blast_out.to_csv(
-                f'{params.new_dir}/blast_out_per_gene/filtered_blast_{params.project_name}_{seed_constrains}.out',
-                sep='\t', index=False, header=False)
+        # start filtering blast out on e-value, coverage and percent identity
+        blast_out = blast_out[blast_out.evalue <= wildcards.eval].reset_index(drop = True)
+        blast_out = blast_out[blast_out.pident >= wildcards.pid].reset_index(drop = True)
+
+        # Calculating the coverage on the query
+        for index, row in blast_out :
+            blast_out.at[index, 'cov'] = row.length / len(fasta[row.qseqid])
+
+        blast_out = blast_out[blast_out.cov >= wildcards.cov].reset_index(drop = True)
+        
+        # Write the blast_out without the column cov because could messup in silix
+        blast_out[blast_names].to_csv(str(output), sep='\t', index=False, header=False)
 
 ##########################################################################
 ##########################################################################
 
 rule silix:
-
     """
     Uses Silix to create a network of protein and give a file of the protein segregated in groups.
     If the blast output file is empty, just create an empty file
@@ -818,23 +683,21 @@ rule silix:
     """
 
     input:
-        blast_out = '{new_dir}/processing_files/blast_out_per_gene/filtered_blast_{project_name}_{gene_constrains}.out',
-        fasta = f'{new_dir}/processing_files/all_protein_with_seeds_{project_name}_eval{e_val}.fasta'
+        fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', f'all_protein_with_seeds_{project_name}_eval_{e_val}.fasta')
+        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}.out'),
     output:
-        '{new_dir}/processing_files/blast_out_per_gene/filtered_blast_{project_name}_{gene_constrains}.fnodes'
-    wildcard_constraints:
-        new_dir = new_dir,
-        project_name = project_name
+        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}.fnodes')
     params:
         silix_version = silix_version
     shell:
         """
-        module load silix/{params.silix_version}
+        # module load silix/{params.silix_version}
         
-        if [ -s {input.blast_out} ];then   
-            sh -c 'silix {input.fasta} {input.blast_out} -f {wildcards.gene_constrains} -i 0.05 -r 0.05 > {output}'
+        if [ -s {input.blast_out} ]
+        then   
+            sh -c 'silix "{input.fasta}" "{input.blast_out}" -f "{wildcards.seed}" -i 0.05 -r 0.05 > "{output}"'
         else
-            touch {output}
+            touch '{output}'
         fi
         """
 
@@ -842,7 +705,6 @@ rule silix:
 ##########################################################################
 
 rule find_family:
-
     """
     Find the group of each seed in each individual seed and record it
     
@@ -859,40 +721,32 @@ rule find_family:
     """
 
     input:
-        fnodes = '{new_dir}/processing_files/blast_out_per_gene/filtered_blast_{project_name}_{gene_constrains}.fnodes'
+        fnodes = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}.fnodes')
     output:
-        '{new_dir}/processing_files/blast_out_per_gene/filtered_blast_{project_name}_{gene_constrains}_flushed.fnodes'
-    wildcard_constraints:
-        new_dir = new_dir,
-        project_name = project_name,
+        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}_flushed.fnodes')
+    params :
+        seed_table
     run:
         # Open fnodes
         fnodes = pd.read_table(str(input.fnodes),names=['family', 'protein_id'])
 
-        # Detection of the seed
-        for gene in seed_table.name.to_list():
-            if gene in wildcards.gene_constrains:
-                seed = gene
+        seed = wildcards.seed
 
-        # Detection families
-        seed_fnodes = pd.merge(seed_table,
-            fnodes,
-            how='left',
-            on='protein_id'
-        ).drop_duplicates()
-        seed_fnodes.set_index('name', inplace=True)
-        gene_family = seed_fnodes.at[seed, 'family']
+        # Detection families WARNING verification about the name of the seed and the name of the protein in the fasta at the end may be different
+        gene_family = fnodes[fnodes.protein_id == seed, 'family']
 
         # writing file with only family
         fnodes = fnodes[fnodes.family == gene_family]
+
+        # Creation of a columns 'seed' to identify quickly the seed and familiy
         fnodes['seed'] = fnodes.family.apply(lambda x: seed)
-        fnodes.to_csv(str(output), sep='\t', header=False, index=False)
+
+        fnodes.to_csv(str(output), sep='\t', index=False)
 
 ##########################################################################
 ##########################################################################
 
 rule make_table:
-
     """
     Check the presence of protein similar to the seed in each taxid and create a table of presence abscence
     This table is then plotted in a colored table.
