@@ -166,13 +166,13 @@ This pipeline consists of 12 steps called rules that take input files and create
 #### Normal behavior
 
 <p align="center">
-  <img src="doc/dummy_dag.png?raw=true" width="350" height="400">
+  <img src="doc/dummy_dag.png?raw=true" height="400">
 </p>
 
 #### Speedup behavior
 
 <p align="center">
-  <img src="doc/dummy_dag_speedup.png?raw=true" width="350" height="400">
+  <img src="doc/dummy_dag_speedup.png?raw=true" height="400">
 </p>
 
 ### Rule 1 : fetch_fasta_from_seed
