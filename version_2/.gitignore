@@ -3,13 +3,6 @@ __pycache__
 .python-version
 .snakemake
 
-# Test file
-taxdump.tar.gz
-dag.pdf
-sum_test.txt
-summary_test.txt
-test_amelioration_eval_0.01
-
 # Executables
 *.pyc
 

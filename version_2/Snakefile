@@ -138,9 +138,9 @@ else  :
 seed_table = pd.read_table(seed_file)
 
 # Definition of the requirements for each seed
-gene_constrains = ['{seed}_evalue_{eval:.0e}_cov_{cov}_pid_{pid}'.format(seed=row.name,
+gene_constrains = ['{seed}_evalue_{eval:.0e}_cov_{coverage}_pid_{pid}'.format(seed=row.seed,
                                                                          eval=row.evalue, 
-                                                                         cov=row.cov,
+                                                                         coverage=row.coverage,
                                                                          pid=row.pident) 
                                                     for index, row in seed_table.iterrows()]
 
@@ -158,8 +158,7 @@ rule all:
     """
 
     input:
-        final_table = os.path.join(OUTPUT_FOLDER,'results',f'patab_{project_name}_psiblast_evalue_{e_val}.csv'),
-        plots = expand(os.path.join(OUTPUT_FOLDER,'results','plots','gene_table_{project_name}_{gene}.{ext}'), 
+        plots = expand(os.path.join(OUTPUT_FOLDER,'results','plots','gene_table_{project_name}.{ext}'), 
                                                                                  project_name=project_name, 
                                                                                  ext=['png','pdf']),
     shell:
@@ -500,7 +499,7 @@ rule make_fasta:
         format: protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
     """
     input:
-        protein_fasta = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta')
+        protein_fasta = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta'),
         list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files','list_all_protein_{project_name}_eval_{e_val}.csv')
     output:
         fasta = os.path.join(OUTPUT_FOLDER, 'results', 'all_protein_{project_name}_eval_{e_val}.fasta'),
@@ -609,9 +608,9 @@ rule prepare_for_silix:
 
     input:
         fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta'),
-        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}_psiblast_evalue_1e-2.out'),
+        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}_blast_evalue_1e-2.out'),
     output:
-        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}.out'),
+        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.out'),
     run:
         from Bio import SeqIO
         import pandas as pd
@@ -645,7 +644,7 @@ rule prepare_for_silix:
         for index, row in blast_out :
             blast_out.at[index, 'cov'] = row.length / len(fasta[row.qseqid])
 
-        blast_out = blast_out[blast_out.cov >= float(wildcards.cov)].reset_index(drop = True)
+        blast_out = blast_out[blast_out.coverage >= float(wildcards.coverage)].reset_index(drop = True)
         
         # Write the blast_out without the column cov because could messup in silix
         blast_out[blast_names].to_csv(str(output), sep='\t', index=False, header=False)
@@ -680,10 +679,10 @@ rule silix:
     """
 
     input:
-        fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta')
-        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}.out'),
+        fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta'),
+        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.out'),
     output:
-        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}.fnodes')
+        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes')
     params:
         silix_version = silix_version
     shell:
@@ -718,11 +717,9 @@ rule find_family:
     """
 
     input:
-        fnodes = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}.fnodes')
+        fnodes = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes')
     output:
-        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}_flushed.fnodes')
-    params :
-        seed_table
+        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes.flushed')
     run:
         # Open fnodes
         fnodes = pd.read_table(str(input.fnodes),names=['family', 'protein_id'])
@@ -774,8 +771,8 @@ rule make_table:
         assembly_table = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'summary_assembly_taxid.txt'),
         fnodes = expand(os.path.join(OUTPUT_FOLDER, 
                                     'processing_files','blast_out_per_gene', 
-                                    'filtered_blast_{project_name}_{gene_constrains}_flushed.fnodes'),
-                        new_dir=new_dir, project_name=project_name, gene_constrains=gene_constrains)
+                                    'filtered_blast_{project_name}_{gene_constrains}.fnodes.flushed'),
+                                     project_name=project_name, gene_constrains=gene_constrains)
     output:
         final_table = os.path.join(OUTPUT_FOLDER, 'results', 'patab_{project_name}.tsv'),
     run:
@@ -784,8 +781,8 @@ rule make_table:
 
         # Seed preparing
         seed_table = pd.read_table(str(input.seed_file))
-        seed_list = seed_table.name.to_list()
-        seed_color_dict = seed_table.set_index('name').color.to_dict()
+        seed_list = seed_table.seed.to_list()
+        seed_color_dict = seed_table.set_index('seed').color.to_dict()
 
         # Genome table
         # genome_df = pd.read_table(str(input.assembly_table))
@@ -803,7 +800,7 @@ rule make_table:
         fam_id_table = fam_id_table.merge(all_proteins, on='protein_id')
 
         patab = pd.crosstab(index = fam_id_table['genome_id'], columns = fam_id_table['seed'])
-        patab = patab[seed_list].sort_values(by = seed_list, , ascending = False).reset_index()
+        patab = patab[seed_list].sort_values(by = seed_list, ascending = False).reset_index()
 
         # Add the genome name to the table in case needed
         patab = patab.merge(fam_id_table[['genome_id','genome_name']], on='genome_id')
@@ -827,11 +824,10 @@ rule make_table:
 
 rule plots :
     input :
-        final_table = os.path.join(OUTPUT_FOLDER, 'results', 'patab_{project_name}.tsv')
+        final_table = os.path.join(OUTPUT_FOLDER, 'results', f'patab_{project_name}.tsv')
     output :
-        plots = expand(os.path.join(OUTPUT_FOLDER,'results','plots','gene_table_{project_name}.{ext}'), 
-                                                                                 project_name=project_name, 
-                                                                                 ext=['png','pdf'])    
+        pdf = os.path.join(OUTPUT_FOLDER,'results','plots','gene_table_{project_name}.pdf'), 
+        png = os.path.join(OUTPUT_FOLDER,'results','plots','gene_table_{project_name}.png'),
     run :
         import pandas as pd
         import numpy as np
@@ -847,7 +843,8 @@ rule plots :
         # Name in PAtab genome_id, seed, PA, color, genome_name
         # Dans le truc de geoffrey, number = nombre de gene present, x_pos = l'endroit dans la liste des seed, y_pos = l'endroit dans les genomes
 
-        fig, ax = plt.subplots(1,1, figsize=(width=7.5, height=8.75))
+        # figsize = (width, height)
+        fig, ax = plt.subplots(1,1, figsize=(7.5, 8.75))
 
         label_format = {'fontweight': 'bold'}
 
@@ -892,7 +889,7 @@ rule plots :
         plt.xlim(-0.5,patab.shape[1] - 0.5)
         plt.ylim(-0.5,patab.shape[0] - 0.5)
 
-        for plot_name in input.plots :
+        for plot_name in output :
             plt.savefig(plot_name, bbox_inches="tight",dpi=300)
 
         return 
