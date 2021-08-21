@@ -25,7 +25,6 @@ You will also need these programs to be installed in the server (already done) o
 - ete3 == 3.1.2
 - ncbi-genome-download == 0.3.0
 
-
 ### Requiered files 
 
 The 4 files required should be as followed:

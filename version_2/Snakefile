@@ -113,19 +113,16 @@ silix_version = config['silix'] if 'silix' in config else '1.2.11'
 ##########################################################################
 ##########################################################################
 
-# Create folders to work in
-new_dir = f"{project_name}_eval_{e_val}"
-
 # Output folder :
 if 'output_folder' in config :
-    OUTPUT_FOLDER =  os.path.join(config['output_folder'], new_dir)
+    OUTPUT_FOLDER =  os.path.join(config['output_folder'], project_name)
 else :
-    OUTPUT_FOLDER = os,path.join(os.getcwd(), new_dir)
+    OUTPUT_FOLDER = os,path.join(os.getcwd(), project_name)
 
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed 
 if 'speedup' in config :
-    speedup = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid','seeds_{project_name}.fasta')
+    speedup = os.path.join(OUTPUT_FOLDER, 'results', f'all_protein_{project_name}_eval_{e_val:.0e}.fasta')
 else  :
     speedup = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta')
 
@@ -141,10 +138,11 @@ else  :
 seed_table = pd.read_table(seed_file)
 
 # Definition of the requirements for each seed
-gene_constrains = [ '{seed}_evalue_{eval}_cov_{cov}_pid_{pid}'.format(
-                        seed=row.name, eval=row.evalue, cov=row.cov,
-                        pid=row.pident) for index, row in seed_table.iterrows() ]
-
+gene_constrains = ['{seed}_evalue_{eval:.0e}_cov_{cov}_pid_{pid}'.format(seed=row.name,
+                                                                         eval=row.evalue, 
+                                                                         cov=row.cov,
+                                                                         pid=row.pident) 
+                                                    for index, row in seed_table.iterrows()]
 
 ##########################################################################
 ##########################################################################
@@ -557,8 +555,8 @@ rule blast:
          taxid_fasta = speedup,
          seed = os.path.join(OUTPUT_FOLDER, 'seeds_{project_name}.fasta')
     output:
-        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}_psiblast_evalue_{e_val}.out'),
-        fasta_for_blast = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}_eval_{e_val}.fasta')
+        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}_blast_evalue_1e-2.out'),
+        fasta_for_blast = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta')
     params:
         blast_version = blast_version
     threads:
@@ -610,8 +608,8 @@ rule prepare_for_silix:
     """
 
     input:
-        fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', f'all_protein_with_seeds_{project_name}_eval_{e_val}.fasta'),
-        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', f'blastp_{project_name}_psiblast_evalue_{e_val}.out'),
+        fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta'),
+        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}_psiblast_evalue_1e-2.out'),
     output:
         os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}.out'),
     run:
@@ -640,14 +638,14 @@ rule prepare_for_silix:
         # blast_out.drop_duplicates(inplace=True)
 
         # start filtering blast out on e-value, coverage and percent identity
-        blast_out = blast_out[blast_out.evalue <= wildcards.eval].reset_index(drop = True)
-        blast_out = blast_out[blast_out.pident >= wildcards.pid].reset_index(drop = True)
+        blast_out = blast_out[blast_out.evalue <= float(wildcards.eval)].reset_index(drop = True)
+        blast_out = blast_out[blast_out.pident >= float(wildcards.pid)].reset_index(drop = True)
 
         # Calculating the coverage on the query
         for index, row in blast_out :
             blast_out.at[index, 'cov'] = row.length / len(fasta[row.qseqid])
 
-        blast_out = blast_out[blast_out.cov >= wildcards.cov].reset_index(drop = True)
+        blast_out = blast_out[blast_out.cov >= float(wildcards.cov)].reset_index(drop = True)
         
         # Write the blast_out without the column cov because could messup in silix
         blast_out[blast_names].to_csv(str(output), sep='\t', index=False, header=False)
@@ -682,7 +680,7 @@ rule silix:
     """
 
     input:
-        fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', f'all_protein_with_seeds_{project_name}_eval_{e_val}.fasta')
+        fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta')
         blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}.out'),
     output:
         os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{cov}_pid_{pid}.fnodes')
@@ -771,162 +769,132 @@ rule make_table:
     """
 
     input:
-        protein_table = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'protein_table.tsv')
+        seed_file = seed_file,
+        protein_table = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'protein_table.tsv'),
+        assembly_table = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'summary_assembly_taxid.txt'),
         fnodes = expand(os.path.join(OUTPUT_FOLDER, 
                                     'processing_files','blast_out_per_gene', 
                                     'filtered_blast_{project_name}_{gene_constrains}_flushed.fnodes'),
                         new_dir=new_dir, project_name=project_name, gene_constrains=gene_constrains)
     output:
-        final_table = os.path.join(OUTPUT_FOLDER, 'results', 'patab_{project_name}_psiblast_evalue{e_val}.csv'),
-        plots = expand(os.path.join(OUTPUT_FOLDER,'results','plots','gene_table_{project_name}.{ext}'), 
-                                                                                 project_name=project_name, 
-                                                                                 ext=['png','pdf'])
+        final_table = os.path.join(OUTPUT_FOLDER, 'results', 'patab_{project_name}.tsv'),
     run:
         import pandas as pd
         import numpy as np
-        import matplotlib.pyplot as plt
-        from Bio import SeqIO
-
-        def plot(patab, seed_table, gene):
-            """
-            plot in pdf and png the table of presence/abscence, each column would be a seed
-            and colored accordingly to the input file.
-
-            :param patab: pandas DataFrame object
-                format: genome id | genome name | seed 1 | seed 2 .. seed x
-            :param seed_table: pandas DataFrame object
-                format: name | protein id | e-value | percentage of identity | coverage | color
-            :param gene: str, seed analyzed
-
-            :return: nothing
-            """
-            font = {'family': 'DejaVu Sans', 'weight': 'light', 'size': 10, }
-            plt.rc('font',**font)
-            plt.rcParams['text.color'] = 'black'
-            plt.rcParams['svg.fonttype'] = 'none'  # Editable SVG text
-            patab = patab.fillna('None').set_index('genome_id')[::-1]
-            tab_to_draw = patab.reset_index().drop(labels='genome_name',axis=1) \
-                .melt(id_vars='genome_id').rename(columns={'variable': 'gene', 'value': 'PA'})
-            dict_color = seed_table.set_index("name").color.to_dict()
-
-            print(tab_to_draw)
-            tab_to_draw['color'] = tab_to_draw.apply(lambda x: dict_color[x.gene] if x.PA != 'None' else 'white', axis=1)
-            tab_to_draw['number'] = tab_to_draw.PA.apply(lambda x: len(x.split(',')) if x != 'None' else 0)
-            tab_to_draw['x_pos'] = tab_to_draw.gene.apply(lambda x: patab.columns.tolist().index(x) - 1)
-            tab_to_draw['y_pos'] = tab_to_draw.genome_id.apply(lambda x: patab.index.tolist().index(x))
-            tab_to_draw.to_csv(f'test_tab_to_draw_{gene}.csv')
-
-            fig, ax = plt.subplots(1,1,figsize=((patab.shape[1]) / 3,
-                                                patab.shape[0] / 3),
-                gridspec_kw={'width_ratios': [patab.shape[1]]})
-
-            label_format = {'color': 'black', 'fontweight': 'bold',
-                            'fontsize': 12}
-
-            for _, row in tab_to_draw.iterrows():
-                ax.plot(row.x_pos,row.y_pos,linestyle="None",marker="s",
-                    markersize=15,mfc=row.color,mec='black',markeredgewidth=1)
-
-                if row.number > 1:
-                    ax.text(row.x_pos,row.y_pos,str(row.number),fontsize=11,color='white',ha='center',va='center',
-                        fontweight='heavy')
-
-            plt.yticks(range(patab.shape[0]),patab.genome_name.tolist(),**label_format)
-            plt.xticks(range(patab.shape[1] - 1),tab_to_draw.gene.unique().tolist(),**label_format)
-
-            ax.tick_params(axis='both',which='both',length=0)  # No tick markers
-            ax.set_ylabel('')  # No ylabel
-            ax.xaxis.tick_top()  # xticklabels on top
-            ax.xaxis.set_label_position('top')
-            plt.setp(ax.xaxis.get_majorticklabels(),rotation=90,ha='center')  # Rotate x labels
-
-            for pos in ['top', 'bottom', 'left', 'right']:
-                ax.spines[pos].set_visible(False)  # Remove border
-
-            plt.xlim(-0.5,patab.shape[1] - 0.5)
-            plt.ylim(-0.5,patab.shape[0] - 0.5)
-
-            if not os.path.exists(f'{new_dir}/results/plots'):
-                os.mkdir(f'{new_dir}/results/plots')
-
-            name = f"{new_dir}/results/plots/gene_table_{project_name}_{gene}"
-
-            plt.savefig(name + '.png', bbox_inches="tight",dpi=300)
-            plt.savefig(name + '.pdf', bbox_inches="tight",dpi=300)
-
-            return
-
-
-        def is_my_seed_here(my_genome_id, my_seed, fam_table):
-            filter_fam_table = fam_table[fam_table['seed'] == my_seed]
-            value_to_return = np.nan
-
-            if filter_fam_table.shape[0] > 0:
-                filter_fam_table = filter_fam_table[filter_fam_table['genome_id'] == my_genome_id]
-                if filter_fam_table.protein_id.shape[0] > 0:
-                    value_to_return = ','.join(filter_fam_table.protein_id.tolist())
-
-            return value_to_return
-
 
         # Seed preparing
+        seed_table = pd.read_table(str(input.seed_file))
         seed_list = seed_table.name.to_list()
+        seed_color_dict = seed_table.set_index('name').color.to_dict()
+
+        # Genome table
+        # genome_df = pd.read_table(str(input.assembly_table))
+        # genome_df = genome_df.rename(columns={'assembly_accession':'genome_id'})
 
         # list of all proteins
-        all_proteins = pd.read_csv(str(input.protein_table), sep='\t',
-            header = None,
-            names=['protein_id',
-                   'protein_name',
-                   'genome_name',
-                   'genome_status',
-                   'genome_id',
-                   'taxid',
-                   'length',
-                   'sequence'])
-        all_proteins['protein_id'] = all_proteins.protein_id.apply(lambda x: x.split('.')[0])
+        all_proteins = pd.read_csv(str(input.protein_table), sep='\t')
+        # all_proteins['protein_id'] = all_proteins.protein_id.apply(lambda x: x.split('.')[0])
 
         # fnodes opening
-        fnodes_files = [ pd.read_table(fnodes_file, names=['family', 'protein_id', 'seed'])
-                        for fnodes_file in input.fnodes ]
-        fam_id_table = pd.merge(pd.concat(fnodes_files), all_proteins, how='left', on='protein_id')
+        fnodes_files = [pd.read_table(fnodes_file) for fnodes_file in input.fnodes]
+        
+        # concat all fnodes dataframe to one and add the protein information from the protein table and genome table
+        fam_id_table = pd.concat(fnodes_files)
+        fam_id_table = fam_id_table.merge(all_proteins, on='protein_id')
 
-        # create final table
-        patab = pd.DataFrame(columns=["genome_id", 'genome_name'] + seed_list)
-        patab['genome_id'] = all_proteins.genome_id
-        patab['genome_name'] = all_proteins.genome_name
-        patab.drop_duplicates(inplace=True)
-        sorted_patab = patab.copy()
+        patab = pd.crosstab(index = fam_id_table['genome_id'], columns = fam_id_table['seed'])
+        patab = patab[seed_list].sort_values(by = seed_list, , ascending = False).reset_index()
 
-        # fill pa_tab
-        for seed in seed_list:
-            patab[seed] = patab.genome_id.apply(is_my_seed_here, my_seed=seed, fam_table=fam_id_table)
-            sorted_patab[seed] = patab[seed].apply(lambda x: 0 if x==np.nan else 1)
-        print(patab)
-        sorted_patab.sort_values(by=['genome_name'], inplace=True)
-        sorted_patab.sort_values(by=patab.columns.tolist()[2:], ascending=False, inplace=True)
-        patab = patab.reindex(sorted_patab.index.to_list())
-        print(patab)
-        patab.dropna(subset=seed_list, how='all', inplace=True)
-        print(patab)
+        # Add the genome name to the table in case needed
+        patab = patab.merge(fam_id_table[['genome_id','genome_name']], on='genome_id')
+        
+        patab = patab.melt(id_vars='genome_id', var_name='seed', value_name='PA')
 
-        # plot the table per gene
-        for column in seed_list:
-            patab_to_draw = patab.dropna(subset=[column])
+        # Put color instead of number
+        for index, row in patab.iterrows():
+            # Use the fact that 0 == False in python to test if it's 1 or 0
+            if row.PA_color :
+                patab.at[index, 'color'] = seed_color_dict[row.seed]
+            else :
+                patab.at[index, 'color'] = '#FFFFFF' # White color
 
-            if patab_to_draw.shape[0] > 0:
-                plot(patab_to_draw, seed_table, column)
-
-            else:
-                name = f"{new_dir}/results/plots/gene_table_{project_name}_{column}"
-
-                with open(name+'.pdf', 'w'):
-                    pass
-
-                with open(name+'.png', 'w'):
-                    pass
-
-        # print the table
+        # save the table
         patab.to_csv(str(output.final_table), sep='\t', index=False)
 
 ##########################################################################
 ##########################################################################
+
+
+rule plots :
+    input :
+        final_table = os.path.join(OUTPUT_FOLDER, 'results', 'patab_{project_name}.tsv')
+    output :
+        plots = expand(os.path.join(OUTPUT_FOLDER,'results','plots','gene_table_{project_name}.{ext}'), 
+                                                                                 project_name=project_name, 
+                                                                                 ext=['png','pdf'])    
+    run :
+        import pandas as pd
+        import numpy as np
+        import matplotlib.pyplot as plt
+
+        # Plot parameters
+        font = {'family': 'DejaVu Sans', 'weight': 'light', 'size': 12, }
+        plt.rc('font',**font)
+        plt.rcParams['text.color'] = 'black'
+        plt.rcParams['svg.fonttype'] = 'none'  # Editable SVG text
+
+
+        # Name in PAtab genome_id, seed, PA, color, genome_name
+        # Dans le truc de geoffrey, number = nombre de gene present, x_pos = l'endroit dans la liste des seed, y_pos = l'endroit dans les genomes
+
+        fig, ax = plt.subplots(1,1, figsize=(width=7.5, height=8.75))
+
+        label_format = {'fontweight': 'bold'}
+
+        patab = pd.read_table(str(input.final_table))
+
+        # Dict position genomes and gene
+        list_genome = patab.genome_id.unique().tolist() 
+        num_genome = len(list_genome)
+        # here fist genome on top
+        dict_pos_genome = {list_genome[index]:num_genome-index for index in range(num_genome)}
+
+        list_seed = patab.seed.unique().tolist()
+        num_seed = len(list_seed)
+        dict_pos_seed = {list_seed[index]:index for index in range(num_seed)}
+
+        for _, row in patab.iterrows():
+            ax.plot(x = dict_pos_seed[row.seed],
+                    y = dict_pos_genome[row.genome],
+                    linestyle="None",marker="s",
+                    markersize=15, mfc=row.color, 
+                    mec='black',markeredgewidth=1)
+
+            if row.number > 1:
+               ax.text(x = dict_pos_seed[row.seed],
+                       y = dict_pos_genome[row.genome],
+                       s = str(row.number),fontsize=11,
+                       color='white',ha='center',va='center',
+                       fontweight='heavy')
+
+        plt.yticks(range(num_genome),patab.genome_name.tolist()[::-1],**label_format)
+        plt.xticks(range(num_seed),list_seed,**label_format)
+
+        ax.tick_params(axis='both',which='both',length=0)  # No tick markers
+        ax.set_ylabel('')  # No ylabel
+        ax.xaxis.tick_top()  # xticklabels on top
+        ax.xaxis.set_label_position('top')
+        plt.setp(ax.xaxis.get_majorticklabels(),rotation=90,ha='center')  # Rotate x labels
+
+        for pos in ['top', 'bottom', 'left', 'right']:
+            ax.spines[pos].set_visible(False)  # Remove border
+
+        plt.xlim(-0.5,patab.shape[1] - 0.5)
+        plt.ylim(-0.5,patab.shape[0] - 0.5)
+
+        for plot_name in input.plots :
+            plt.savefig(plot_name, bbox_inches="tight",dpi=300)
+
+        return 
+
+        
