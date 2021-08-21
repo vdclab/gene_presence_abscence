@@ -489,7 +489,7 @@ rule make_fasta:
         all_index_fasta = SeqIO.index(str(input.protein_fasta), 'fasta')
 
         # Opening the list of protein of interests
-        proteins_of_interest = pd.read_table(str(input.list_protein))
+        proteins_of_interest = pd.read_table(str(input.list_all_prot))
         proteins_of_interest = proteins_of_interest.protein_id.tolist()
 
         # Filtering protein table and saving
@@ -789,7 +789,7 @@ rule make_table:
         patab = patab[seed_list].sort_values(by = seed_list, ascending = False).reset_index()
 
         # Add the genome name to the table in case needed
-        patab = patab.merge(fam_id_table[['genome_id','genome_name']], on='genome_id')
+        patab = patab.merge(fam_id_table[['genome_id','genome_name']].drop_duplicates(), on='genome_id')
         
         patab = patab.melt(id_vars=['genome_id', 'genome_name'], var_name='seed', value_name='PA')
 
@@ -819,6 +819,10 @@ rule plots :
         import numpy as np
         import matplotlib.pyplot as plt
 
+        # It seems there is a bug if another backend is used
+        import matplotlib
+        matplotlib.use('Agg')
+
         # Plot parameters
         font = {'family': 'DejaVu Sans', 'weight': 'light', 'size': 12, }
         plt.rc('font',**font)
@@ -838,29 +842,31 @@ rule plots :
 
         # Dict position genomes and gene
         list_genome = patab.genome_id.unique().tolist() 
+        list_genome_name = patab.genome_name.unique().tolist() 
+
         num_genome = len(list_genome)
         # here fist genome on top
-        dict_pos_genome = {list_genome[index]:num_genome-index for index in range(num_genome)}
+        dict_pos_genome = {list_genome[index]:num_genome-index-1 for index in range(num_genome)}
 
         list_seed = patab.seed.unique().tolist()
         num_seed = len(list_seed)
         dict_pos_seed = {list_seed[index]:index for index in range(num_seed)}
 
         for _, row in patab.iterrows():
-            ax.plot(x = dict_pos_seed[row.seed],
-                    y = dict_pos_genome[row.genome],
+            ax.plot(dict_pos_seed[row.seed],
+                    dict_pos_genome[row.genome_id],
                     linestyle="None",marker="s",
                     markersize=15, mfc=row.color, 
                     mec='black',markeredgewidth=1)
 
-            if row.number > 1:
+            if row.PA > 1:
                ax.text(x = dict_pos_seed[row.seed],
-                       y = dict_pos_genome[row.genome],
-                       s = str(row.number),fontsize=11,
+                       y = dict_pos_genome[row.genome_id],
+                       s = str(row.PA),fontsize=11,
                        color='white',ha='center',va='center',
                        fontweight='heavy')
 
-        plt.yticks(range(num_genome),patab.genome_name.tolist()[::-1],**label_format)
+        plt.yticks(range(num_genome),list_genome_name[::-1],**label_format)
         plt.xticks(range(num_seed),list_seed,**label_format)
 
         ax.tick_params(axis='both',which='both',length=0)  # No tick markers
@@ -872,8 +878,8 @@ rule plots :
         for pos in ['top', 'bottom', 'left', 'right']:
             ax.spines[pos].set_visible(False)  # Remove border
 
-        plt.xlim(-0.5,patab.shape[1] - 0.5)
-        plt.ylim(-0.5,patab.shape[0] - 0.5)
+        plt.xlim(-0.5,num_seed - 0.5)
+        plt.ylim(-0.5,num_genome - 0.5)
 
         for plot_name in output :
             plt.savefig(plot_name, bbox_inches="tight",dpi=300)
