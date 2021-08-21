@@ -161,6 +161,16 @@ This pipeline consists of 12 steps called rules that take input files and create
 
 4. When restarting the pipeline, the software will check if you made any changes in the seed file before running. If changes have been made, it will run what is necessary, else nothing will happen.
 
+### Pipeline in image 
+
+#### Normal behavior
+
+![Alt text](doc/dag.png?raw=true "Normal behavior")
+
+#### Speedup behavior
+
+![Alt text](doc/dag_speedup.png?raw=true "Speedup behavior")
+
 ### Rule 1 : fetch_fasta_from_seed
 
 Rule description:  
