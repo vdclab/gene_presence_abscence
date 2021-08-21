@@ -172,7 +172,7 @@ This pipeline consists of 12 steps called rules that take input files and create
 #### Speedup behavior
 
 <p align="center">
-  <img src="doc/dummy_dag_speedup.png?raw=true" height="400">
+  <img src="doc/dummy_dag_speedup.png?raw=true" height="500">
 </p>
 
 ### Rule 1 : fetch_fasta_from_seed
