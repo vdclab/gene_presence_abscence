@@ -122,7 +122,7 @@ else :
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed 
 if 'speedup' in config :
-    speedup = os.path.join(OUTPUT_FOLDER, 'results', f'all_protein_{project_name}_eval_{e_val:.0e}.fasta')
+    speedup = os.path.join(OUTPUT_FOLDER, 'results', f'all_protein_{project_name}--eval_{e_val:.0e}.fasta')
 else  :
     speedup = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta')
 
@@ -366,7 +366,7 @@ rule psiblast:
         seed = os.path.join(OUTPUT_FOLDER, 'seeds_{project_name}.fasta'),
         taxid_db = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta')
     output:
-        os.path.join(OUTPUT_FOLDER, 'processing_files','psiblast_{project_name}_eval_{e_val}_raw.out')
+        os.path.join(OUTPUT_FOLDER, 'processing_files','psiblast_{project_name}--eval_{e_val}_raw.out')
     params:
         e_val = e_val,
         blast_version = blast_version
@@ -410,10 +410,10 @@ rule read_psiblast:
     """
 
     input:
-        psiblast = os.path.join(OUTPUT_FOLDER, 'processing_files','psiblast_{project_name}_eval_{e_val}_raw.out')
+        psiblast = os.path.join(OUTPUT_FOLDER, 'processing_files','psiblast_{project_name}--eval_{e_val}_raw.out')
     output:
-        clean_blast = os.path.join(OUTPUT_FOLDER, 'processing_files','psiblast_{project_name}_eval_{e_val}_cleaned.out'),
-        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files','list_all_protein_{project_name}_eval_{e_val}.csv')
+        clean_blast = os.path.join(OUTPUT_FOLDER, 'processing_files','psiblast_{project_name}--eval_{e_val}_cleaned.out'),
+        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files','list_all_protein_{project_name}--eval_{e_val}.csv')
     run:
         import pandas as pd
 
@@ -464,9 +464,9 @@ rule make_fasta:
     """
     input:
         protein_fasta = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta'),
-        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files','list_all_protein_{project_name}_eval_{e_val}.csv')
+        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files','list_all_protein_{project_name}--eval_{e_val}.csv')
     output:
-        fasta = os.path.join(OUTPUT_FOLDER, 'results', 'all_protein_{project_name}_eval_{e_val}.fasta'),
+        fasta = os.path.join(OUTPUT_FOLDER, 'results', 'all_protein_{project_name}--eval_{e_val}.fasta'),
     run:
         import pandas as pd
         from Bio import SeqIO
@@ -518,7 +518,7 @@ rule blast:
          taxid_fasta = speedup,
          seed = os.path.join(OUTPUT_FOLDER, 'seeds_{project_name}.fasta')
     output:
-        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}_blast_evalue_1e-2.out'),
+        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}--blast_evalue_1e-2.out'),
         fasta_for_blast = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta')
     params:
         blast_version = blast_version
@@ -572,9 +572,9 @@ rule prepare_for_silix:
 
     input:
         fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta'),
-        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}_blast_evalue_1e-2.out'),
+        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}--blast_evalue_1e-2.out'),
     output:
-        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.out'),
+        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.out'),
     run:
         from Bio import SeqIO
         import pandas as pd
@@ -644,9 +644,9 @@ rule silix:
 
     input:
         fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta'),
-        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.out'),
+        blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.out'),
     output:
-        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes')
+        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes')
     params:
         silix_version = silix_version
     shell:
@@ -681,9 +681,9 @@ rule find_family:
     """
 
     input:
-        fnodes = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes')
+        fnodes = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes')
     output:
-        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}_{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes.flushed')
+        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes.flushed')
     run:
         # Open fnodes
         fnodes = pd.read_table(str(input.fnodes),names=['family', 'protein_id'])
@@ -735,7 +735,7 @@ rule make_table:
         assembly_table = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'summary_assembly_taxid.txt'),
         fnodes = expand(os.path.join(OUTPUT_FOLDER, 
                                     'processing_files','blast_out_per_gene', 
-                                    'filtered_blast_{project_name}_{gene_constrains}.fnodes.flushed'),
+                                    'filtered_blast_{project_name}--{gene_constrains}.fnodes.flushed'),
                                      project_name=project_name, gene_constrains=gene_constrains)
     output:
         final_table = os.path.join(OUTPUT_FOLDER, 'results', 'patab_{project_name}.tsv'),
