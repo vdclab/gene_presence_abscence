@@ -333,44 +333,6 @@ rule fetch_fasta_from_seed:
                 out_file.write(handle.read())
 
 ##########################################################################
-########################################################################## 
-
-rule makeblastdb :
-    """
-    Use makeblastdb to create the blast database from the taxid all together file
-    
-    Inputs
-    ------
-    seed : str
-        path to the all together taxid proteome
-        
-    Output
-    ------
-    dummy makeblastdb.done file : str
-        A file that is touch at the end of the makeblastbd to make sure the database is done
-                
-    Params
-    ------
-    blast_version : str
-        blast version to use
-    """
-
-    input :
-        os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta')
-    output :
-        os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta.makeblastdb.done')
-    params :
-        blast_version = blast_version
-    shell :
-        '''
-        # module load ncbi_blast/{params.blast_version}
-
-        makeblastdb -dbtype prot -in '{input}' -parse_seqids
-
-        touch '{output}'
-        '''
-
-##########################################################################
 ##########################################################################
 
 rule psiblast:
@@ -402,7 +364,7 @@ rule psiblast:
 
     input:
         seed = os.path.join(OUTPUT_FOLDER, 'seeds_{project_name}.fasta'),
-        taxid_db = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta.makeblastdb.done')
+        taxid_db = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta')
     output:
         os.path.join(OUTPUT_FOLDER, 'processing_files','psiblast_{project_name}_eval_{e_val}_raw.out')
     params:
@@ -413,6 +375,8 @@ rule psiblast:
     shell:
         '''
         # module load ncbi_blast/{params.blast_version}
+
+        makeblastdb -dbtype prot -in '{input.taxid_db}' -parse_seqids
 
         psiblast -query '{input.seed}' -db '{input.taxid_db}' -evalue {e_val} \
                  -outfmt '7 qacc qlen qseq qstart qend sacc slen sseq sstart send length pident evalue bitscore qcovs' \
