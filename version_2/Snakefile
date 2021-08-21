@@ -229,6 +229,7 @@ rule fetch_proteins_database:
 
         new_taxid_df = pd.DataFrame()
 
+        ### Amelioration purposes : Seems we could parse line per line the taxid file without loading it
         # For each item in the taxid file, check the lastest descendant taxa from the taxid
         # If a taxid doesn't exist, it is not added in the dataframe
         for index, row in taxid_df.iterrows():
@@ -261,7 +262,7 @@ rule fetch_proteins_database:
         assembly_final_df = pd.DataFrame()
 
         # If think it is better to search for all the same NCBI groups in the same time as the function can be parallized
-        for NCBIgroup, group in taxid_df.groupby('NCBIGroups'):
+        for NCBIgroup, group in new_taxid_df.groupby('NCBIGroups'):
             keyargs['groups'] = NCBIgroup
             keyargs['taxids'] = [str(taxid) for taxid in group.TaxId.tolist()]
 
@@ -842,7 +843,13 @@ rule plots :
 
         # Dict position genomes and gene
         list_genome = patab.genome_id.unique().tolist() 
-        list_genome_name = patab.genome_name.unique().tolist() 
+
+        ### Amelioration purposes : The genome name could be followed by the id in parenthesis
+        ### or we could ask the user for id or name in the figure
+        
+        # As some genome name could be the same I need to create a dict to convert the name
+        genomeId_2_genomeName = patab.set_index('genome_id').genome_name.to_dict()
+        list_genome_name = [genomeId_2_genomeName[genome] for genome in list_genome] 
 
         num_genome = len(list_genome)
         # here fist genome on top
