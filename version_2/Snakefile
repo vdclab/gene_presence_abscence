@@ -38,8 +38,6 @@
 ##########################################################################
 ##########################################################################
 
-from ete3 import NCBITaxa 
-import ncbi_genome_download as ngd  
 import os, sys
 import shutil
 import pandas as pd
@@ -103,6 +101,18 @@ e_val = config['e_val'] if 'e_val' in config else 0.000001
 blast_version = config['blast'] if 'blast' in config else '2.10.1'
 silix_version = config['silix'] if 'silix' in config else '1.2.11'
 
+# Option for ncbi_genome_download
+# Values for section : {refseq,genbank}
+section = config['section'] if 'section' in config else 'genbank'
+
+# Values for assembly_levels : ['all', 'complete', 'chromosome', 'scaffold', 'contig']
+assembly_levels = config['assembly_levels'] if 'assembly_levels' in config else 'all'
+
+# Values for refseq_categories : {'reference', 'all'}
+refseq_categories = config['refseq_categories'] if 'refseq_categories' in config else 'all'
+
+# Values for groups : ['all', 'archaea', 'bacteria', 'fungi', 'invertebrate', 'metagenomes', 'plant', 'protozoa', 'vertebrate_mammalian', 'vertebrate_other', 'viral']
+groups = config['groups'] if 'groups' in config else 'all'
 
 
 ##########################################################################
@@ -117,7 +127,7 @@ silix_version = config['silix'] if 'silix' in config else '1.2.11'
 if 'output_folder' in config :
     OUTPUT_FOLDER =  os.path.join(config['output_folder'], project_name)
 else :
-    OUTPUT_FOLDER = os,path.join(os.getcwd(), project_name)
+    OUTPUT_FOLDER = os.path.join(os.getcwd(), project_name)
 
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed 
@@ -191,7 +201,10 @@ rule fetch_proteins_database:
         new_taxid_file = os.path.join(OUTPUT_FOLDER, 'taxid_checked.txt'),
         output_table_protein = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'protein_table.tsv')
     params:
-        output_database_folder = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid')
+        output_database_folder = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid'),
+        section = section,
+        assembly_levels = assembly_levels,
+        refseq_categories = refseq_categories,
     threads :
         5
     run:
@@ -225,24 +238,24 @@ rule fetch_proteins_database:
                 tmp_df = pd.DataFrame({'TaxId':list_taxid,
                                        'NCBIGroups': row.NCBIGroups})
 
-                new_taxid_df = pd.concat(new_taxid_df, tmp_df)
+                new_taxid_df = pd.concat([new_taxid_df, tmp_df])
             except ValueError :
                 pass
         
 
         # Drop duplicate in case user have multiple time the same taxonomic id
-        new_taxid_df.drop_duplicates('TaxId', inplace=True)
+        new_taxid_df.drop_duplicates('TaxId', inplace=True)        
         new_taxid_df.to_csv(str(output.new_taxid_file), index=False, sep='\t')
 
         # Dictionnary of all the option of ncbi_genome_download
-        keyargs = { "section": 'refseq', 
+        keyargs = { "section": params.section, 
                     "file_formats": "protein-fasta", 
                     'flat_output':True,  
                     "output": str(params.output_database_folder), 
                     "parallel": threads, 
                     "metadata_table":str(output.assembly_output),
-                    "assembly_levels":'complete',
-                    "refseq_categories":"reference"}       
+                    "assembly_levels":params.assembly_levels,
+                    "refseq_categories":params.refseq_categories}       
         
         # Create a dataframe that will contains all the assembly info
         assembly_final_df = pd.DataFrame()
@@ -250,7 +263,7 @@ rule fetch_proteins_database:
         # If think it is better to search for all the same NCBI groups in the same time as the function can be parallized
         for NCBIgroup, group in taxid_df.groupby('NCBIGroups'):
             keyargs['groups'] = NCBIgroup
-            keyargs['taxids'] = group.TaxId.tolist()
+            keyargs['taxids'] = [str(taxid) for taxid in group.TaxId.tolist()]
 
             ngd.download(**keyargs)  
 
@@ -261,8 +274,6 @@ rule fetch_proteins_database:
         assembly_final_df.to_csv(str(output.assembly_output), index=False, sep='\t')
 
         # Now handeling the last step that is concatenate the fasta files downloaded
-        all_fasta = glob.glob(os.path.join(str(params.output_database_folder), '*faa.gz'))
-
         df_proteins = pd.DataFrame(columns = ['protein_id',
                                               'protein_name',
                                               'genome_name',
@@ -270,17 +281,20 @@ rule fetch_proteins_database:
                                               'length'])
 
         with open(str(output.fasta_final), 'w') as w_file :
-            for fasta in all_fasta :
-                with gzip.open(fasta, "rt") as handle:
+            for index, genome in assembly_final_df.iterrows() :
+                with gzip.open(genome.local_filename, "rt") as handle:
                     parser = SeqIO.parse(handle, "fasta")
 
                     for protein in parser : 
                         description_split = protein.description.split(' [')
 
+                        # To avoid duplicate name of proteins between close genomes
+                        protein.id = f'{protein.id}--{genome.assembly_accession}'
+
                         df_proteins.at[-1, 'protein_id']   = protein.id
-                        df_proteins.at[-1, 'protein_name'] = description_split[0]
+                        df_proteins.at[-1, 'protein_name'] = ' '.join(description_split[0].split(' ')[1:])
                         df_proteins.at[-1, 'genome_name']  = description_split[1].split(']')[0]
-                        df_proteins.at[-1, 'genome_id']    = os.path.basename(fasta).split('_')[0]
+                        df_proteins.at[-1, 'genome_id']    = genome.assembly_accession
                         df_proteins.at[-1, 'length']       = len(protein.seq)
 
                         df_proteins.index += 1
@@ -290,9 +304,9 @@ rule fetch_proteins_database:
 
 
                 # Here to save space I decided to remove the file avec concatenation
-                os.remove(fasta)
+                os.remove(genome.local_filename)
 
-        df_proteins.to_csv(str(output.output_table_protein))
+        df_proteins.to_csv(str(output.output_table_protein), sep='\t', index=False)
 
 
 
@@ -516,7 +530,7 @@ rule blast:
 
     input:
          taxid_fasta = speedup,
-         seed = os.path.join(OUTPUT_FOLDER, 'seeds_{project_name}.fasta')
+         seed_fasta = os.path.join(OUTPUT_FOLDER, 'seeds_{project_name}.fasta')
     output:
         blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}--blast_evalue_1e-2.out'),
         fasta_for_blast = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta')
@@ -528,7 +542,7 @@ rule blast:
          """
          # module load ncbi_blast/{params.blast_version}
 
-         cat '{input.prot_sequence}' '{input.seed_fasta}' > '{output.fasta_for_blast}'
+         cat '{input.taxid_fasta}' '{input.seed_fasta}' > '{output.fasta_for_blast}'
 
          makeblastdb -dbtype prot -in '{output.fasta_for_blast}'
 
@@ -574,7 +588,7 @@ rule prepare_for_silix:
         fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta'),
         blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp_{project_name}--blast_evalue_1e-2.out'),
     output:
-        os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.out'),
+        os.path.join(OUTPUT_FOLDER, 'processing_files', 'blast_out_per_gene', 'filtered_blast_{project_name}--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.out'),
     run:
         from Bio import SeqIO
         import pandas as pd
@@ -605,8 +619,8 @@ rule prepare_for_silix:
         blast_out = blast_out[blast_out.pident >= float(wildcards.pid)].reset_index(drop = True)
 
         # Calculating the coverage on the query
-        for index, row in blast_out :
-            blast_out.at[index, 'cov'] = row.length / len(fasta[row.qseqid])
+        for index, row in blast_out.iterrows() :
+            blast_out.at[index, 'coverage'] = row.length / len(fasta_db[row.qseqid])
 
         blast_out = blast_out[blast_out.coverage >= float(wildcards.coverage)].reset_index(drop = True)
         
@@ -681,7 +695,8 @@ rule find_family:
     """
 
     input:
-        fnodes = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes')
+        fnodes = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes'),
+        seed_file = seed_file
     output:
         os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast_{project_name}--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes.flushed')
     run:
@@ -689,12 +704,14 @@ rule find_family:
         fnodes = pd.read_table(str(input.fnodes),names=['family', 'protein_id'])
 
         seed = wildcards.seed
+        seed_df = pd.read_table(str(input.seed_file))
+        seed_protname = seed_df.set_index('seed').protein_id.to_dict()[seed]
 
         # Detection families WARNING verification about the name of the seed and the name of the protein in the fasta at the end may be different
-        gene_family = fnodes[fnodes.protein_id == seed, 'family']
+        gene_family = fnodes.loc[fnodes.protein_id.str.contains(seed_protname), 'family'].unique()[0]
 
         # writing file with only family
-        fnodes = fnodes[fnodes.family == gene_family]
+        fnodes = fnodes.loc[fnodes.family == gene_family]
 
         # Creation of a columns 'seed' to identify quickly the seed and familiy
         fnodes['seed'] = seed
@@ -753,7 +770,7 @@ rule make_table:
         # genome_df = genome_df.rename(columns={'assembly_accession':'genome_id'})
 
         # list of all proteins
-        all_proteins = pd.read_csv(str(input.protein_table), sep='\t')
+        all_proteins = pd.read_table(str(input.protein_table))
         # all_proteins['protein_id'] = all_proteins.protein_id.apply(lambda x: x.split('.')[0])
 
         # fnodes opening
@@ -764,17 +781,22 @@ rule make_table:
         fam_id_table = fam_id_table.merge(all_proteins, on='protein_id')
 
         patab = pd.crosstab(index = fam_id_table['genome_id'], columns = fam_id_table['seed'])
+
+        # To add missing seed if not find
+        seed_missing = [seed for seed in seed_list if seed not in patab.columns]
+        patab.loc[:,seed_missing] = 0
+
         patab = patab[seed_list].sort_values(by = seed_list, ascending = False).reset_index()
 
         # Add the genome name to the table in case needed
         patab = patab.merge(fam_id_table[['genome_id','genome_name']], on='genome_id')
         
-        patab = patab.melt(id_vars='genome_id', var_name='seed', value_name='PA')
+        patab = patab.melt(id_vars=['genome_id', 'genome_name'], var_name='seed', value_name='PA')
 
         # Put color instead of number
         for index, row in patab.iterrows():
             # Use the fact that 0 == False in python to test if it's 1 or 0
-            if row.PA_color :
+            if row.PA :
                 patab.at[index, 'color'] = seed_color_dict[row.seed]
             else :
                 patab.at[index, 'color'] = '#FFFFFF' # White color

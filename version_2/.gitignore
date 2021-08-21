@@ -3,6 +3,9 @@ __pycache__
 .python-version
 .snakemake
 
+# Test
+test_amelioration
+
 # Executables
 *.pyc
 
