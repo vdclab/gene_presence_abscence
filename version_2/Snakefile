@@ -29,6 +29,16 @@
 # If not, see <https://www.gnu.org/licenses/>.                                  #
 # ###############################################################################
 
+##########################################################################
+##########################################################################
+##
+##                            Singularity
+##
+##########################################################################
+##########################################################################
+
+
+singularity: "https://github.com/vdclab/simg-PA_tools/releases/download/0.0.2/vdclab-simg-PA_tools.latest.sif"
 
 ##########################################################################
 ##########################################################################
@@ -39,33 +49,8 @@
 ##########################################################################
 
 import os, sys
-import shutil
 import pandas as pd
 from textwrap import dedent
-
-##########################################################################
-##########################################################################
-##
-##                                Functions
-##
-##########################################################################
-##########################################################################
-
-def create_folder(mypath):
-
-    """
-    Created the folder that I need to store my result if it doesn't exist
-    :param mypath: path where I want the folder (write at the end of the path)
-    :type: string
-    :return: Nothing
-    """
-
-    try:
-        os.makedirs(mypath)
-    except OSError:
-        pass
-
-    return
 
 ##########################################################################
 ##########################################################################
@@ -205,6 +190,8 @@ rule fetch_proteins_database:
         section = section,
         assembly_levels = assembly_levels,
         refseq_categories = refseq_categories,
+    resources: 
+        cpus=5,
     threads :
         5
     run:
@@ -339,6 +326,7 @@ rule fetch_fasta_from_seed:
         Entrez.tool = 'draw presence/abscence v2'
         Entrez.email = 'decrecylab@gmail.com'
 
+        ### Amelioration purposes : Seems we could parse line per line the seed file without loading it
         seed_table = pd.read_table(str(input))
         id_list = seed_table.protein_id.to_list()
 
@@ -385,12 +373,12 @@ rule psiblast:
     params:
         e_val = e_val,
         blast_version = blast_version
+    resources: 
+        cpus=5, mem_mb='10gb', time_min='5-0'    
     threads:
         5
     shell:
         '''
-        # module load ncbi_blast/{params.blast_version}
-
         makeblastdb -dbtype prot -in '{input.taxid_db}' -parse_seqids
 
         psiblast -query '{input.seed}' -db '{input.taxid_db}' -evalue {e_val} \
@@ -489,6 +477,7 @@ rule make_fasta:
         # Get all the proteins of the database inside a dict-like structure
         all_index_fasta = SeqIO.index(str(input.protein_fasta), 'fasta')
 
+        ### Amelioration purposes : Seems we could parse line per line the list_all_prot file without loading it
         # Opening the list of protein of interests
         proteins_of_interest = pd.read_table(str(input.list_all_prot))
         proteins_of_interest = proteins_of_interest.protein_id.tolist()
@@ -537,12 +526,12 @@ rule blast:
         fasta_for_blast = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds_{project_name}.fasta')
     params:
         blast_version = blast_version
+    resources: 
+        cpus=5, mem_mb='10gb', time_min='5-0' 
     threads:
         5
     shell:
          """
-         # module load ncbi_blast/{params.blast_version}
-
          cat '{input.taxid_fasta}' '{input.seed_fasta}' > '{output.fasta_for_blast}'
 
          makeblastdb -dbtype prot -in '{output.fasta_for_blast}'
@@ -666,8 +655,6 @@ rule silix:
         silix_version = silix_version
     shell:
         """
-        # module load silix/{params.silix_version}
-        
         if [ -s {input.blast_out} ]
         then   
             sh -c 'silix "{input.fasta}" "{input.blast_out}" -f "{wildcards.seed}" -i 0.05 -r 0.05 > "{output}"'
@@ -705,6 +692,8 @@ rule find_family:
         fnodes = pd.read_table(str(input.fnodes),names=['family', 'protein_id'])
 
         seed = wildcards.seed
+
+        ### Amelioration purposes : Seems we could parse line per line the taxid file without loading it
         seed_df = pd.read_table(str(input.seed_file))
         seed_protname = seed_df.set_index('seed').protein_id.to_dict()[seed]
 
@@ -766,13 +755,8 @@ rule make_table:
         seed_list = seed_table.seed.to_list()
         seed_color_dict = seed_table.set_index('seed').color.to_dict()
 
-        # Genome table
-        # genome_df = pd.read_table(str(input.assembly_table))
-        # genome_df = genome_df.rename(columns={'assembly_accession':'genome_id'})
-
         # list of all proteins
         all_proteins = pd.read_table(str(input.protein_table))
-        # all_proteins['protein_id'] = all_proteins.protein_id.apply(lambda x: x.split('.')[0])
 
         # fnodes opening
         fnodes_files = [pd.read_table(fnodes_file) for fnodes_file in input.fnodes]

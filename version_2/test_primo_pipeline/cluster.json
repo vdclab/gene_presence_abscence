@@ -1,0 +1,17 @@
+{
+	"__default__":{
+		"c" : "1",
+		"qos" : "lagard",
+		"time" : "5-00:00:00", 
+		"account" : "lagard", 
+		"mail-type" : "END",
+		"mail-user": "ghutinet@ufl.edu",
+		"mem-per-cpu": "5gb"
+	},
+	"psiblast":{
+		"c" : "5"
+	},
+	"fetch_proteins_info_and_blastall":{
+		"c" : "5"
+	}
+}
