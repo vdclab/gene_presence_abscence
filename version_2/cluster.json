@@ -8,6 +8,9 @@
 		"mail-user": "ghutinet@ufl.edu",
 		"mem-per-cpu": "15gb"
 	},
+	"fetch_proteins_database":{
+		"c" : "5"
+	},	
 	"psiblast":{
 		"c" : "5"
 	},

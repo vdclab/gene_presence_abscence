@@ -1,3 +1,4 @@
+seed	protein_id	evalue	pident	coverage	color
 DpdA1	YP_009032326	0.01	0.2	0.3	#00760e
 DpdA2	YP_008125322	0.01	0.2	0.3	#00cc00
 DpdA3	YP_009169190	0.01	0.2	0.3	#06d81f

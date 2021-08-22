@@ -22,6 +22,10 @@ You will also need these programs to be installed in the server (already done) o
 - biopython == 1.78
 - pandas == 1.1.5	
 - matplotlib == 3.3.3
+- ete3 == 3.1.2
+- ncbi-genome-download == 0.3.0
+
+### Requiered files 
 
 The 4 files required should be as followed:
 
@@ -156,6 +160,20 @@ This pipeline consists of 12 steps called rules that take input files and create
 3. Before starting the pipeline, your taxids will be checked and updated for the lowest levels. This will create a file of checked taxids. It will skip this step if this file already exists.
 
 4. When restarting the pipeline, the software will check if you made any changes in the seed file before running. If changes have been made, it will run what is necessary, else nothing will happen.
+
+### Pipeline in image 
+
+#### Normal behavior
+
+<p align="center">
+  <img src="doc/dummy_dag.png?raw=true" height="400">
+</p>
+
+#### Speedup behavior
+
+<p align="center">
+  <img src="doc/dummy_dag_speedup.png?raw=true" height="500">
+</p>
 
 ### Rule 1 : fetch_fasta_from_seed
 
