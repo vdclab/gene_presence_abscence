@@ -5,8 +5,8 @@ __pycache__
 
 # Test
 test*
-log
-results
+log*
+results*
 
 # Executables
 *.pyc
