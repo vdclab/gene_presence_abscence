@@ -1,0 +1,26 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+description: row of the seeds.tsv, seeds are the genes of known annotation you want to find in genomes
+type: object
+properties:
+  seed:
+    type: string
+    description: gene name/id that will appear on the plot at the end
+  protein_id:
+    type: string
+    description: protein NCBI id
+  evalue:
+    type: number
+    description: e-value for the blast threshold for the protein
+  pident:
+    type: number
+    description: percentage of identity for the blast threshold for the protein [between 0-1]
+  coverage:
+    type: number
+    description: coverage of the seed on the alignment for the blast threshold for the protein [between 0-1]
+  color:
+    type: string
+    description: color wanted for the gene in the plot at the end
+
+required:
+  - seed
+  - protein_id

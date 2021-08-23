@@ -1,0 +1,91 @@
+# snakemake/5.17.0
+# pipeline to test the presence of some proteins (aka seeds) in genome (given in taxid)
+# usage: snakemake --cluster-config cluster.json --cluster "sbatch -c {cluster.c} --qos={cluster.qos} --time={cluster.time} --account={cluster.account} --mail-type={cluster.mail-type} --mail-user={cluster.mail-user} --mem_per_cpu={cluster.mem_per_cpu}"  -j 5 -d "/blue/lagard/ghutinet/modifications/trial_second" -C project_name='deazaguanine' e_val=0.01 id=0.1 cov=0.7 taxid='base_set_taxid.txt'
+# -j : number of max core to use
+# -d : directory of the files
+# -C : configuration of values bellow:
+
+# ###############################################################################
+# This file is part of Presence-Abscence.                                       #
+#                                                                               #
+# Authors: Geoffrey Hutinet                                                     #
+# Copyright © 2021 University of Forida (Gainesville, Florida).                 #
+# See the COPYRIGHT file for details.                                           #
+#                                                                               #
+# Presence-Abscence is a software providing tools for ???                       #
+#                                                                               #
+# Presence-Abscence is free software: you can redistribute it and/or modify     #
+# it under the terms of the Affero GNU General Public License as published by   #
+# the Free Software Foundation, either version 3 of the License,                #
+# or (at your option) any later version.                                        #
+#                                                                               #
+# Presence-Abscence is distributed in the hope that it will be useful, but      #
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY    #
+# or FITNESSFOR A PARTICULAR PURPOSE. See the Affero GNU General Public License #
+# for more details.                                                             #
+#                                                                               #
+# You should have received a copy of the Affero GNU General Public License      #
+# along with Presence-Abscence (COPYING file).                                  #
+# If not, see <https://www.gnu.org/licenses/>.                                  #
+# ###############################################################################
+
+##########################################################################
+##########################################################################
+##
+##                            Singularity
+##
+##########################################################################
+##########################################################################
+
+# this container defines the underlying OS for each job when using the workflow
+# with --use-conda --use-singularity
+container: "docker://continuumio/miniconda3"
+
+
+from snakemake.utils import min_version
+
+# set minimum snakemake version
+min_version("6.4.1")
+
+##########################################################################
+##########################################################################
+##
+##                                Rules
+##
+##########################################################################
+##########################################################################
+
+# load config 
+configfile: "config/config.yaml"
+
+# Set local rule that could be launch without submiting to cluster because ultra quick
+localrules: all
+
+##########################################################################
+# Load rules
+##########################################################################
+
+include: "rules/common.smk"
+include: "rules/fetch_prot.smk"
+include: "rules/format_tables.smk"
+include: "rules/ncbi_blast.smk"
+include: "rules/plots.smk"
+include: "rules/silix.smk"
+include: "rules/table2fasta.smk"
+
+##########################################################################
+##########################################################################
+
+rule all:
+    """
+    Starts the pipeline by checking the presence abscence table and the plots in pdf and png exist.
+    """
+
+    input:
+        plots = get_final_output()
+
+
+##########################################################################
+##########################################################################
+
+

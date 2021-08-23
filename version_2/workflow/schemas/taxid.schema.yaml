@@ -1,0 +1,13 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+description: row of the taxid.tsv, taxonomic id are the id of genomes in NCBI Taxonomy
+type: object
+properties:
+  TaxId:
+    type: integer
+    description: taxonomic id from Taxonomy db of NCBI
+  NCBIGroups:
+    type: string
+    description: taxomic NCBI group 
+
+required:
+  - TaxId

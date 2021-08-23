@@ -1,0 +1,46 @@
+$schema: "http://json-schema.org/draft-06/schema#"
+
+description: snakemake configuration file
+
+type: object
+
+properties:
+  seed:
+    type: string
+  taxid:
+    type: string
+  project_name:
+    type: string
+  output_folder:
+    type: string
+
+  e_val:
+    type: number
+
+  ndg_option:
+    type: object
+    properties:
+      section:
+        type: string
+      assembly_levels:
+        type: string
+      refseq_categories:
+        type: string
+      groups:
+        type: string
+    required:
+      - section
+      - assembly_levels
+      - refseq_categories
+
+  speedup:
+    type: boolean
+
+required:
+  - seed
+  - taxid
+  - project_name
+  - output_folder
+  - e_val
+  - ndg_option
+  - speedup
