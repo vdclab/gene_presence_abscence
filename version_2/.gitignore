@@ -4,7 +4,7 @@ __pycache__
 .snakemake
 
 # Test
-test_amelioration*
+test*
 
 # Executables
 *.pyc
