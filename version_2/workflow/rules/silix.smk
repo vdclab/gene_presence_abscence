@@ -38,6 +38,8 @@ rule silix:
         "logs/blast/{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.silix.log",
     group:
         'independent_seed'
+    conda :
+        '../envs/silix.yaml'
     envmodules:
         "silix/1.2.11"
     shell:

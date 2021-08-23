@@ -41,6 +41,8 @@ rule psiblast:
         e_val = e_val,
     resources: 
         cpus=5, mem_mb='10gb', time_min='5-0'    
+    conda :
+        '../envs/blast.yaml'
     envmodules:
         "ncbi_blast/2.10.1"
     threads:
@@ -94,6 +96,8 @@ rule blast:
         "logs/blast/blast.log",
     resources: 
         cpus=5, mem_mb='10gb', time_min='5-0' 
+    conda :
+        '../envs/blast.yaml'
     envmodules:
         "ncbi_blast/2.10.1"  
     threads:

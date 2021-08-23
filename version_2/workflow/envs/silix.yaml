@@ -1,0 +1,5 @@
+channels:
+  - conda-forge
+  - tijeco
+dependencies:
+  - silix = 1.2.11
