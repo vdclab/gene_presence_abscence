@@ -8,7 +8,7 @@ taxid: config/taxid.tsv
 project_name: your_name_project
 
 # path to the result folder
-output_folder: resutls
+output_folder: results
 
 # e value threshold to use for psiblast (and blast as default is not in seeds.tsv)
 e_val: 0.000001
