@@ -25,7 +25,7 @@ rule make_fasta:
     """
     input:
         protein_fasta = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta'),
-        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files',f'list_all_protein--eval_{e_val}.csv')
+        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files',f'list_all_protein--eval_{e_val}.tsv')
     output:
         fasta = os.path.join(OUTPUT_FOLDER, 'results', f'all_protein--eval_{e_val}.fasta'),
     log:

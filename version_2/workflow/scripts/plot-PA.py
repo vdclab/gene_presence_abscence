@@ -19,7 +19,7 @@ fig, ax = plt.subplots(1,1, figsize=(7.5, 8.75))
 
 label_format = {'fontweight': 'bold'}
 
-patab = pd.read_table(str(input.final_table))
+patab = pd.read_table(snakemake.input.final_table)
 
 # Dict position genomes and gene
 list_genome = patab.genome_id.unique().tolist() 
@@ -68,5 +68,5 @@ for pos in ['top', 'bottom', 'left', 'right']:
 plt.xlim(-0.5, num_seed - 0.5)
 plt.ylim(-0.5, num_genome - 0.5)
 
-for plot_name in output :
+for plot_name in snakemake.output :
     plt.savefig(plot_name, bbox_inches="tight",dpi=300)

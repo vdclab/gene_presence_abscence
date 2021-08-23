@@ -1,15 +1,15 @@
 import pandas as pd
 
 # Seed preparing
-seed_table = pd.read_table(str(input.seed_file))
+seed_table = pd.read_table(snakemake.input.seed_file)
 seed_list = seed_table.seed.to_list()
 seed_color_dict = seed_table.set_index('seed').color.to_dict()
 
 # list of all proteins
-all_proteins = pd.read_table(str(input.protein_table))
+all_proteins = pd.read_table(snakemake.input.protein_table)
 
 # fnodes opening
-fnodes_files = [pd.read_table(fnodes_file) for fnodes_file in input.fnodes]
+fnodes_files = [pd.read_table(fnodes_file) for fnodes_file in snakemake.input.fnodes]
 
 # concat all fnodes dataframe to one and add the protein information from the protein table and genome table
 fam_id_table = pd.concat(fnodes_files)
@@ -37,4 +37,4 @@ for index, row in patab.iterrows():
         patab.at[index, 'color'] = '#FFFFFF' # White color
 
 # save the table
-patab.to_csv(str(output.final_table), sep='\t', index=False)
+patab.to_csv(snakemake.output.final_table, sep='\t', index=False)

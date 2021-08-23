@@ -22,7 +22,7 @@ rule fetch_proteins_database:
         taxid
     output:
         fasta_final = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta'),
-        assembly_output = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'summary_assembly_taxid.txt'),
+        assembly_output = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'summary_assembly_taxid.tsv'),
         new_taxid_file = os.path.join(OUTPUT_FOLDER, 'taxid_checked.txt'),
         output_table_protein = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'protein_table.tsv')
     log:

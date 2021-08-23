@@ -30,7 +30,7 @@ rule read_psiblast:
         psiblast = os.path.join(OUTPUT_FOLDER, 'processing_files',f'psiblast--eval_{e_val}_raw.out')
     output:
         clean_blast = os.path.join(OUTPUT_FOLDER, 'processing_files',f'psiblast--eval_{e_val}_cleaned.out'),
-        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files',f'list_all_protein--eval_{e_val}.csv')
+        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files',f'list_all_protein--eval_{e_val}.tsv')
     log:
         "logs/read_psiblast.log",
     conda:
@@ -74,12 +74,13 @@ rule prepare_for_silix:
     """
 
     input:
+        seed_file = seed_file,
         fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds.fasta'),
         blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp--blast_evalue_1e-2.out'),
     output:
         os.path.join(OUTPUT_FOLDER, 'processing_files', 'blast_out_per_gene', 'filtered_blast--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.out'),
     log:
-        "logs/{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.prepare_for_silix.log",
+        "logs/prepare_for_silix/{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.prepare_for_silix.log",
     group:
         'independent_seed'
     conda:
@@ -112,7 +113,7 @@ rule find_family:
     output:
         os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes.flushed')
     log:
-        "logs/{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.find_family.log",
+        "logs/find_family/{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.find_family.log",
     group:
         'independent_seed'
     conda:
@@ -151,7 +152,7 @@ rule make_table:
     input:
         seed_file = seed_file,
         protein_table = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'protein_table.tsv'),
-        assembly_table = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'summary_assembly_taxid.txt'),
+        assembly_table = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'summary_assembly_taxid.tsv'),
         fnodes = expand(os.path.join(OUTPUT_FOLDER, 
                                     'processing_files','blast_out_per_gene', 
                                     'filtered_blast--{gene_constrains}.fnodes.flushed'),
