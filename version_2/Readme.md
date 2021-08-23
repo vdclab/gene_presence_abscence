@@ -1,4 +1,7 @@
-# Presence-Abscence2.0
+# Snakemake workflow: presence-abscence
+
+[![Snakemake](https://img.shields.io/badge/snakemake-≥6.1.0-brightgreen.svg)](https://snakemake.github.io)
+[![GitHub actions status](https://github.com/vdclab/gene_presence_abscence/workflows/Tests/badge.svg?branch=main)](https://github.com/vdclab/gene_presence_abscence/actions?query=branch%3Amain+workflow%3ATests)
 
 ## Aim
 
