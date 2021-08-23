@@ -28,7 +28,7 @@ rule fetch_proteins_database:
     log:
         "logs/fetch_proteins_database.log",  
     params:
-        output_database_folder = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid'),
+        output_database_folder = lambda x, output :os.path.dirname(output.output_table_protein),
         section = section,
         assembly_levels = assembly_levels,
         refseq_categories = refseq_categories,

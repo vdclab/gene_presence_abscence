@@ -38,7 +38,7 @@ rule psiblast:
     log:
         "logs/blast/psiblast.log",
     params:
-        e_val = e_val,
+        e_value = e_val,
     resources: 
         cpus=5, mem_mb='10gb', time_min='5-0'    
     conda :
@@ -51,7 +51,7 @@ rule psiblast:
         '''
         makeblastdb -dbtype prot -in '{input.taxid_db}' -parse_seqids
 
-        psiblast -query '{input.seed}' -db '{input.taxid_db}' -evalue {e_val} \
+        psiblast -query '{input.seed}' -db '{input.taxid_db}' -evalue {params.e_value} \
                  -outfmt '7 qacc qlen qseq qstart qend sacc slen sseq sstart send length pident evalue bitscore qcovs' \
                  -num_threads {threads} -num_iterations 3 -out '{output}'
         '''
