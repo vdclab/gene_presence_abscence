@@ -36,7 +36,7 @@ rule read_psiblast:
     conda:
         "../envs/pandas.yaml"
     script :
-        "../script/format_psiblast.py"
+        "../scripts/format_psiblast.py"
 
 
 ##########################################################################
@@ -85,7 +85,7 @@ rule prepare_for_silix:
     conda:
         "../envs/biopython_pandas.yaml"
     script :
-        "../script/prepare_silix.py"
+        "../scripts/prepare_silix.py"
 
 ##########################################################################
 ##########################################################################
@@ -118,7 +118,7 @@ rule find_family:
     conda:
         "../envs/pandas.yaml"
     script :
-        "../script/find_family.py"
+        "../scripts/find_family.py"
 
 ##########################################################################
 ##########################################################################
@@ -163,7 +163,7 @@ rule make_table:
     conda:
         "../envs/pandas.yaml"
     script :
-        "../script/PA-table.py"
+        "../scripts/PA-table.py"
 
 ##########################################################################
 ##########################################################################

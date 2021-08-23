@@ -33,7 +33,7 @@ rule make_fasta:
     conda:
         "../envs/biopython.yaml"
     script :
-        "../script/hit2fasta.py"
+        "../scripts/hit2fasta.py"
 
 
 ##########################################################################

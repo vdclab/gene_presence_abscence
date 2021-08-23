@@ -39,7 +39,7 @@ rule fetch_proteins_database:
     conda:
         "../envs/fetch_NCBI.yaml"
     script :
-        "../script/fetch_proteome.py"
+        "../scripts/fetch_proteome.py"
 
 ##########################################################################
 ##########################################################################
@@ -67,7 +67,7 @@ rule fetch_fasta_from_seed:
     conda:
         "../envs/biopython.yaml"
     script :
-        "../script/fetch_seed.py"
+        "../scripts/fetch_seed.py"
 
 
 ##########################################################################
