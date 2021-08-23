@@ -15,11 +15,5 @@ test*
 # test files
 .cache
 
-# coverage files
-.coverage*
-coverage.xml
-htmlcov
-junit_tests.xml
-
 # pycharm project files
 .idea
