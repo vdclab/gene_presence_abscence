@@ -58,6 +58,8 @@ min_version("6.4.1")
 # load config 
 configfile: "config/config.yaml"
 
+report: "report/workflow.rst"
+
 # Set local rule that could be launch without submiting to cluster because ultra quick
 localrules: all
 

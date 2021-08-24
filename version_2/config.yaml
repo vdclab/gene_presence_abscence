@@ -1,8 +1,0 @@
-cluster: "sbatch --time={resources.time_min} --mem={resources.mem_mb}
-          -c {resources.cpus} -o slurm/logs/{rule}_{wildcards}
-          -e slurm/logs/{rule}_{wildcards} --account={cluster.account}
-          --qos={cluster.qos} --mail-type=FAIL --mail-user=user@mail.com"
-jobs: 5
-default-resources: [cpus=1, mem_mb=4gb, time_min=60]
-resources: [cpus=15, mem_mb=120gb]
-

@@ -14,8 +14,25 @@ properties:
   output_folder:
     type: string
 
-  e_val:
-    type: number
+  default_psiblast_option:
+    type: object
+    e_val:
+      type: number
+    required:
+      - e_val
+      
+  default_blast_option:
+    type: object
+    e_val:
+      type: number
+    pid:
+      type: number
+    cov:
+      type: number
+    required:
+      - e_val
+      - pid
+      - cov
 
   ndg_option:
     type: object
@@ -36,11 +53,17 @@ properties:
   speedup:
     type: boolean
 
+  default_values_plot:
+    type: object
+    properties:
+      color: string
+
 required:
   - seed
   - taxid
   - project_name
   - output_folder
-  - e_val
+  - default_psiblast_option
+  - default_blast_option
   - ndg_option
   - speedup

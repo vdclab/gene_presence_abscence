@@ -22,9 +22,57 @@ from snakemake.utils import validate
 ##########################################################################
 
 def get_final_output():
+    """
+    Generate final output name
+    """
     final_output = multiext(os.path.join(OUTPUT_FOLDER,'results','plots','gene_PA'), 
     	'.png', '.pdf')
     return final_output
+
+##########################################################################
+
+def infer_gene_constrains(seed_table):
+    '''
+    Infer gene_constrains from default config value or table
+    '''
+
+    list_constrains = []
+
+    for index, row in seed_table.iterrows() :
+        if 'evalue' in seed_table.columns:
+            tmp_eval = row.evalue
+        else :
+            tmp_eval = config['default_blast_option']['e_val']
+
+        if 'coverage' in seed_table.columns:
+            tmp_coverage = row.coverage
+        else :
+            tmp_coverage = config['default_blast_option']['cov']
+
+        if 'pident' in seed_table.columns:
+            tmp_pident = row.pident
+        else :
+            tmp_pident = config['default_blast_option']['pident']
+
+
+        tmp_text = f'{row.seed}_evalue_{tmp_evalue:.0e}_cov_{tmp_coverage}_pid_{tmp_pident}'
+
+        list_constrains.append(tmp_text)
+
+    return list_constrains
+
+##########################################################################
+
+def infer_ngs_option(taxid):
+    '''
+    Infer taxid ngs option if not in taxid
+    '''
+
+    if 'NCBIGroups' not in taxid:
+        taxid['NCBIGroups'] = config['ndg_option']['groups'] 
+
+
+    return taxid
 
 ##########################################################################
 ##########################################################################
@@ -49,8 +97,8 @@ project_name = config['project_name']
 # Result folder
 OUTPUT_FOLDER =  os.path.join(config['output_folder'], project_name)
 
-# Blast e-value thershold
-e_val = config['e_val'] 
+# Psiblast default e-value thershold
+e_val_psiblast = config['default_psiblast_option']['e_val'] 
 
 # Option for ncbi_genome_download
 section = config['ndg_option']['section'] 
@@ -62,15 +110,19 @@ assembly_levels = config['ndg_option']['assembly_levels']
 refseq_categories = config['ndg_option']['refseq_categories']
 
 # Values for groups : 
-groups = config['ndg_option']['groups'] 
+taxid = infer_ngs_groups(taxid)
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed 
 if config['speedup'] :
     speedup = os.path.join(OUTPUT_FOLDER, 'results', 
-    				f'all_protein--eval_{e_val:.0e}.fasta')
+    				f'all_protein--eval_{e_val_psiblast:.0e}.fasta')
 else  :
-    speedup = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 
+    speedup = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 
     				'taxid_all_together.fasta')
+
+# Definition of the requirements for each seed
+gene_constrains = infer_gene_constrains(seed_table)
+
 
 ##########################################################################
 ##########################################################################
@@ -95,39 +147,3 @@ taxid_table = (
 )
 
 validate(taxid_table, schema="../schemas/taxid.schema.yaml")
-
-
-
-##########################################################################
-##########################################################################
-##
-##                                Config
-##
-##########################################################################
-##########################################################################
-
-# Name your project, take the name of seed by default
-project_name = config['project_name']
-
-# Blast e-value thershold, 0.000001 by default but can be changed in -C
-e_val = config['e_val'] 
-
-# Option for ncbi_genome_download
-# Values for section : {refseq,genbank}
-section = config['ndg_option']['section'] 
-
-# Values for assembly_levels : ['all', 'complete', 'chromosome', 'scaffold', 'contig']
-assembly_levels = config['ndg_option']['assembly_levels'] 
-
-# Values for refseq_categories : {'reference', 'all'}
-refseq_categories = config['ndg_option']['refseq_categories']
-
-# Values for groups : ['all', 'archaea', 'bacteria', 'fungi', 'invertebrate', 'metagenomes', 'plant', 'protozoa', 'vertebrate_mammalian', 'vertebrate_other', 'viral']
-groups = config['ndg_option']['groups'] 
-
-OUTPUT_FOLDER =  os.path.join(config['output_folder'], project_name)
-
-# Definition of the requirements for each seed
-gene_constrains = [f'{row.seed}_evalue_{row.evalue:.0e}_cov_{row.coverage}_pid_{row.pident}'
-                                                    for index, row in seed_table.iterrows()]
-

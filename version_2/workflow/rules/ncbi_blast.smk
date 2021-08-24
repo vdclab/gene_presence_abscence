@@ -32,13 +32,13 @@ rule psiblast:
 
     input:
         seed = os.path.join(OUTPUT_FOLDER, 'seeds.fasta'),
-        taxid_db = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta')
+        taxid_db = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'taxid_all_together.fasta')
     output:
-        os.path.join(OUTPUT_FOLDER, 'processing_files', f'psiblast--eval_{e_val}_raw.out')
+        os.path.join(OUTPUT_FOLDER, 'processing_files', f'psiblast--eval_{e_val_psiblast:.0e}_raw.out')
     log:
-        "logs/blast/psiblast.log",
+        os.path.join(OUTPUT_FOLDER, 'logs', "blast", "psiblast.log"),
     params:
-        e_value = e_val,
+        e_value = e_val_psiblast,
     resources: 
         cpus=5, mem_mb='10gb', time_min='5-0'    
     conda :
@@ -87,13 +87,13 @@ rule blast:
     """
 
     input:
-         taxid_fasta = speedup,
-         seed_fasta = os.path.join(OUTPUT_FOLDER, 'seeds.fasta')
+        taxid_fasta = speedup,
+        seed_fasta = os.path.join(OUTPUT_FOLDER, 'databases', 'seeds.fasta')
     output:
         blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blastp--blast_evalue_1e-2.out'),
-        fasta_for_blast = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds.fasta')
+        fasta_for_blast = os.path.join(OUTPUT_FOLDER, 'databases', 'reduce_taxid', 'all_protein_with_seeds.fasta')
     log:
-        "logs/blast/blast.log",
+        os.path.join(OUTPUT_FOLDER, 'logs', "blast/blast.log"),
     resources: 
         cpus=5, mem_mb='10gb', time_min='5-0' 
     conda :

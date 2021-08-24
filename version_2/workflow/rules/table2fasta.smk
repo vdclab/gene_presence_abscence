@@ -24,12 +24,12 @@ rule make_fasta:
         format: protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
     """
     input:
-        protein_fasta = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta'),
-        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files',f'list_all_protein--eval_{e_val}.tsv')
+        protein_fasta = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'taxid_all_together.fasta'),
+        list_all_prot = os.path.join(OUTPUT_FOLDER, 'processing_files',f'list_all_protein--eval_{e_val_psiblast:.0e}.tsv')
     output:
-        fasta = os.path.join(OUTPUT_FOLDER, 'results', f'all_protein--eval_{e_val}.fasta'),
+        fasta = os.path.join(OUTPUT_FOLDER, 'results', f'all_protein--eval_{e_val_psiblast:.0e}.fasta'),
     log:
-        "logs/make_fasta.log",        
+        os.path.join(OUTPUT_FOLDER, 'logs', "make_fasta.log"),        
     conda:
         "../envs/biopython.yaml"
     script :

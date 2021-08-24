@@ -30,12 +30,13 @@ rule silix:
     """
 
     input:
-        fasta = os.path.join(OUTPUT_FOLDER, 'database', 'reduce_taxid', 'all_protein_with_seeds.fasta'),
+        fasta = os.path.join(OUTPUT_FOLDER, 'databases', 'reduce_taxid', 'all_protein_with_seeds.fasta'),
         blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.out'),
     output:
         os.path.join(OUTPUT_FOLDER, 'processing_files','blast_out_per_gene', 'filtered_blast--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes')
     log:
-        "logs/silix/{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.silix.log",
+        os.path.join(OUTPUT_FOLDER, 'logs', 
+            "silix", "{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.silix.log"),
     group:
         'independent_seed'
     conda :

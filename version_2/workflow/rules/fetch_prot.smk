@@ -21,12 +21,12 @@ rule fetch_proteins_database:
     input:
         taxid
     output:
-        fasta_final = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'taxid_all_together.fasta'),
-        assembly_output = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'summary_assembly_taxid.tsv'),
-        new_taxid_file = os.path.join(OUTPUT_FOLDER, 'taxid_checked.txt'),
-        output_table_protein = os.path.join(OUTPUT_FOLDER, 'database', 'all_taxid', 'protein_table.tsv')
+        fasta_final = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'taxid_all_together.fasta'),
+        assembly_output = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'summary_assembly_taxid.tsv'),
+        new_taxid_file = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'taxid_checked.txt'),
+        output_table_protein = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'protein_table.tsv')
     log:
-        "logs/fetch_proteins_database.log",  
+        os.path.join(OUTPUT_FOLDER, 'logs', "fetch_proteins_database.log"),  
     params:
         output_database_folder = lambda x, output :os.path.dirname(output.output_table_protein),
         section = section,
@@ -61,9 +61,10 @@ rule fetch_fasta_from_seed:
     input :
         seed_file
     output:
-        os.path.join(OUTPUT_FOLDER, 'seeds.fasta')
+        fasta_seed = os.path.join(OUTPUT_FOLDER, 'databases', 'seeds.fasta'),
+        new_seed_file = os.path.join(OUTPUT_FOLDER, 'databases', 'new_seeds.tsv')
     log:
-        "logs/fetch_fasta_from_seed.log",  
+        os.path.join(OUTPUT_FOLDER, 'logs', "fetch_fasta_from_seed.log"),  
     conda:
         "../envs/biopython.yaml"
     script :
