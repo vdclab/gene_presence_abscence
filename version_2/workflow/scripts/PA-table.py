@@ -15,6 +15,19 @@ def transform_proteinid(df):
 
 ##########################################################################
 
+def proteins2csv(sub_df): 
+    '''
+    Test the object to not be null and concatenate the protein_id to one
+    '''
+
+    if not pd.isna(sub_df).all(): 
+        return ','.join(sub_df.tolist()) 
+    else : 
+        return '' 
+
+##########################################################################
+                                         
+
 # Seed preparing
 seed_table = pd.read_table(snakemake.input.seed_file)
 seed_list = seed_table.seed.to_list()

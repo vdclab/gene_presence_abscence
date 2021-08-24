@@ -2,7 +2,7 @@ import pandas as pd
 
 # Seeds
 seed_dict = (
-        pd.read_table(snakemake.input.seed_table)
+        pd.read_table(snakemake.input.seed_file)
         .set_index('protein_id')
         .length
         .to_dict()
@@ -10,7 +10,7 @@ seed_dict = (
 
 # Protein lenght dict
 protein_dict = (
-        pd.read_table(snakemake.input.protein_table)
+        pd.read_table(snakemake.input.protein_file)
         .set_index('protein_id')
         .length
         .to_dict()
@@ -33,7 +33,7 @@ blast_out = blast_out[blast_out.pident >= float(snakemake.wildcards.pid)].reset_
 
 # Calculating the coverage on the query
 for index, row in blast_out.iterrows() :
-    blast_out.at[index, 'coverage'] = row.length / len(protein_dict[row.qseqid])
+    blast_out.at[index, 'coverage'] = row.length / protein_dict[row.qseqid]
 
 blast_out = blast_out[blast_out.coverage >= float(snakemake.wildcards.coverage)].reset_index(drop = True)
 

@@ -1,4 +1,5 @@
 from Bio import Entrez
+from Bio import SeqIO
 
 Entrez.tool = 'draw presence/abscence v2'
 Entrez.email = 'decrecylab@gmail.com'
@@ -19,16 +20,18 @@ with Entrez.efetch(db='protein', id=id_list, rettype='fasta', retmode='text') as
         out_file.write(handle.read())
 
 # Getting lenght of the seeds proteins and adding to new table seeds
-seed_dict = SeqIO.index(snakemake.output.fasta_seed, index)
+seed_dict = SeqIO.index(snakemake.output.fasta_seed, 'fasta')
 
 # Parsing of the table to add the length to the table
 with open(snakemake.input[0], 'rt') as r_file :
-    with open(snakemake.output.new_seed_file, 'wt') as wt
-        header = r_file.readline().split() 
-        index_proteinId = header.index('protein_id') 
+    with open(snakemake.output.new_seed_file, 'wt') as w_file :
+        header = r_file.readline()
+
+        header_split = header.split() 
+        index_proteinId = header_split.index('protein_id') 
         
         # Adding length to header
-        new_line = f"{line.rstrip()}\tlength\n"
+        new_line = f"{header.rstrip()}\tlength\n"
         w_file.write(new_line)
 
         for line in r_file : 
@@ -37,9 +40,13 @@ with open(snakemake.input[0], 'rt') as r_file :
             protein_id = [protein_id for protein_id in seed_dict.keys() 
                                 if tmp_line[index_proteinId] in protein_id][0]
 
-            length = len(seed_dict[protein_id])
+            tmp_line[index_proteinId] = protein_id
 
-            new_line = f"{line.rstrip()}\t{length}\n"
+            length = len(seed_dict[protein_id])
+            tmp_line.append(str(length))
+
+            new_line = '\t'.join(tmp_line)
+            new_line = f"{new_line}\n"
             w_file.write(new_line)
 
 

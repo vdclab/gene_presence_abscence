@@ -40,9 +40,9 @@ def infer_gene_constrains(seed_table):
 
     for index, row in seed_table.iterrows() :
         if 'evalue' in seed_table.columns:
-            tmp_eval = row.evalue
+            tmp_evalue = row.evalue
         else :
-            tmp_eval = config['default_blast_option']['e_val']
+            tmp_evalue = config['default_blast_option']['e_val']
 
         if 'coverage' in seed_table.columns:
             tmp_coverage = row.coverage
@@ -63,16 +63,16 @@ def infer_gene_constrains(seed_table):
 
 ##########################################################################
 
-def infer_ngs_option(taxid):
+def infer_ngs_groups(taxid_df):
     '''
     Infer taxid ngs option if not in taxid
     '''
 
-    if 'NCBIGroups' not in taxid:
-        taxid['NCBIGroups'] = config['ndg_option']['groups'] 
+    if 'NCBIGroups' not in taxid_df:
+        taxid_df['NCBIGroups'] = config['ndg_option']['groups'] 
 
 
-    return taxid
+    return taxid_df
 
 ##########################################################################
 ##########################################################################
@@ -85,11 +85,35 @@ def infer_ngs_option(taxid):
 # Validation of the config.yaml file
 validate(config, schema="../schemas/config.schema.yaml")
 
+# path to seeds sheet (TSV format, columns: seed, protein_id, ...)
+seed_file = config['seed'] 
+
+# Validation of the seed file
+seed_table = (
+    pd.read_table(seed_file)
+    .set_index("seed", drop=False)
+)
+
+validate(seed_table, schema="../schemas/seeds.schema.yaml")
+
 # path to taxonomic id to search seeds in (TSV format, columns: TaxId, NCBIGroups)
 taxid = config['taxid']
 
-# path to seeds sheet (TSV format, columns: seed, protein_id, ...)
-seed_file = config['seed'] 
+# Validation of the taxid file
+taxid_table = (
+    pd.read_table(taxid)
+    .set_index("TaxId", drop=False)
+)
+
+validate(taxid_table, schema="../schemas/taxid.schema.yaml")
+
+##########################################################################
+##########################################################################
+##
+##                           Options
+##
+##########################################################################
+##########################################################################
 
 # Name your project
 project_name = config['project_name']
@@ -110,40 +134,17 @@ assembly_levels = config['ndg_option']['assembly_levels']
 refseq_categories = config['ndg_option']['refseq_categories']
 
 # Values for groups : 
-taxid = infer_ngs_groups(taxid)
+taxid_table = infer_ngs_groups(taxid_table)
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed 
 if config['speedup'] :
-    speedup = os.path.join(OUTPUT_FOLDER, 'results', 
-    				f'all_protein--eval_{e_val_psiblast:.0e}.fasta')
+    speedup = os.path.join(OUTPUT_FOLDER, 'databases', 'reduce_taxid'
+                    f'all_protein--eval_{e_val_psiblast:.0e}.fasta')
 else  :
     speedup = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 
-    				'taxid_all_together.fasta')
+                    'taxid_all_together.fasta')
 
 # Definition of the requirements for each seed
 gene_constrains = infer_gene_constrains(seed_table)
 
 
-##########################################################################
-##########################################################################
-##
-##                                Main
-##
-##########################################################################
-##########################################################################
-
-# Validation of the seed file
-seed_table = (
-    pd.read_table(seed_file)
-    .set_index("seed", drop=False)
-)
-
-validate(seed_table, schema="../schemas/seeds.schema.yaml")
-
-# Validation of the taxid file
-taxid_table = (
-    pd.read_table(taxid)
-    .set_index("TaxId", drop=False)
-)
-
-validate(taxid_table, schema="../schemas/taxid.schema.yaml")

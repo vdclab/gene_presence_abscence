@@ -16,19 +16,21 @@ properties:
 
   default_psiblast_option:
     type: object
-    e_val:
-      type: number
+    properties:
+      e_val:
+        type: number
     required:
       - e_val
       
   default_blast_option:
     type: object
-    e_val:
-      type: number
-    pid:
-      type: number
-    cov:
-      type: number
+    properties:
+      e_val:
+        type: number
+      pid:
+        type: number
+      cov:
+        type: number
     required:
       - e_val
       - pid
@@ -56,7 +58,8 @@ properties:
   default_values_plot:
     type: object
     properties:
-      color: string
+      color: 
+        type: string
 
 required:
   - seed
@@ -67,3 +70,4 @@ required:
   - default_blast_option
   - ndg_option
   - speedup
+  - default_values_plot
