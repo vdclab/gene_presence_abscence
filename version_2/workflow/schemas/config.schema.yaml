@@ -14,13 +14,8 @@ properties:
   output_folder:
     type: string
 
-  default_psiblast_option:
-    type: object
-    properties:
-      e_val:
-        type: number
-    required:
-      - e_val
+  psiblast_e_val:
+    type: number
       
   default_blast_option:
     type: object
@@ -66,7 +61,7 @@ required:
   - taxid
   - project_name
   - output_folder
-  - default_psiblast_option
+  - psiblast_e_val
   - default_blast_option
   - ndg_option
   - speedup

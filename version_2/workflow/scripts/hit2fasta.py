@@ -11,7 +11,7 @@ with open(snakemake.input.list_all_prot, 'rt') as r_file :
 
     for line in r_file : 
         tmp_line = line.split() 
-        id_list.append(tmp_line[index_proteinId]) 
+        proteins_of_interest.append(tmp_line[index_proteinId]) 
 
 # Filtering protein table and saving
 with open(snakemake.output.fasta, 'w') as w_file :

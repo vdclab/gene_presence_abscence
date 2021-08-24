@@ -122,7 +122,7 @@ project_name = config['project_name']
 OUTPUT_FOLDER =  os.path.join(config['output_folder'], project_name)
 
 # Psiblast default e-value thershold
-e_val_psiblast = config['default_psiblast_option']['e_val'] 
+e_val_psiblast = config['psiblast_e_val'] 
 
 # Option for ncbi_genome_download
 section = config['ndg_option']['section'] 
@@ -138,7 +138,7 @@ taxid_table = infer_ngs_groups(taxid_table)
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed 
 if config['speedup'] :
-    speedup = os.path.join(OUTPUT_FOLDER, 'databases', 'reduce_taxid'
+    speedup = os.path.join(OUTPUT_FOLDER, 'databases', 'reduce_taxid',
                     f'all_protein--eval_{e_val_psiblast:.0e}.fasta')
 else  :
     speedup = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 

@@ -11,9 +11,7 @@ project_name: your_name_project
 output_folder: results
 
 # e value threshold to use for psiblast (and blast as default is not in seeds.tsv)
-default_psiblast_option :
-    # E-value threshold
-    e_val: 0.000001
+psiblast_e_val: 0.000001
 
 # Blast option if not given in seeds.tsv
 default_blast_option:
