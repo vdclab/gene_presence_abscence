@@ -1,0 +1,1 @@
+Table of the mapping of the protein in the genomes. In the cells if match it is you will find all the proteins that matched

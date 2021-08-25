@@ -45,6 +45,8 @@ rule psiblast:
         '../envs/blast.yaml'
     envmodules:
         "ncbi_blast/2.10.1"
+    shadow: 
+        "minimal"
     threads:
         5
     shell:
@@ -100,6 +102,8 @@ rule blast:
         '../envs/blast.yaml'
     envmodules:
         "ncbi_blast/2.10.1"  
+    shadow: 
+        "minimal"
     threads:
         5
     shell:

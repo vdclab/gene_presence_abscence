@@ -7,11 +7,8 @@
 ##########################################################################
 
 import os, sys
-from textwrap import dedent
-import glob
-
 import pandas as pd
-from snakemake.utils import validate
+from snakemake.utils import validate, logger
 
 ##########################################################################
 ##########################################################################
@@ -110,6 +107,35 @@ validate(taxid_table, schema="../schemas/taxid.schema.yaml")
 ##########################################################################
 ##########################################################################
 ##
+##                        Core configuration
+##
+##########################################################################
+##########################################################################
+
+## Store some workflow metadata
+config["__workflow_basedir__"] = workflow.basedir
+config["__workflow_basedir_short__"] = os.path.basename(workflow.basedir)
+config["__workflow_workdir__"] = os.getcwd()
+
+if workflow.config_args :
+    tmp_config_arg = '" '.join(workflow.config_args).replace('=', '="')
+    config["__config_args__"] = f' -C {tmp_config_arg}"'
+else :
+    config["__config_args__"] = ''
+
+if workflow.use_conda :
+    config["__use-conda__"] = ' --use-conda'
+else :
+    config["__use-conda__"] = ''
+
+with open(os.path.join(workflow.basedir, '../VERSION'), 'rt') as version:
+    config["__workflow_version__"] = version.readline()
+    config["__workflow_version_link__"] = f'https://github.com/vdclab/gene_presence_abscence/tree/main/version_2'
+
+
+##########################################################################
+##########################################################################
+##
 ##                           Options
 ##
 ##########################################################################
@@ -120,6 +146,8 @@ project_name = config['project_name']
 
 # Result folder
 OUTPUT_FOLDER =  os.path.join(config['output_folder'], project_name)
+# Adding to config for report
+config['__output_folder__'] = os.path.abspath(OUTPUT_FOLDER)
 
 # Psiblast default e-value thershold
 e_val_psiblast = config['psiblast_e_val'] 
@@ -146,5 +174,4 @@ else  :
 
 # Definition of the requirements for each seed
 gene_constrains = infer_gene_constrains(seed_table)
-
 

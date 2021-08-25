@@ -13,3 +13,4 @@ jobs: 5
 rerun-incomplete: True
 printshellcmds: True
 resources: [cpus=15, mem_mb=120gb]
+shadow-prefix: system_tmpdir

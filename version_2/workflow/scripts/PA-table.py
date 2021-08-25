@@ -87,4 +87,4 @@ patab.to_csv(snakemake.output.final_table, sep='\t', index=False)
 patab_table = patab.pivot_table(index = 'genome_id', columns='seed', 
                                 values='protein_id', aggfunc=proteins2csv, sort=False, dropna=False)[seed_list] 
 
-patab_table.to_csv(snakemake.output.final_table_2, sep='\t')
+patab_table.to_csv(snakemake.output.final_table_2, sep='\t', index_label=False)

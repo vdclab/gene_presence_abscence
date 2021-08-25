@@ -164,8 +164,10 @@ rule make_table:
                                     'filtered_blast--{gene_constrains}.fnodes.flushed'),
                                         gene_constrains=gene_constrains)
     output:
-        final_table = os.path.join(OUTPUT_FOLDER, 'results', 'patab_melt.tsv'),
-        final_table_2 = os.path.join(OUTPUT_FOLDER, 'results', 'patab_table.tsv'),
+        final_table = report(os.path.join(OUTPUT_FOLDER, 'results', 'patab_melt.tsv'),  
+                                    caption="../report/PA_melt.rst", category="Tables"),
+        final_table_2 = report(os.path.join(OUTPUT_FOLDER, 'results', 'patab_table.tsv'),  
+                                    caption="../report/PA_table.rst", category="Tables"),
     log:
         os.path.join(OUTPUT_FOLDER, 'logs', 'format_table', "make_table.log"),
     conda:
