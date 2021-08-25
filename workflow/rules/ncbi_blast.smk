@@ -4,32 +4,6 @@
 ##########################################################################
 
 rule psiblast:
-    """
-    Use the sequences of the seeds to make a psiBLAST against all the taxid
-    
-    Inputs
-    ------
-    seed : str
-        the seed multifasta file input from rule fetch_fasta_from_seed
-    taxid : str
-        list of taxid in columns, no header
-        
-    Output
-    ------
-    blast out : str
-        blast out format in tabulation, no header
-        format : query accession | query length | query sequence | query start position | querry end position |
-                subject accession | subject length | subject sequence| subject start position | subject end position | 
-                length of alignment | percentage of identity | e-value | bitscore | querry coverage
-                
-    Params
-    ------
-    e_val : int
-        e-value threshold for psi-blast chosen by user
-    blast_version : str
-        blast version to use
-    """
-
     input:
         seed = os.path.join(OUTPUT_FOLDER, 'databases', 'seeds', 'seeds.fasta'),
         taxid_db = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'taxid_all_together.fasta')
@@ -62,32 +36,6 @@ rule psiblast:
 ##########################################################################
 
 rule blast:
-    """
-    blast all versus all of the fasta of all protein generated in the rule make_fasta
-    
-    Inputs
-    ------
-    prot_sequence : str
-        multifasta file of all the unique protein ids from the rule make_fasta
-    seed_fasta : str
-        multifasta file of all the seeds from the rule fetch_fasta_from_seed
-        
-    Outputs
-    -------
-    blast_out : str
-        output format of blast
-        format: query id | subject id | percentage of identity | length of match  | mismatch | gapopen |
-                query start position | query end position | subject start position | subject end position |
-                e-value | bitscore
-    fasta_for_blast : str
-        concatenation of the 2 input multifasta files
-        
-    Params
-    ------
-    blast_version : str
-        version of blast
-    """
-
     input:
         taxid_fasta = speedup,
         seed_fasta = os.path.join(OUTPUT_FOLDER, 'databases', 'seeds', 'seeds.fasta')

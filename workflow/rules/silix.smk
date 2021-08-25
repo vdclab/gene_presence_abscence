@@ -4,31 +4,6 @@
 ##########################################################################
 
 rule silix:
-    """
-    Uses Silix to create a network of protein and give a file of the protein segregated in groups.
-    If the blast output file is empty, just create an empty file
-    
-    Inputs
-    ------
-    blast_out : str
-        blast output filtered for a specific seed from the rule prepare_for_silix.
-        format: query id | subject id | percentage of identity | length of match  | mismatch | gapopen |
-                query start position | query end position | subject start position | subject end position |
-                e-value | bitscore
-    fasta : str
-        multifasta of proteins with seed from the rule blast
-        
-    Output : str
-    ------
-        fnodes file, table of protein id and family number, without headers.
-        format: family | protein id
-        
-    Params
-    ------
-    silix_version : str
-        version of silix to use
-    """
-
     input:
         fasta = os.path.join(OUTPUT_FOLDER, 'databases', 'merge_fasta', 'all_protein_with_seeds.fasta'),
         blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blast','split_blast_out', 

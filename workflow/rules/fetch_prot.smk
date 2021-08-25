@@ -4,20 +4,6 @@
 ##########################################################################
 
 rule fetch_proteins_database:
-    """
-    Create the protein database with all the taxid given by the user. 
-    Also providing a tab-delimited file with genome metadata.
-
-    Input : str
-    -----
-        list of taxid in column, no header, from the rule plit_taxid_file
-        
-    Output : str
-    ------
-        table of the information collected on the proteins, without header.
-        format: protein id | protein name | genome name | genome status | genome id | taxid | length | sequence
-    """
-
     input:
         taxid
     output:
@@ -47,19 +33,6 @@ rule fetch_proteins_database:
 ##########################################################################
 
 rule fetch_fasta_from_seed:
-    """
-    from the seed table and fetch the fasta of the seed. Then they are writen in the output file.
-
-    Input : str
-    -----
-        the seed file input.
-        table without header in the format : 
-            name | protein id | e-value | percentage of identity | coverage | color
-        
-    Outputs : str
-    -------   
-        multifasta output of the seed sequences
-    """
     input :
         seed_file
     output:

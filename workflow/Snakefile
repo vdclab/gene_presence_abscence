@@ -54,7 +54,9 @@ configfile: "config/config.yaml"
 report: "report/workflow.rst"
 
 # Set local rule that could be launch without submiting to cluster because ultra quick
-localrules: all, clean
+localrules:
+   all,
+   clean,
 
 ##########################################################################
 # Load rules
@@ -72,10 +74,6 @@ include: "rules/table2fasta.smk"
 ##########################################################################
 
 rule all:
-    """
-    Starts the pipeline by checking the presence abscence table and the plots in pdf and png exist.
-    """
-
     input:
         plots = get_final_output()
     log:
@@ -91,7 +89,7 @@ rule clean:
     log:
         os.path.join(OUTPUT_FOLDER, 'logs', 'clean.log'),          
     shell:
-        '''rm -rf {input}'''
+        """rm -rf {input}"""
 
 ##########################################################################
 ##########################################################################
