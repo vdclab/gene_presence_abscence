@@ -16,16 +16,24 @@ properties:
 
   psiblast_e_val:
     type: number
+    minimum: 0
+    maximum: 1
       
   default_blast_option:
     type: object
     properties:
       e_val:
         type: number
+        minimum: 0
+        maximum: 1
       pid:
         type: number
+        minimum: 0
+        maximum: 1        
       cov:
         type: number
+        minimum: 0
+        maximum: 1
     required:
       - e_val
       - pid

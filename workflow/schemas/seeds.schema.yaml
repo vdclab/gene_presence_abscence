@@ -11,12 +11,18 @@ properties:
   evalue:
     type: number
     description: e-value for the blast threshold for the protein
+    minimum: 0
+    maximum: 1
   pident:
     type: number
     description: percentage of identity for the blast threshold for the protein [between 0-1]
+    minimum: 0
+    maximum: 1
   coverage:
     type: number
     description: coverage of the seed on the alignment for the blast threshold for the protein [between 0-1]
+    minimum: 0
+    maximum: 1
   color:
     type: string
     description: color wanted for the gene in the plot at the end
