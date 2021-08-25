@@ -1,0 +1,27 @@
+name: singularity-deploy
+
+on:
+  push:
+    # This branch does not exist! You should update this to be your "production" branch
+    # and ensure that when you work on recipes you only merge to this branch when it's time to release
+    # You can also use another GitHub trigger entirely
+    branches:
+      - "main"
+
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        if: ${{ env.release_tag != env.latest_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.release_tag }}
+          release_name: Release ${{ env.release_tag }}
+          draft: false
+          prerelease: false 

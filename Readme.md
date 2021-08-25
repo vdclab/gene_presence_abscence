@@ -49,7 +49,7 @@ In all following steps, we will assume that you are inside of that directory.
 Second, run 
 
 ```shell
-snakedeploy deploy-workflow https://github.com/vdclab/gene_presence_abscence .
+snakedeploy deploy-workflow https://github.com/vdclab/gene_presence_abscence . --tag 1.0.0
 ```
 
 Snakedeploy will create two folders `workflow` and `config`. The former contains the deployment of the chosen workflow as a [Snakemake module](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#using-and-combining-pre-exising-workflows), the latter contains configuration files which will be modified in the next step in order to configure the workflow to your needs. Later, when executing the workflow, Snakemake will automatically find the main `Snakefile` in the `workflow` subfolder.
@@ -130,7 +130,7 @@ Given that the workflow has been properly deployed and configured, it can be exe
 For running the workflow while deploying any necessary software via conda and running on the cluster, run Snakemake with 
 
 ```shell
-snakemake --cores 5 --use-conda --profile profile/slurm
+snakemake --cores 5 --use-conda --profile config/slurm
 ```
 
 ## Walk-Through and File Production

@@ -30,7 +30,7 @@ list_genome = patab.genome_id.unique().tolist()
 # As some genome name could be the same I need to create a dict to convert the name
 genomeId_2_genomeName = patab.set_index('genome_id').genome_name.to_dict()
 list_genome_name = [f'{genomeId_2_genomeName[genome]} ({genome})' 
-                       genomeId_2_genomeName[genome] for genome in list_genome] 
+                       for genome in list_genome] 
 
 num_genome = len(list_genome)
 # here fist genome on top
