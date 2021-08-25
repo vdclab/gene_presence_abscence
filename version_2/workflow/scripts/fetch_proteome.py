@@ -68,7 +68,8 @@ def main():
         tmp_assembly = pd.read_table(snakemake.output.assembly_output)
         assembly_final_df = pd.concat([assembly_final_df, tmp_assembly])
 
-    assembly_final_df.to_csv(snakemake.output.assembly_output, index=False, sep='\t')
+    # Remove last column because the file doesn't exist at the end
+    assembly_final_df.loc[:,:-1].to_csv(snakemake.output.assembly_output, index=False, sep='\t')
 
     # Now handeling the last step that is concatenate the fasta files downloaded
     df_proteins = pd.DataFrame(columns = ['protein_id',
@@ -101,7 +102,7 @@ def main():
 
 
             # Here to save space I decided to remove the file avec concatenation
-            os.remove(genome.local_filename)
+            # os.remove(genome.local_filename)
 
     df_proteins.to_csv(snakemake.output.output_table_protein, sep='\t', index=False)
 

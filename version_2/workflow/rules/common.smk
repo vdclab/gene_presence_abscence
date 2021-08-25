@@ -123,11 +123,6 @@ if workflow.config_args :
 else :
     config["__config_args__"] = ''
 
-if workflow.use_conda :
-    config["__use-conda__"] = ' --use-conda'
-else :
-    config["__use-conda__"] = ''
-
 with open(os.path.join(workflow.basedir, '../VERSION'), 'rt') as version:
     config["__workflow_version__"] = version.readline()
     config["__workflow_version_link__"] = f'https://github.com/vdclab/gene_presence_abscence/tree/main/version_2'

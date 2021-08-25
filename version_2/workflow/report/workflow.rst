@@ -13,9 +13,9 @@ Local:
 
    cd {{ snakemake.config["__workflow_workdir__"] }}
 {% if snakemake.config["__workflow_basedir__"] == snakemake.config["__workflow_workdir__"] %}
-   snakemake -j 1{{ snakemake.config["__use-conda__"] }}{{ snakemake.config["__config_args__"] }}
+   snakemake -j 1 --use-conda {{ snakemake.config["__config_args__"] }}
 {% else %}
-   snakemake -j 1{{ snakemake.config["__use-conda__"] }}{{ snakemake.config["__config_args__"] }} -s {{ snakemake.config["__workflow_basedir_short__"] }}/Snakefile
+   snakemake -j 1 --use-conda {{ snakemake.config["__config_args__"] }} -s {{ snakemake.config["__workflow_basedir_short__"] }}/Snakefile
 {% endif %}
 
 On SLURM cluster:
@@ -24,9 +24,9 @@ On SLURM cluster:
 
    cd {{ snakemake.config["__workflow_workdir__"] }}
 {% if snakemake.config["__workflow_basedir__"] == snakemake.config["__workflow_workdir__"] %}
-   snakemake --profile profile/slurm -j 1{{ snakemake.config["__use-conda__"] }}{{ snakemake.config["__config_args__"] }}
+   snakemake --profile profile/slurm -j 1 --use-conda {{ snakemake.config["__config_args__"] }}
 {% else %}
-   snakemake --profile profile/slurm -j 1{{ snakemake.config["__use-conda__"] }}{{ snakemake.config["__config_args__"] }} -s {{ snakemake.config["__workflow_basedir_short__"] }}/Snakefile
+   snakemake --profile profile/slurm -j 1 --use-conda {{ snakemake.config["__config_args__"] }} -s {{ snakemake.config["__workflow_basedir_short__"] }}/Snakefile
 {% endif %}
 
 .. note::

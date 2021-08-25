@@ -76,7 +76,6 @@ rule prepare_for_silix:
     input:
         seed_file = os.path.join(OUTPUT_FOLDER, 'databases', 'seeds', 'new_seeds.tsv'),
         protein_file = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'protein_table.tsv'),
-        fasta = os.path.join(OUTPUT_FOLDER, 'databases', 'merge_fasta', 'all_protein_with_seeds.fasta'),
         blast_out = os.path.join(OUTPUT_FOLDER, 'processing_files', 'blast', 'blastp--blast_evalue_1e-2.out'),
     output:
         os.path.join(OUTPUT_FOLDER, 'processing_files', 'blast', 'split_blast_out', 
