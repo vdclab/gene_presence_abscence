@@ -3,46 +3,64 @@
 ##########################################################################
 ##########################################################################
 
+
 rule fetch_proteins_database:
     input:
-        taxid
+        taxid,
     output:
-        fasta_final = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'taxid_all_together.fasta'),
-        assembly_output = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'summary_assembly_taxid.tsv'),
-        new_taxid_file = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'taxid_checked.txt'),
-        output_table_protein = os.path.join(OUTPUT_FOLDER, 'databases', 'all_taxid', 'protein_table.tsv')
+        fasta_final=os.path.join(
+            OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
+        ),
+        assembly_output=os.path.join(
+            OUTPUT_FOLDER, "databases", "all_taxid", "summary_assembly_taxid.tsv"
+        ),
+        new_taxid_file=os.path.join(
+            OUTPUT_FOLDER, "databases", "all_taxid", "taxid_checked.txt"
+        ),
+        output_table_protein=os.path.join(
+            OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
+        ),
     log:
-        os.path.join(OUTPUT_FOLDER, 'logs', 'fetch_proteins',"fetch_proteins_database.log"),  
+        os.path.join(
+            OUTPUT_FOLDER, "logs", "fetch_proteins", "fetch_proteins_database.log"
+        ),
     params:
-        output_database_folder = lambda x, output :os.path.dirname(output.output_table_protein),
-        section = section,
-        assembly_levels = assembly_levels,
-        refseq_categories = refseq_categories,
+        output_database_folder=lambda x, output: os.path.dirname(
+            output.output_table_protein
+        ),
+        section=section,
+        assembly_levels=assembly_levels,
+        refseq_categories=refseq_categories,
     shadow:
-        'minimal'
-    resources: 
+        "minimal"
+    resources:
         cpus=5,
-    threads :
-        5
+    threads: 5
     conda:
         "../envs/fetch_NCBI.yaml"
-    script :
+    script:
         "../scripts/fetch_proteome.py"
 
+
 ##########################################################################
 ##########################################################################
 
+
 rule fetch_fasta_from_seed:
-    input :
-        seed_file
+    input:
+        seed_file,
     output:
-        fasta_seed = os.path.join(OUTPUT_FOLDER, 'databases', 'seeds', 'seeds.fasta'),
-        new_seed_file = os.path.join(OUTPUT_FOLDER, 'databases', 'seeds', 'new_seeds.tsv')
+        fasta_seed=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.fasta"),
+        new_seed_file=os.path.join(
+            OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv"
+        ),
     log:
-        os.path.join(OUTPUT_FOLDER, 'logs', 'fetch_proteins', "fetch_fasta_from_seed.log"),  
+        os.path.join(
+            OUTPUT_FOLDER, "logs", "fetch_proteins", "fetch_fasta_from_seed.log"
+        ),
     conda:
         "../envs/biopython.yaml"
-    script :
+    script:
         "../scripts/fetch_seed.py"
 
 

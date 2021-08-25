@@ -29,9 +29,10 @@
 ##
 ##########################################################################
 ##########################################################################
-
 # this container defines the underlying OS for each job when using the workflow
 # with --use-conda --use-singularity
+
+
 container: "docker://continuumio/miniconda3"
 
 
@@ -48,19 +49,25 @@ min_version("6.4.1")
 ##########################################################################
 ##########################################################################
 
-# load config 
+
+# load config
 configfile: "config/config.yaml"
 
+
+# Path to report rst file
 report: "report/workflow.rst"
+
 
 # Set local rule that could be launch without submiting to cluster because ultra quick
 localrules:
-   all,
-   clean,
+    all,
+    clean,
+
 
 ##########################################################################
 # Load rules
 ##########################################################################
+
 
 include: "rules/common.smk"
 include: "rules/fetch_prot.smk"
@@ -70,26 +77,31 @@ include: "rules/plots.smk"
 include: "rules/silix.smk"
 include: "rules/table2fasta.smk"
 
+
 ##########################################################################
 ##########################################################################
+
 
 rule all:
     input:
-        plots = get_final_output()
+        plots=get_final_output(),
     log:
-        os.path.join(OUTPUT_FOLDER, 'logs', 'all.log'), 
+        os.path.join(OUTPUT_FOLDER, "logs", "all.log"),
+
 
 ##########################################################################
 ##########################################################################
+
 
 rule clean:
-    input :
-        os.path.join(OUTPUT_FOLDER, 'database'),
-        os.path.join(OUTPUT_FOLDER, 'processing_files'),
+    input:
+        os.path.join(OUTPUT_FOLDER, "database"),
+        os.path.join(OUTPUT_FOLDER, "processing_files"),
     log:
-        os.path.join(OUTPUT_FOLDER, 'logs', 'clean.log'),          
+        os.path.join(OUTPUT_FOLDER, "logs", "clean.log"),
     shell:
         """rm -rf {input}"""
+
 
 ##########################################################################
 ##########################################################################
