@@ -37,7 +37,7 @@ rule psiblast:
         psiblast -query '{input.seed}' -db '{input.taxid_db}' -evalue {params.e_value} \
                  -outfmt '7 qacc qlen qseq qstart qend sacc slen sseq sstart send length pident evalue bitscore qcovs' \
                  -num_threads {threads} -num_iterations 3 -out '{output}'
-        
+
         rm {input.taxid_db}.*
         """
 
@@ -76,6 +76,6 @@ rule blast:
 
         blastp -query '{output.fasta_for_blast}' -db '{output.fasta_for_blast}' -evalue 0.01 \
                -outfmt 6 -out '{output.blast_out}' -num_threads {threads} -num_alignments 25000
-        
+
         rm {output.fasta_for_blast}.*
         """

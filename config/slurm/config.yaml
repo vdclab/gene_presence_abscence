@@ -12,5 +12,5 @@ use-conda: True
 jobs: 5
 rerun-incomplete: True
 printshellcmds: True
-resources: [cpus=15, mem_mb=120gb]
+resources: [cpus=15, mem_mb=120000]
 shadow-prefix: system_tmpdir

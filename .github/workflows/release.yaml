@@ -1,4 +1,4 @@
-name: singularity-deploy
+name: deploy
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
       - name: Define Repository Name and Release Version
         run: |
             repo=$(echo "${GITHUB_REPOSITORY/\//-}")
-            release=$(cat VERSION)
+            release=$(cat config/VERSION)
             echo "reponame=$repo" >> $GITHUB_ENV
             echo "release_tag=$release" >> $GITHUB_ENV
       - name: Create Release

@@ -70,11 +70,23 @@ localrules:
 
 
 include: "rules/common.smk"
+
+
 include: "rules/fetch_prot.smk"
+
+
 include: "rules/format_tables.smk"
+
+
 include: "rules/ncbi_blast.smk"
+
+
 include: "rules/plots.smk"
+
+
 include: "rules/silix.smk"
+
+
 include: "rules/table2fasta.smk"
 
 
