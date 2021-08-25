@@ -1,10 +1,3 @@
-# snakemake/5.17.0
-# pipeline to test the presence of some proteins (aka seeds) in genome (given in taxid)
-# usage: snakemake --cluster-config cluster.json --cluster "sbatch -c {cluster.c} --qos={cluster.qos} --time={cluster.time} --account={cluster.account} --mail-type={cluster.mail-type} --mail-user={cluster.mail-user} --mem_per_cpu={cluster.mem_per_cpu}"  -j 5 -d "/blue/lagard/ghutinet/modifications/trial_second" -C project_name='deazaguanine' e_val=0.01 id=0.1 cov=0.7 taxid='base_set_taxid.txt'
-# -j : number of max core to use
-# -d : directory of the files
-# -C : configuration of values bellow:
-
 # ###############################################################################
 # This file is part of Presence-Abscence.                                       #
 #                                                                               #
@@ -85,7 +78,8 @@ rule all:
 
     input:
         plots = get_final_output()
-
+    log:
+        os.path.join(OUTPUT_FOLDER, 'logs', 'all.log'), 
 
 ##########################################################################
 ##########################################################################
@@ -94,6 +88,8 @@ rule clean:
     input :
         os.path.join(OUTPUT_FOLDER, 'database'),
         os.path.join(OUTPUT_FOLDER, 'processing_files'),
+    log:
+        os.path.join(OUTPUT_FOLDER, 'logs', 'clean.log'),          
     shell:
         '''rm -rf {input}'''
 
