@@ -4,7 +4,7 @@ import ncbi_genome_download as ngd
 import os
 import gzip
 from Bio import SeqIO
-import urllib
+from urllib.request import urlopen
 
 ##########################################################################
 
@@ -13,7 +13,7 @@ def execfile(script_py, global_vars):
     Alternative to python2 execfile
     '''
 
-    with urllib.urlopen(script_py) as f:
+    with urlopen(script_py) as f:
         code = compile(f.read(), script_py, 'exec')
         exec(code, global_vars)
 
