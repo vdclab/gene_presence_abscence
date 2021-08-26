@@ -4,6 +4,7 @@ import ncbi_genome_download as ngd
 import os
 import gzip
 from Bio import SeqIO
+import urllib
 
 ##########################################################################
 
@@ -11,8 +12,8 @@ def execfile(script_py, global_vars):
     '''
     Alternative to python2 execfile
     '''
-    
-    with open(script_py) as f:
+
+    with urllib.urlopen(script_py) as f:
         code = compile(f.read(), script_py, 'exec')
         exec(code, global_vars)
 
@@ -130,5 +131,5 @@ if __name__ == "__main__":
         g["__file__"] = g["__file__"].split('https')[-1]
         g["__file__"] = f'https{g["__file__"]}'
         execfile(g["__file__"], g)
-
-    main()
+    else :
+        main()
