@@ -5,6 +5,19 @@ import os
 import gzip
 from Bio import SeqIO
 
+##########################################################################
+
+def execfile(script_py, global_vars):
+    '''
+    Alternative to python2 execfile
+    '''
+    
+    with open(script_py) as f:
+        code = compile(f.read(), script_py, 'exec')
+        exec(code, global_vars)
+
+##########################################################################
+
 def main():
     '''
     Here I define a main function because the library multiprocess 
@@ -106,6 +119,8 @@ def main():
             os.remove(genome.local_filename)
 
     df_proteins.to_csv(snakemake.output.output_table_protein, sep='\t', index=False)
+
+##########################################################################
 
 if __name__ == "__main__":
     g = globals().copy()
