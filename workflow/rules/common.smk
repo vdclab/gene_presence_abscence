@@ -127,9 +127,7 @@ else:
 with open(os.path.join(workflow.basedir, "../config/VERSION"), "rt") as version:
     url = "https://github.com/vdclab/gene_presence_abscence/releases/tag"
     config["__workflow_version__"] = version.readline()
-    config[
-        "__workflow_version_link__"
-    ] = f"{url}/{config['__workflow_version__']}"
+    config["__workflow_version_link__"] = f"{url}/{config['__workflow_version__']}"
 
 
 ##########################################################################

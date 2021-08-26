@@ -27,7 +27,11 @@ Given that Mamba is installed, run
 mamba create -c bioconda -c conda-forge --name snakemake snakemake snakedeploy
 ```
 
-to install both Snakemake and Snakedeploy in an isolated environment. For all following commands ensure that this environment is activated via 
+to install both Snakemake and Snakedeploy in an isolated environment. 
+
+#### Notes 
+
+For all following commands (step 2 to 5) ensure that this environment is activated via 
 
 ```shell
 conda activate snakemake
