@@ -39,6 +39,9 @@ properties:
       - pid
       - cov
 
+  update_db:
+    type: boolean
+
   ndg_option:
     type: object
     properties:

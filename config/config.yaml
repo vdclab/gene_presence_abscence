@@ -22,6 +22,10 @@ default_blast_option:
     # Coverage of the query treshold
     cov: 0.5
 
+# Option for the Taxonomy DB parser
+# If you want to update the Taxonomy dump, :warning: it increase the running time of the workflow
+update_db: False
+
 # Option for ncbi_download_genome
 ndg_option:
     # Values for section : {refseq,genbank}

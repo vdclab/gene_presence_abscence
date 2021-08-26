@@ -15,11 +15,12 @@ def main():
     ncbi = NCBITaxa()  
 
     # To update the database 
-    ncbi.update_taxonomy_database()  
+    if snakemake.params.update_db :
+        ncbi.update_taxonomy_database()  
 
     # If wanted the taxdump could be remove after the database is created
-    # if os.path.isfile('taxdump.tar.gz') :
-    #    os.remove('taxdump.tar.gz')
+    if os.path.isfile('taxdump.tar.gz') :
+       os.remove('taxdump.tar.gz')
 
     taxid_df = pd.read_table(snakemake.input[0])
 
@@ -108,9 +109,9 @@ def main():
 
 if __name__ == "__main__":
     g = globals().copy()
+    
     if '/https://' in g["__file__"] :
         g["__file__"] = g["__file__"].split('https')[-1]
         g["__file__"] = f'https{g["__file__"]}'
-        execfile(g["__file__"], g)
-    else :
-        main()
+
+    main()

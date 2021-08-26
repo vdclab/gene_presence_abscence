@@ -31,6 +31,7 @@ rule fetch_proteins_database:
         section=section,
         assembly_levels=assembly_levels,
         refseq_categories=refseq_categories,
+        update_db = config['update_db']
     resources:
         cpus=5,
     threads: 5
