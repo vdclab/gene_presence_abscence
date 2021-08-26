@@ -6,6 +6,7 @@ import gzip
 from Bio import SeqIO
 from urllib.request import urlopen
 import subprocess
+import pickle
 
 ##########################################################################
 
@@ -13,6 +14,8 @@ def execfile(script_py, global_vars):
     '''
     Alternative to python2 execfile
     '''
+
+    pickle.dump(snakemake, 'snakemake.dump')
 
     if '://' not in script_py:
         script_py = script_py.replace(':/', '://')
@@ -30,8 +33,7 @@ def main():
     bug sometime when it is not this format of script
     '''
     
-    print('g = ', g['__file__'])
-    print('globals()', globals()['__file__'])
+    print('globals() = ', globals())
 
     # If never done, will download the last version of NCBI Taxonomy dump and create the SQL database
     ncbi = NCBITaxa()  
@@ -133,11 +135,14 @@ def main():
 
 if __name__ == "__main__":
     g = globals().copy()
-    print(globals()["__file__"])
 
     if '/https' in g["__file__"] :
         g["__file__"] = g["__file__"].split('https')[-1]
         g["__file__"] = f'https{g["__file__"]}'
         execfile(g["__file__"], g)
+
+    elif os.path.isfile('snakemake.dump') :
+        snakemake = pickle.load('snakemake.dump')
+        main()
     else :
         main()
