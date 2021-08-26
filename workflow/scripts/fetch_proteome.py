@@ -107,4 +107,5 @@ def main():
     df_proteins.to_csv(snakemake.output.output_table_protein, sep='\t', index=False)
 
 if __name__ == "__main__":
+    print(os.path.realpath(__file__))
     main()
