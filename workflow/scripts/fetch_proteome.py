@@ -16,7 +16,8 @@ def execfile(script_py, global_vars):
     print('://' not in script_py, script_py)
 
     if '://' not in script_py:
-        script_py=script_py.replace(':/', '://')
+        script_py = script_py.replace(':/', '://')
+        global_vars['__file__'] = script_py
 
     with urlopen(script_py) as f:
         code = compile(f.read(), script_py, 'exec')
