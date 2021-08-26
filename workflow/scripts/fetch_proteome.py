@@ -109,9 +109,11 @@ def main():
 
 if __name__ == "__main__":
     g = globals().copy()
-    
+
     if '/https://' in g["__file__"] :
         g["__file__"] = g["__file__"].split('https')[-1]
-        g["__file__"] = f'https{g["__file__"]}'
+        globals()["__file__"] = f'https{g["__file__"]}'
+
+    print(globals()["__file__"])
 
     main()
