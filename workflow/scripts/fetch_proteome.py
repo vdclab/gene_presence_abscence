@@ -20,7 +20,7 @@ def execfile(script_py, global_vars):
 
     with urlopen(script_py) as f:
         script_txt = f.read()
-        subprocess.run(['python3', '-'], text=True, input=script_txt)
+        subprocess.run(['python3', '-'], text=True, input=script_txt, stdin=PIPE)
 
 ##########################################################################
 
