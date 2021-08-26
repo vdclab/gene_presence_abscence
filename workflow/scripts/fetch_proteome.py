@@ -13,6 +13,9 @@ def execfile(script_py, global_vars):
     Alternative to python2 execfile
     '''
 
+    if '://' not in script_py:
+        script_py.replace(':/', '://')
+
     with urlopen(script_py) as f:
         code = compile(f.read(), script_py, 'exec')
         exec(code, global_vars)
