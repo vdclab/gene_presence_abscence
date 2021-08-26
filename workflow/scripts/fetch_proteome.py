@@ -24,13 +24,13 @@ def get_cmdline_ndg(section, flat_output, file_formats, assembly_levels,
                                       -l {assembly_levels} --flat-output\
                                       -o {output} -p {parallel}\
                                       -m {metadata_table} -R {refseq_categories}\
-                                      -t {','.join(taxids)} {','.join(groups)}"
+                                      -t {','.join(taxids)} {groups}"
     else :
         cmd_line = f"python{python_version} {ncbi_genome_download} -s {section} -F {file_formats}\
                                       -l {assembly_levels}\
                                       -o {output} -p {parallel}\
                                       -m {metadata_table} -R {refseq_categories}\
-                                      -t {','.join(taxids)} {','.join(groups)}"
+                                      -t {','.join(taxids)} {groups}"
 
     subprocess.run(shlex.split(cmd_line))
     return                          
