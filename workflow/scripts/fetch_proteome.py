@@ -15,7 +15,8 @@ def execfile(script_py, global_vars):
     Alternative to python2 execfile
     '''
 
-    pickle.dump(snakemake, 'snakemake.dump')
+    with open('snakemake.dump') as dump_f :
+        pickle.dump(snakemake, dump_f)
 
     if '://' not in script_py:
         script_py = script_py.replace(':/', '://')
