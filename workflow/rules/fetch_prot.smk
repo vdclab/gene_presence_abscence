@@ -31,7 +31,7 @@ rule fetch_proteins_database:
         section=section,
         assembly_levels=assembly_levels,
         refseq_categories=refseq_categories,
-        update_db = config["update_db"],
+        update_db=config["update_db"],
     resources:
         cpus=5,
     threads: 5
@@ -54,9 +54,7 @@ rule fetch_fasta_from_seed:
             OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv"
         ),
     log:
-        os.path.join(
-            OUTPUT_FOLDER, "logs", "fetch_proteins", "fetch_fasta_from_seed.log"
-        ),
+        new_seed_file=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv"),
     conda:
         "../envs/biopython.yaml"
     script:
