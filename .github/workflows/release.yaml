@@ -28,9 +28,18 @@ jobs:
             release=$(cat config/VERSION)
             echo "reponame=$repo" >> $GITHUB_ENV
             echo "release_tag=$release" >> $GITHUB_ENV
+      - name: Remove identical
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        if: ${{ env.release_tag == env.latest_tag }} 
+        with:
+          delete_release: true # default: false
+          tag_name: ${{ env.release_tag }} # tag name to delete
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
+        if: ${{ env.release_tag != env.latest_tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
