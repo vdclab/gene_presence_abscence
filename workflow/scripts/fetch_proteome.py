@@ -16,13 +16,13 @@ def get_cmdline_ndg(section, flat_output, file_formats, assembly_levels,
     '''
     
     if flat_output :
-        cmd_line = f"ncbi-download-genome -s {section} -F {file_formats}\
+        cmd_line = f"python3 -m ncbi-download-genome -s {section} -F {file_formats}\
                                       -l {assembly_levels} --flat-output\
                                       -o {output} -p {parallel}\
                                       -m {metadata_table} -R {refseq_categories}\
                                       -t {','.join(taxids)} {','.join(groups)}"
     else :
-        cmd_line = f"ncbi-download-genome -s {section} -F {file_formats}\
+        cmd_line = f"python3 -m ncbi-download-genome -s {section} -F {file_formats}\
                                       -l {assembly_levels}\
                                       -o {output} -p {parallel}\
                                       -m {metadata_table} -R {refseq_categories}\
