@@ -13,6 +13,8 @@ def execfile(script_py, global_vars):
     Alternative to python2 execfile
     '''
 
+    print('://' not in script_py, script_py)
+
     if '://' not in script_py:
         script_py=script_py.replace(':/', '://')
 
