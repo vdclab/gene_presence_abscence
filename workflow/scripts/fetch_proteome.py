@@ -10,7 +10,7 @@ import shlex
 ##########################################################################
 
 def get_cmdline_ndg(section, flat_output, file_formats, assembly_levels, 
-                    output, metadata_table, taxids, groups, refseq_categories, parallel)
+                    output, metadata_table, taxids, groups, refseq_categories, parallel):
     '''
     Launch the software in cmdline instead of function
     '''
