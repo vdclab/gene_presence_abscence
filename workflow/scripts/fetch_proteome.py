@@ -16,16 +16,17 @@ def get_cmdline_ndg(section, flat_output, file_formats, assembly_levels,
     Launch the software in cmdline instead of function
     '''
     
-    python_version = sys.version.split()[0]
+    python_version = sys.version.split('.')[0]
+    ncbi_genome_download = ngd.__file__.replace('init', 'main')
 
     if flat_output :
-        cmd_line = f"python{python_version} -m ncbi_download_genome -s {section} -F {file_formats}\
+        cmd_line = f"python{python_version} {ncbi_genome_download} -s {section} -F {file_formats}\
                                       -l {assembly_levels} --flat-output\
                                       -o {output} -p {parallel}\
                                       -m {metadata_table} -R {refseq_categories}\
                                       -t {','.join(taxids)} {','.join(groups)}"
     else :
-        cmd_line = f"python{python_version} -m ncbi_download_genome -s {section} -F {file_formats}\
+        cmd_line = f"python{python_version} {ncbi_genome_download} -s {section} -F {file_formats}\
                                       -l {assembly_levels}\
                                       -o {output} -p {parallel}\
                                       -m {metadata_table} -R {refseq_categories}\
