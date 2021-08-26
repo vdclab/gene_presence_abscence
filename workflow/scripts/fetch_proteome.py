@@ -32,6 +32,9 @@ def main():
     bug sometime when it is not this format of script
     '''
     
+    print('g = ', g['__file__'])
+    print('globals()', globals()['__file__'])
+
     # If never done, will download the last version of NCBI Taxonomy dump and create the SQL database
     ncbi = NCBITaxa()  
 
