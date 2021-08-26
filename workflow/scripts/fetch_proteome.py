@@ -1,31 +1,35 @@
 import pandas as pd
 from ete3 import NCBITaxa 
-import ncbi_genome_download as ngd 
 import os
 import gzip
 from Bio import SeqIO
 from urllib.request import urlopen
 import subprocess
-import pickle
+import shlex
 
 ##########################################################################
 
-def execfile(script_py, global_vars):
+def get_cmdline_ndg(section, flat_output, file_formats, assembly_levels, 
+                    output, metadata_table, taxids, groups, refseq_categories, parallel)
     '''
-    Alternative to python2 execfile
+    Launch the software in cmdline instead of function
     '''
+    
+    if flat_output :
+        cmd_line = f"ncbi-download-genome -s {section} -F {file_formats}\
+                                      -l {assembly_levels} --flat-output\
+                                      -o {output} -p {parallel}\
+                                      -m {metadata_table} -R {refseq_categories}\
+                                      -t {','.join(taxids)} {','.join(groups)}"
+    else :
+        cmd_line = f"ncbi-download-genome -s {section} -F {file_formats}\
+                                      -l {assembly_levels}\
+                                      -o {output} -p {parallel}\
+                                      -m {metadata_table} -R {refseq_categories}\
+                                      -t {','.join(taxids)} {','.join(groups)}"
 
-    with open('snakemake.dump', 'wb') as dump_f :
-        pickle.dump(snakemake, dump_f)
-
-    if '://' not in script_py:
-        script_py = script_py.replace(':/', '://')
-        global_vars['__file__'] = script_py
-
-    with urlopen(script_py) as f:
-        script_txt = f.read().decode('utf-8')
-        subprocess.run(['python3', '-'], text=True, input=script_txt)
-
+    subprocess.run(shlex.split(cmd_line))
+    return                          
 ##########################################################################
 
 def main():
@@ -88,7 +92,8 @@ def main():
         keyargs['groups'] = NCBIgroup
         keyargs['taxids'] = [str(taxid) for taxid in group.TaxId.tolist()]
 
-        ngd.download(**keyargs)  
+        #ngd.download(**keyargs)  
+        get_cmdline_ndg(**keyargs)
 
         # Read the information about the assembly and concatenate with previous one
         tmp_assembly = pd.read_table(snakemake.output.assembly_output)
@@ -135,17 +140,4 @@ def main():
 ##########################################################################
 
 if __name__ == "__main__":
-    g = globals().copy()
-
-    if '/https' in g["__file__"] :
-        g["__file__"] = g["__file__"].split('https')[-1]
-        g["__file__"] = f'https{g["__file__"]}'
-        execfile(g["__file__"], g)
-
-    elif os.path.isfile('snakemake.dump') :
-        with open('snakemake.dump', 'rb') as dump_f:
-            snakemake = pickle.load(dump_f)
-        os.remove('snakemake.dump')
-        main()
-    else :
-        main()
+    main()
