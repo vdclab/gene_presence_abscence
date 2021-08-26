@@ -1,11 +1,12 @@
 import pandas as pd
 from ete3 import NCBITaxa 
-import os
+import os, sys
 import gzip
 from Bio import SeqIO
 from urllib.request import urlopen
 import subprocess
 import shlex
+import ncbi_genome_download as ngd 
 
 ##########################################################################
 
@@ -15,14 +16,16 @@ def get_cmdline_ndg(section, flat_output, file_formats, assembly_levels,
     Launch the software in cmdline instead of function
     '''
     
+    python_version = sys.version.split()[0]
+
     if flat_output :
-        cmd_line = f"python3 -m ncbi_download_genome -s {section} -F {file_formats}\
+        cmd_line = f"python{python_version} -m ncbi_download_genome -s {section} -F {file_formats}\
                                       -l {assembly_levels} --flat-output\
                                       -o {output} -p {parallel}\
                                       -m {metadata_table} -R {refseq_categories}\
                                       -t {','.join(taxids)} {','.join(groups)}"
     else :
-        cmd_line = f"python3 -m ncbi_download_genome -s {section} -F {file_formats}\
+        cmd_line = f"python{python_version} -m ncbi_download_genome -s {section} -F {file_formats}\
                                       -l {assembly_levels}\
                                       -o {output} -p {parallel}\
                                       -m {metadata_table} -R {refseq_categories}\
