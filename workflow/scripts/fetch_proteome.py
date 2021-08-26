@@ -19,7 +19,8 @@ def execfile(script_py, global_vars):
         global_vars['__file__'] = script_py
 
     with urlopen(script_py) as f:
-        subprocess.run(['python3', '-'], input=f, encoding='utf-8')
+        scrpit_txt = script_py.read()
+        subprocess.run(['python3', '-'], text=True, input=f)
 
 ##########################################################################
 
