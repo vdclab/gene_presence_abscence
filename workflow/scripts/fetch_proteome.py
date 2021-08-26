@@ -114,6 +114,6 @@ if __name__ == "__main__":
         g["__file__"] = g["__file__"].split('https')[-1]
         globals()["__file__"] = f'https{g["__file__"]}'
 
-    print(globals()["__file__"])
+        print(globals()["__file__"])
 
     main()
