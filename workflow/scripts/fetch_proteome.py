@@ -15,7 +15,7 @@ def execfile(script_py, global_vars):
     Alternative to python2 execfile
     '''
 
-    with open('snakemake.dump', 'wt') as dump_f :
+    with open('snakemake.dump', 'wb') as dump_f :
         pickle.dump(snakemake, dump_f)
 
     if '://' not in script_py:
@@ -143,7 +143,9 @@ if __name__ == "__main__":
         execfile(g["__file__"], g)
 
     elif os.path.isfile('snakemake.dump') :
-        snakemake = pickle.load('snakemake.dump')
+        with open('snakemake.dump', 'rb') as dump_f:
+            snakemake = pickle.load(dump_f)
+        os.remove('snakemake.dump')
         main()
     else :
         main()
