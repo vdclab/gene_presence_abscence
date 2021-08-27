@@ -53,7 +53,7 @@ jobs:
       with:
         directory: .test
         snakefile: workflow/Snakefile
-        args: "--report report.zip --report-stylesheet workflow/report/report.css"
+        args: "--report report.zip --report-stylesheet report.css"
   release:
     name: Create Release
     runs-on: ubuntu-latest
