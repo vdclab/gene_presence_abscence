@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle  
 import sys
 
 # It seems there is a bug if another backend is used
@@ -10,16 +11,15 @@ matplotlib.use('Agg')
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
 # Plot parameters
-font = {'family': 'DejaVu Sans', 'weight': 'light', 'size': 12, }
+font = {'family': 'DejaVu Sans', 'weight': 'light'}
 plt.rc('font',**font)
 plt.rcParams['text.color'] = 'black'
 plt.rcParams['svg.fonttype'] = 'none'  # Editable SVG text
 
 # Name in PAtab genome_id, seed, PA, color, genome_name
-# Dans le truc de geoffrey, number = nombre de gene present, x_pos = l'endroit dans la liste des seed, y_pos = l'endroit dans les genomes
 
-# figsize = (width, height)
-fig, ax = plt.subplots(1,1, figsize=(7.5, 8.75))
+# figsize = (width, height) plosBio ((7.5, 8.75))
+fig, ax = plt.subplots(1,1)
 
 label_format = {'fontweight': 'bold'}
 
@@ -44,17 +44,20 @@ list_seed = patab.seed.unique().tolist()
 num_seed = len(list_seed)
 dict_pos_seed = {list_seed[index]:index for index in range(num_seed)}
 
+size_rec = 0.8
+
 for _, row in patab.iterrows():
-    ax.plot(dict_pos_seed[row.seed],
-            dict_pos_genome[row.genome_id],
-            linestyle="None",marker="s",
-            markersize=15, mfc=row.color, 
-            mec='black',markeredgewidth=1)
+    ax.add_artist(Rectangle(xy=(dict_pos_seed[row.seed]-size_rec/2, 
+                                dict_pos_genome[row.genome_id]-size_rec/2),
+                            facecolor = row.color,
+                            width=size_rec, height=size_rec,
+                            edgecolor = 'black',
+                            lw=1))
 
     if row.PA > 1:
        ax.text(x = dict_pos_seed[row.seed],
                y = dict_pos_genome[row.genome_id],
-               s = str(row.PA),fontsize=11,
+               s = str(row.PA),
                color='white',ha='center',va='center',
                fontweight='heavy')
 
@@ -74,4 +77,10 @@ plt.xlim(-0.5, num_seed - 0.5)
 plt.ylim(-0.5, num_genome - 0.5)
 
 for plot_name in snakemake.output :
-    plt.savefig(plot_name, bbox_inches="tight",dpi=300)
+    plt.savefig(plot_name, bbox_inches="tight", dpi=300)
+
+print(plt.rcParams.items())
+print('----')
+print(dir(fig))
+print('----')
+print(fig.get_size_inches())
