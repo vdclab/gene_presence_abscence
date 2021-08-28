@@ -32,8 +32,24 @@ jobs:
         snakefile: workflow/Snakefile
         args: "--lint"
 
-  run-workflow:
+  run-workflow-linux:
     runs-on: ubuntu-latest
+    needs:
+      - linting
+      - formatting
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v1
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@2.0.0
+    - name: Test workflow
+      uses: snakemake/snakemake-github-action@v1.22.0
+      with:
+        directory: .test
+        snakefile: workflow/Snakefile
+        args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
+  run-workflow-macos:
+    runs-on: macos-latest
     needs:
       - linting
       - formatting
@@ -52,7 +68,8 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     needs:
-      - run-workflow  
+      - run-workflow-linux
+      - run-workflow-macos
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

@@ -23,8 +23,8 @@ rule psiblast:
         e_value=e_val_psiblast,
     resources:
         cpus=5,
-        mem_mb="10gb",
-        time_min="5-0",
+        mem_mb="10000",
+        time_min="7200",
     conda:
         "../envs/blast.yaml"
     envmodules:
@@ -61,8 +61,8 @@ rule blast:
         os.path.join(OUTPUT_FOLDER, "logs", "blast", "blast.log"),
     resources:
         cpus=5,
-        mem_mb="10gb",
-        time_min="5-0",
+        mem_mb="10000",
+        time_min="7200",
     conda:
         "../envs/blast.yaml"
     envmodules:

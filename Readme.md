@@ -86,7 +86,7 @@ snakemake --cores 1 --use-conda
 After finalizing your data analysis, you can automatically generate an interactive visual HTML report for inspection of results together with parameters and code inside of the browser via 
 
 ```shell
-snakemake --report report.zip --report-stylesheet workflow/report/report.css
+snakemake --report report.zip --report-stylesheet config/report.css
 ```
 The resulting report.zip file can be passed on to collaborators, provided as a supplementary file in publications.
 
