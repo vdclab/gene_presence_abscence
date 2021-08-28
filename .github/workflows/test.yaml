@@ -69,7 +69,7 @@ jobs:
     - name: install snakemake and run workflow
       run: |
           conda install snakemake=6.4.1
-          snakemake --show-failed-logs --cores 2 --conda-cleanup-pkgs cache
+          snakemake --show-failed-logs --use-conda --cores 2 --conda-cleanup-pkgs cache
   release:
     name: Create Release
     runs-on: ubuntu-latest
