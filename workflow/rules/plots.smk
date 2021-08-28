@@ -37,7 +37,7 @@ rule quick_plots:
         png=os.path.join(OUTPUT_FOLDER, "results", "plots", "quick_gene_PA.png"),
         pdf=os.path.join(OUTPUT_FOLDER, "results", "plots", "quick_gene_PA.pdf"),
     params :
-        color=config["default_values_plot"]["color"]
+        color=config["default_values_plot"]["color"],
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "plots", "quick_plots.log"),
     conda:
