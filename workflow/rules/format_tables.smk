@@ -61,8 +61,6 @@ rule prepare_for_silix:
             "prepare_for_silix",
             "{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.prepare_for_silix.log",
         ),
-    group:
-        "independent_seed"
     conda:
         "../envs/pandas.yaml"
     script:
@@ -98,8 +96,6 @@ rule find_family:
             "find_family",
             "{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.find_family.log",
         ),
-    group:
-        "independent_seed"
     conda:
         "../envs/pandas.yaml"
     script:
