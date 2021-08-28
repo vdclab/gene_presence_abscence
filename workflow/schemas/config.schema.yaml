@@ -67,6 +67,9 @@ properties:
       color: 
         type: string
 
+  PAtab_table:
+    type: string
+
 required:
   - seed
   - taxid
