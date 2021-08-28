@@ -65,10 +65,10 @@ jobs:
       with:
         activate-conda: true
         update-conda: true
-        conda-channels: 'bioconda,rdenise,conda-forge,defaults'
+        conda-channels: 'bioconda,conda-forge,defaults'
     - name: install snakemake and run workflow
       run: |
-          conda install snakemake=6.4.1
+          conda install snakemake=6.4.1 mamba
           snakemake --show-failed-logs --use-conda --cores 2 --conda-cleanup-pkgs cache
   release:
     name: Create Release
