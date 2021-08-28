@@ -78,9 +78,3 @@ plt.ylim(-0.5, num_genome - 0.5)
 
 for plot_name in snakemake.output :
     plt.savefig(plot_name, bbox_inches="tight", dpi=300)
-
-print(plt.rcParams.items())
-print('----')
-print(dir(fig))
-print('----')
-print(fig.get_size_inches())
