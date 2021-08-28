@@ -48,28 +48,6 @@ jobs:
         directory: .test
         snakefile: workflow/Snakefile
         args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
-  run-workflow-macos:
-    runs-on: macos-latest
-    needs:
-      - linting
-      - formatting
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v1
-    - name: Checkout submodules
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Setup conda
-      uses: s-weigand/setup-conda@v1.0.5
-      with:
-        activate-conda: true
-        update-conda: true
-        conda-channels: 'bioconda,conda-forge,defaults'
-    - name: install snakemake and run workflow
-      run: |
-          conda install snakemake=6.4.1 mamba
-          snakemake --show-failed-logs --use-conda --cores 2 --conda-cleanup-pkgs cache
   release:
     name: Create Release
     runs-on: ubuntu-latest
