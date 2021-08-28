@@ -39,7 +39,7 @@ rule silix:
         """
         if [ -s {input.blast_out} ]
         then   
-            sh -c 'silix "{input.fasta}" "{input.blast_out}" -f "{wildcards.seed}" -i 0.05 -r 0.05 > "{output}"'
+            sh -c 'silix "{input.fasta}" "{input.blast_out}" -f "{wildcards.seed}" -i 0.05 -r 0.05 > "{output}" 2> {log}'
         else
             touch '{output}'
         fi

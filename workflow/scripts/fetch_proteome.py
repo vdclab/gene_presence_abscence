@@ -142,4 +142,6 @@ def main():
 ##########################################################################
 
 if __name__ == "__main__":
+    # Put error and out into the log file
+    sys.stderr = sys.stdout = open(snakemake.log[0], "w")
     main()

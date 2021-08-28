@@ -32,11 +32,11 @@ rule psiblast:
     threads: 5
     shell:
         """
-        makeblastdb -dbtype prot -in '{input.taxid_db}' -parse_seqids
+        makeblastdb -dbtype prot -in '{input.taxid_db}' -parse_seqids &> {log}
 
         psiblast -query '{input.seed}' -db '{input.taxid_db}' -evalue {params.e_value} \
                  -outfmt '7 qacc qlen qseq qstart qend sacc slen sseq sstart send length pident evalue bitscore qcovs' \
-                 -num_threads {threads} -num_iterations 3 -out '{output}'
+                 -num_threads {threads} -num_iterations 3 -out '{output}' 2>> {log}
 
         rm {input.taxid_db}.*
         """
@@ -70,12 +70,12 @@ rule blast:
     threads: 5
     shell:
         """
-        cat '{input.taxid_fasta}' '{input.seed_fasta}' > '{output.fasta_for_blast}'
+        cat '{input.taxid_fasta}' '{input.seed_fasta}' > '{output.fasta_for_blast}' 
 
-        makeblastdb -dbtype prot -in '{output.fasta_for_blast}'
+        makeblastdb -dbtype prot -in '{output.fasta_for_blast}' &> {log}
 
         blastp -query '{output.fasta_for_blast}' -db '{output.fasta_for_blast}' -evalue 0.01 \
-               -outfmt 6 -out '{output.blast_out}' -num_threads {threads} -num_alignments 25000
+               -outfmt 6 -out '{output.blast_out}' -num_threads {threads} -num_alignments 25000 2>> {log}
 
         rm {output.fasta_for_blast}.*
         """

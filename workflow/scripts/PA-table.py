@@ -1,4 +1,5 @@
 import pandas as pd
+import sys
 
 ##########################################################################
 
@@ -26,7 +27,9 @@ def proteins2csv(sub_df):
         return '' 
 
 ##########################################################################
-                                         
+
+# Put error and out into the log file
+sys.stderr = sys.stdout = open(snakemake.log[0], "w")                                         
 
 # Seed preparing
 seed_table = pd.read_table(snakemake.input.seed_file)

@@ -137,6 +137,43 @@ For running the workflow while deploying any necessary software via conda and ru
 snakemake --cores 5 --use-conda --profile config/slurm
 ```
 
+### Additionnal information
+
+If you want to run it as a job,
+
+1. make sure that the pipeline is deploy where you are and that you change the ``config/config.yaml` accordingly to your needs
+2. create a file name for exemple `my_project.sh` and copy paste the following
+
+```bash
+#!/bin/bash -login
+#SBATCH -J sbatch_snakemake 
+#SBATCH -t 7-0:00:00
+#SBATCH -N 1
+#SBATCH --output $PWD/sbatch_snakemake-%j.out
+#SBATCH --error $PWD/sbatch-snakemake-%j.err
+
+# activate conda in general
+source /home/$(whoami)/.bashrc # if you have the conda init setting
+
+# activate a specific conda environment, if you so choose
+conda activate snakemake 
+
+# make things fail on errors
+set -o nounset
+set -o errexit
+set -x
+
+### run your commands here!
+snakemake --cores 5 --use-conda --profile config/slurm
+snakemake --report report.zip --report-stylesheet config/report.css
+```
+
+3. run the following command
+
+```bash
+sbatch my_project.sh
+```
+
 ## Walk-Through and File Production
 
 This pipeline consists of 8/11 steps called rules that take input files and create output files. Here is a description of the pipeline.

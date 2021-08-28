@@ -1,8 +1,12 @@
 from Bio import Entrez
 from Bio import SeqIO
+import sys
 
 Entrez.tool = 'draw presence/abscence v2'
 Entrez.email = 'decrecylab@gmail.com'
+
+# Put error and out into the log file
+sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
 # Read line by line the seed file without loading it in memory
 with open(snakemake.input[0], 'rt') as r_file :

@@ -1,4 +1,8 @@
 import pandas as pd
+import sys
+
+# Put error and out into the log file
+sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
 # Opening blastout
 blast_names = ['qacc', 'qlen', 'qseq','qstart', 'qend', 'sacc', 'slen', 'sseq', 'sstart', 'send','length',

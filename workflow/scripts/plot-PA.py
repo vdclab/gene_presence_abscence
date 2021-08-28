@@ -1,9 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import sys
 
 # It seems there is a bug if another backend is used
 import matplotlib
 matplotlib.use('Agg')
+
+# Put error and out into the log file
+sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
 # Plot parameters
 font = {'family': 'DejaVu Sans', 'weight': 'light', 'size': 12, }

@@ -1,4 +1,8 @@
 from Bio import SeqIO
+import sys
+
+# Put error and out into the log file
+sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
 # Get all the proteins of the database inside a dict-like structure
 all_index_fasta = SeqIO.index(snakemake.input.protein_fasta, 'fasta')
