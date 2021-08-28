@@ -68,8 +68,8 @@ jobs:
         conda-channels: 'bioconda,rdenise,conda-forge,defaults'
     - name: install snakemake and run workflow
       run: |
-      conda install snakemake=6.4.1
-      snakemake --show-failed-logs --cores 2 --conda-cleanup-pkgs cache
+          conda install snakemake=6.4.1
+          snakemake --show-failed-logs --cores 2 --conda-cleanup-pkgs cache
   release:
     name: Create Release
     runs-on: ubuntu-latest
