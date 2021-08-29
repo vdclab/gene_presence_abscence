@@ -46,7 +46,7 @@ blast_out = blast_out[blast_out.coverage >= min_coverage].reset_index(drop = Tru
 # Because blast_out could be really big, generate all the output at once
 for file_out in snakemake.output :
     tmp_blast_out = blast_out.copy()
-    constrains = file_out.split('--')[-1].split('.')[0]
+    constrains = file_out.split('--')[-1].split('.out')[0]
     constrains_split = constrains.split('_')
 
     seed = constrains_split[0]
