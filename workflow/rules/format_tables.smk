@@ -58,7 +58,7 @@ rule prepare_for_silix:
                 "filtered_blast--{gene_constrains}.fnodes.flushed",
             ),
             gene_constrains=gene_constrains,
-        ),     
+        ),
     log:
         os.path.join(
             OUTPUT_FOLDER,
