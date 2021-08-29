@@ -19,8 +19,6 @@ rule read_psiblast:
             "psiblast",
             f"list_all_protein--eval_{e_val_psiblast:.0e}.tsv",
         ),
-    resources:
-        mem_mb=8000,
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "format_table", "read_psiblast.log"),
     conda:
