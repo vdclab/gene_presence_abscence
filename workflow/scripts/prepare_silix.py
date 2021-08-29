@@ -25,7 +25,7 @@ protein_dict.update(seed_table.length
 blast_names = ['qseqid', 'sseqid', 'pident', 'length', 'mismatch', 'gapopen', 'qstart', 'qend',
                'sstart', 'send', 'evalue', 'bitscore']
 
-blast_out = pd.read_csv(snakemake.input.blast_out, sep='\t', header=None, names=blast_names)
+blast_out = pd.DataFrame(columns=blast_names+['coverage'])
 
 # I think it is totally useless
 # blast_out.drop_duplicates(inplace=True)
@@ -33,15 +33,23 @@ max_eval = seed_table.evalue.max()
 min_pident = seed_table.pident.min()
 min_coverage = seed_table.coverage.min()
 
-# start filtering blast out on e-value, coverage and percent identity
-blast_out = blast_out[blast_out.evalue <= max_eval].reset_index(drop = True)
-blast_out = blast_out[blast_out.pident >= min_pident].reset_index(drop = True)
+with open(snakemake.input.blast_out, 'rt') as r_file :
+    for line in r_file:
+        line_split = line.rstrip().split()
+        evalue = float(line_split[10])
+        pident = float(line_split[2])
+        length = float(line_split[3])
+        qseqid = line_split[0]
 
-# Calculating the coverage on the query
-for index, row in blast_out.iterrows() :
-    blast_out.at[index, 'coverage'] = row.length / protein_dict[row.qseqid]
+        # start filtering blast out on e-value, coverage and percent identity
+        if evalue <= max_eval and pindent >= min_pident :
+            coverage = length / protein_dict[qseqid]
 
-blast_out = blast_out[blast_out.coverage >= min_coverage].reset_index(drop = True)
+            # Calculating the coverage on the query
+            if coverage >= min_coverage :
+                line_split.append(coverage)
+                tmp_dataframe = pd.DataFrame(line_split, columns=blast_names+['coverage'])
+                blast_out = pd.concat([blast_out, tmp_dataframe])
 
 # Because blast_out could be really big, generate all the output at once
 for file_out in snakemake.output :

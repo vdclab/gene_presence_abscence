@@ -13,12 +13,6 @@ rule read_psiblast:
             f"psiblast--eval_{e_val_psiblast:.0e}_raw.out",
         ),
     output:
-        clean_blast=os.path.join(
-            OUTPUT_FOLDER,
-            "processing_files",
-            "psiblast",
-            f"psiblast--eval_{e_val_psiblast:.0e}_cleaned.out",
-        ),
         list_all_prot=os.path.join(
             OUTPUT_FOLDER,
             "processing_files",
@@ -26,7 +20,7 @@ rule read_psiblast:
             f"list_all_protein--eval_{e_val_psiblast:.0e}.tsv",
         ),
     resources:
-        mem_mb=10000,
+        mem_mb=8000,
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "format_table", "read_psiblast.log"),
     conda:
@@ -67,7 +61,7 @@ rule prepare_for_silix:
             "prepare_for_silix.log",
         ),
     resources:
-        mem_mb=10000,
+        mem_mb=8000,
     conda:
         "../envs/pandas.yaml"
     script:
