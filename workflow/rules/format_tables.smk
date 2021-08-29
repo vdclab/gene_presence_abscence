@@ -55,7 +55,7 @@ rule prepare_for_silix:
                 "processing_files",
                 "blast",
                 "split_blast_out",
-                "filtered_blast--{gene_constrains}.fnodes.flushed",
+                "filtered_blast--{gene_constrains}.out",
             ),
             gene_constrains=gene_constrains,
         ),
