@@ -47,20 +47,25 @@ rule prepare_for_silix:
             OUTPUT_FOLDER, "processing_files", "blast", "blastp--blast_evalue_1e-2.out"
         ),
     output:
-        os.path.join(
-            OUTPUT_FOLDER,
-            "processing_files",
-            "blast",
-            "split_blast_out",
-            "filtered_blast--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.out",
-        ),
+        expand(
+            os.path.join(
+                OUTPUT_FOLDER,
+                "processing_files",
+                "blast",
+                "split_blast_out",
+                "filtered_blast--{gene_constrains}.fnodes.flushed",
+                ),
+                gene_constrains=gene_constrains,
+        ),     
     log:
         os.path.join(
             OUTPUT_FOLDER,
             "logs",
-            "prepare_for_silix",
-            "{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.prepare_for_silix.log",
+            "format_table",
+            "prepare_for_silix.log",
         ),
+    resources:
+        mem_mb=10000,
     conda:
         "../envs/pandas.yaml"
     script:
