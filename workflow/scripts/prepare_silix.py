@@ -61,7 +61,7 @@ with open(snakemake.input.blast_out, 'rt') as r_file :
                     coverage = float(constrains_split[4])
                     pident = float(constrains_split[6])
 
-                    if evalue_blast <= evalue and pident_blast >= pident coverage_blast and >= coverage:
+                    if evalue_blast <= evalue and pident_blast >= pident and coverage_blast >= coverage:
                         list_open_output[index].write(line)
 
 for file_open in list_open_output :

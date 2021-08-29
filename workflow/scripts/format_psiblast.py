@@ -13,7 +13,7 @@ all_sacc = []
 with open(snakemake.input.psiblast, 'rt') as r_file :
     for line in r_file :
         # Cleaning blastout
-        if 'Search has CONVERGED!' not in line :
+        if 'Search has CONVERGED!' not in line and not line.startswith('#') and not line.startswith('\n'):
             line_split = line.split()
             sacc = line_split[5]
 
