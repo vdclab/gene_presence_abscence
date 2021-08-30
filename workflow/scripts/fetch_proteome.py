@@ -124,7 +124,7 @@ def main():
 
                     df_proteins.at[-1, 'protein_id']   = protein.id
                     df_proteins.at[-1, 'protein_name'] = ' '.join(description_split[0].split(' ')[1:])
-                    df_proteins.at[-1, 'genome_name']  = description_split[1].split(']')[0]
+                    df_proteins.at[-1, 'genome_name']  = genome.organism_name
                     df_proteins.at[-1, 'genome_id']    = genome.assembly_accession
                     df_proteins.at[-1, 'length']       = len(protein.seq)
 
