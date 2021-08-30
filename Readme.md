@@ -62,12 +62,12 @@ Snakedeploy will create two folders `workflow` and `config`. The former contains
 
 #### General settings
 
-To configure this workflow, modify config/config.yaml according to your needs, following the explanations provided in the file.
-Sample and unit sheet
+To configure this workflow, modify `config/config.yaml` according to your needs, following the explanations provided in the file.  
 
-- Add seeds to `config/samples.tsv`. For each protein, the columns `seed`, and `protein_id` have to be defined. The protein_id is the protein id define by [NCBI](https://www.ncbi.nlm.nih.gov/). To include other relevant variables such as color, threshold (e-value, percentage identities and coverage), add a new column to the sheet.
+Seed and taxonomy sheet
+- Add seeds to `config/samples.tsv`. For each protein, the columns `seed`, and `protein_id` have to be defined. The protein_id is the protein id define by [NCBI](https://www.ncbi.nlm.nih.gov/). To include other relevant variables such as color, threshold (e-value, percentage identities and coverage), add a new column to the sheet. Exemple of the `seed file` is present in the `config` folder if needed or in the [doc](https://github.com/vdclab/gene_presence_abscence/blob/main/doc/dummy_seeds.tsv) folder in the GitHub page
 - Add taxonimic id list to `config/taxid.tsv`. For each genome, the column `TaxId` has to be defined. The TaxId is the protein id define by [NCBI Taxonomy](https://www.ncbi.nlm.nih.gov/taxonomy). To include other relevant variables such as taxonimical groups (`NCBIGroups`), add a new column to the sheet.
-- You can also configure other parameter such as `project_name`, `output_folder` in the `config/config.yaml` file.
+- You can also configure other parameter such as `project_name`, `output_folder` in the `config/config.yaml` file. Exemple of the `tanonomy file` is present in the `config` folder if needed or in the [doc](https://github.com/vdclab/gene_presence_abscence/blob/main/doc/dummy_taxids.tsv) folder in the GitHub page
 
 Missing values can be specified by empty columns or by writing `NA`.
 
@@ -94,9 +94,18 @@ The resulting report.zip file can be passed on to collaborators, provided as a s
 
 The efficacy of snakemake is dependent upon pre-existing output files, but, without supply of these files by the user, the rule will be triggered.
 
-To trigger a rule again you can delete the output files of the rule, or change there names.
+If you want to re-run a part of the pipeline without running previous rule you can specify the rule you want to run with the option `allowed-rules`
 
-Alternatively, you can force a rule by adding it to the end of the user-entered command (in command line): `--force (rule_name)` or `-f (rule_name)`.
+```bash
+  --allowed-rules ALLOWED_RULES [ALLOWED_RULES ...]
+                        Only consider given rules. If omitted, all rules in Snakefile are used. Note that this is intended primarily for internal use and may lead to unexpected results otherwise. (default: None)
+```
+
+For exemple if I want to re-run from silix to all
+
+```bash
+snakemake --cores 1 --use-conda --allowed-rules silix find_family make_table plots all
+```
 
 ## Important Notes for running on the cluster
 
@@ -122,7 +131,7 @@ For more info : https://help.rc.ufl.edu/doc/Samba_Access
 Before starting the installion of the program, you will need to load `conda`; this required software is listed as follows:
 
 ```
-module load conda/4.10.1
+module load conda
 ```
 
 After that the step are the in `Step 1: install Snakemake and Snakedeploy`
@@ -229,7 +238,7 @@ This pipeline consists of 8/11 steps called rules that take input files and crea
   <img src="doc/dummy_dag_speedup.png?raw=true" height="500">
 </p>
 
-### Rule 1 : fetch_fasta_from_seed
+### Rule 1: fetch_fasta_from_seed
 
 Rule description: Fetch the fasta of the seed from the seed table. Then they are writen in the output file.  
 
@@ -246,7 +255,7 @@ Rule description: Fetch the fasta of the seed from the seed table. Then they are
                      description = Same file as input but the 'protein id' of each file is changed to match the fasta file                
 ```
         
-### Rule 2 : fetch_proteins_database
+### Rule 2: fetch_proteins_database
 
 Rule description: Fetch the information for each protein of each genome in the taxid list. That includes: the protein ncbi id, sequence, length and annotation, as well as in which genome is found. Information for the genome include genome ncbi id, name, taxid and if complete or partial.  
  
@@ -271,7 +280,7 @@ Rule description: Fetch the information for each protein of each genome in the t
 
 ```
  
-### Rule 2.1 : psiblast (optional)
+### Rule 2.1: psiblast (optional)
 
 Rule description: Use the sequences of the seeds to make a psiBLAST against all the taxid. 
  
@@ -288,7 +297,7 @@ Rule description: Use the sequences of the seeds to make a psiBLAST against all 
                  description = blast out format 6 in tabulation, no header
 ```
 
-### Rule 2.2 : read_psiblast (optional)
+### Rule 2.2: read_psiblast (optional)
 
 Rule description: Read the psiBLAST, remove unwanted lines ane extract the list of matches. 
 
@@ -306,7 +315,7 @@ Rule description: Read the psiBLAST, remove unwanted lines ane extract the list 
                      description = list of all potein identifications gathered in the psiBLAST in column
 ```
 
-### Rule 2.3 : make_fasta (optional)
+### Rule 2.3: make_fasta (optional)
 
 Rule description: Create a fasta file from the psiblast results and the result of the protein information in the rule cat_proteins_info. 
 
@@ -326,7 +335,7 @@ Rule description: Create a fasta file from the psiblast results and the result o
 ```
 
 
-### Rule 3 : blast
+### Rule 3: blast
 
 Rule description: Blast all versus all of the fasta of all proteins. 
 
@@ -348,7 +357,7 @@ Rule description: Blast all versus all of the fasta of all proteins.
 
 
 
-### Rule 4 : prepare_for_silix
+### Rule 4: prepare_for_silix
 
 Rule description: Filter the blast results from the rule blast with the threshold specified for each seed in the seed file. Filters include the identity score, coverage and e-value, decided by the user. Create one new filtered blast result for each seed.  
 
@@ -372,7 +381,7 @@ Rule description: Filter the blast results from the rule blast with the threshol
 ```
 
 
-### Rule 5 : silix
+### Rule 5: silix
 
 Rule description: Uses Silix to create a network of protein and give a file of the protein segregated in groups.  If the blast output file is empty, just create an empty file. 
 
@@ -397,7 +406,7 @@ Rule description: Uses Silix to create a network of protein and give a file of t
 ```
 
 
-### Rule 6 : find_family
+### Rule 6: find_family
  
 Rule description: Find the group of each seed in each individual seed and record it. 
 
@@ -416,7 +425,7 @@ Rule description: Find the group of each seed in each individual seed and record
 ```
 
 
-### Rule 7 : make_table
+### Rule 7: make_table
 
 Rule description: Check the presence of protein similar to the seed in each taxid and create a table of presence abscence. This table is then plotted in a colored table.
 
@@ -446,7 +455,7 @@ Rule description: Check the presence of protein similar to the seed in each taxi
 
 
 
-### Rule 8 : plots
+### Rule 8: plots
 
 Rule description: The table from `make_table` is then plotted in a colored table.
 
@@ -456,6 +465,52 @@ Rule description: The table from `make_table` is then plotted in a colored table
     - final table melt : type = str
                          format = genome_id | genome_name | seed | PA | color | protein_id
                          description = presence/abscence table, with header. Each line is a protein information
+  
+· output files:
+    - pdf: type = list of str
+           description = plots in pdf of the final table centered on one seed 
+    - png: type = list of str
+           description = plots in png of the final table centered on one seed
+```
+
+### Additionnal rules
+
+#### Rule A1: clean
+
+Rule description: Remove the folder database, logs and processing_files to only keep results
+
+To run the rule do
+
+```bash
+snakemake clean --cores 1
+```
+
+
+```
+
+· input files:
+    - database, logs and processing_files directory
+  
+```
+
+#### Rule A2: quick_plots
+
+Rule description: Plot a presence absence table in pdf and png.
+
+To run the rule do
+
+```bash
+snakemake quick_plots -C PAtab_table=path/to/pa_table.tsv --use_conda --cores 1
+```
+
+Exemple of the `presence/absence table` in the [doc](https://github.com/vdclab/gene_presence_abscence/blob/main/doc/dummy_PAtab.tsv) folder in the GitHub page
+
+```
+
+· input files:
+    - PA table : type = str
+                 format = genome_id in the first column and the next columns are annotation columns
+                 description = presence/abscence table, with header.
   
 · output files:
     - pdf: type = list of str

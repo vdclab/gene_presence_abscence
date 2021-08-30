@@ -11,18 +11,14 @@ matplotlib.use('Agg')
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
 # Plot parameters
-font = {'family': 'DejaVu Sans', 'weight': 'light'}
-plt.rc('font',**font)
 plt.rcParams['text.color'] = 'black'
 plt.rcParams['svg.fonttype'] = 'none'  # Editable SVG text
+plt.rcParams['pdf.fonttype'] = 42
+plt.rcParams['ps.fonttype'] = 42
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.weight'] = 'light'
 
 # Name in PAtab genome_id, seed, PA, color, genome_name
-
-# figsize = (width, height) plosBio ((7.5, 8.75))
-fig, ax = plt.subplots(1,1)
-
-label_format = {'fontweight': 'bold'}
-
 patab = pd.read_table(snakemake.input.final_table)
 
 # Dict position genomes and gene
@@ -44,7 +40,23 @@ list_seed = patab.seed.unique().tolist()
 num_seed = len(list_seed)
 dict_pos_seed = {list_seed[index]:index for index in range(num_seed)}
 
+# Try to have the magic figure size
+leftmargin = 0.5 #inches
+rightmargin = 0.3 #inches
+topmargin = bottommargin =  0.1 #inches
+categorysize = 0.25 # inches
+
+figwidth = leftmargin + rightmargin + (num_seed+1)*categorysize
+figheight = topmargin + bottommargin + (num_genome+1)*categorysize
+
 size_rec = 0.8
+
+# figsize = (width, height) plosBio ((7.5, 8.75))
+fig, ax = plt.subplots(1,1, figsize=(figwidth, figheight))
+fig.subplots_adjust(left=leftmargin/figwidth, right=1-rightmargin/figwidth,
+                    top=1-topmargin/figheight, bottom=bottommargin/figheight)
+
+label_format = {'fontweight': 'bold'}
 
 for _, row in patab.iterrows():
     ax.add_artist(Rectangle(xy=(dict_pos_seed[row.seed]-size_rec/2, 

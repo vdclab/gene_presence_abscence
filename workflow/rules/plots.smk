@@ -41,7 +41,7 @@ rule quick_plots:
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "plots", "quick_plots.log"),
     conda:
-        "../envs/quick_plots.yaml"
+        "../envs/plots.yaml"
     script:
         "../scripts/quick_plotPA.py"
 

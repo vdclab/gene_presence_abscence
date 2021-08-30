@@ -11,20 +11,16 @@ matplotlib.use('Agg')
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
 # Plot parameters
-font = {'family': 'DejaVu Sans', 'weight': 'light'}
-plt.rc('font',**font)
 plt.rcParams['text.color'] = 'black'
 plt.rcParams['svg.fonttype'] = 'none'  # Editable SVG text
+plt.rcParams['pdf.fonttype'] = 42
+plt.rcParams['ps.fonttype'] = 42
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.weight'] = 'light'
 
 # Name in PAtab genome_id, seed, PA, color, genome_name
-
-# figsize = (width, height) plosBio ((7.5, 8.75))
-fig, ax = plt.subplots(1,1)
-
-label_format = {'fontweight': 'bold'}
-
-patab = pd.read_table(snakemake.input.final_table, na_filter=False)
-patab = .replace('.+', '1', regex=True).replace('', '0') 
+patab = pd.read_table(snakemake.input.final_table, na_filter=False, index_col=0)
+patab = patab.replace('.+', '1', regex=True).replace('', '0') 
 
 # Dict position genomes and gene
 num_genome = patab.shape[0]
@@ -40,14 +36,33 @@ dict_pos_seed = {list_seed[index]:index for index in range(num_seed)}
 # Melt the table
 patab = patab.reset_index().rename(columns={'index':'genome_id'})
 patab = patab.melt(id_vars='genome_id', var_name='seed', value_name='PA')
+patab['color'] = patab.PA.map({'1':snakemake.params.color, '0':'white'})
+
+# Try to have the magic figure size
+leftmargin = 0.5 #inches
+rightmargin = 0.3 #inches
+topmargin = bottommargin =  0.1 #inches
+categorysize = 0.25 # inches
+
+figwidth = leftmargin + rightmargin + (num_seed+1)*categorysize
+figheight = topmargin + bottommargin + (num_genome+1)*categorysize
+
+size_rec = 0.8
 
 # To update the size of the square
 size_rec = 0.8
 
+# figsize = (width, height) plosBio ((7.5, 8.75))
+fig, ax = plt.subplots(1,1, figsize=(figwidth, figheight))
+fig.subplots_adjust(left=leftmargin/figwidth, right=1-rightmargin/figwidth,
+                    top=1-topmargin/figheight, bottom=bottommargin/figheight)
+
+label_format = {'fontweight': 'bold'}
+
 for _, row in patab.iterrows():
     ax.add_artist(Rectangle(xy=(dict_pos_seed[row.seed]-size_rec/2, 
                                 dict_pos_genome[row.genome_id]-size_rec/2),
-                            facecolor = snakemake.params.color,
+                            facecolor = row.color,
                             width=size_rec, height=size_rec,
                             edgecolor = 'black',
                             lw=1))

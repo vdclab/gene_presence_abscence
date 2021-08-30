@@ -109,6 +109,7 @@ rule clean:
     input:
         os.path.join(OUTPUT_FOLDER, "database"),
         os.path.join(OUTPUT_FOLDER, "processing_files"),
+        os.path.join(OUTPUT_FOLDER, "logs"),
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "clean.log"),
     shell:
