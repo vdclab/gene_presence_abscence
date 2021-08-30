@@ -116,13 +116,19 @@ the genome
 General results
 ---------------
 
+Figure
+******
+
 .. figure:: {{ snakemake.config["__output_folder__"] }}/results/plots/gene_PA.png
    :width: 30%
    :align: center
 
 
+Table format
+************
+
 .. csv-table:: Presence Absence in genomes
-   :file: {{ snakemake.config["__output_folder__"] }}/results/PAtab_table.tsv
+   :file: {{ snakemake.config["__output_folder__"] }}/results/patab_table.tsv
    :width: 20%
    :delim: tab
    :align: center
