@@ -88,6 +88,8 @@ patab.to_csv(snakemake.output.final_table, sep='\t', index=False)
 
 # Because seems to be needed same table but in pivot format with the name of the protein in cells
 patab_table = patab.pivot_table(index = 'genome_id', columns='seed', 
-                                values='protein_id', aggfunc=proteins2csv, sort=False, dropna=False)[seed_list] 
+                                values='protein_id', aggfunc=proteins2csv, sort=False, dropna=False).reset_index()
 
-patab_table.to_csv(snakemake.output.final_table_2, sep='\t', index_label=False)
+patab_table = patab_table.merge(fam_id_table[['genome_id','genome_name']].drop_duplicates(), on='genome_id')
+
+patab_table[['genome_id','genome_name'] + seed_list].to_csv(snakemake.output.final_table_2, sep='\t', index=False)
