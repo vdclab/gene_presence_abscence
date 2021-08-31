@@ -44,19 +44,19 @@ def infer_gene_constrains(seed_df):
             tmp_evalue = row.evalue
         else:
             tmp_evalue = config["default_blast_option"]["e_val"]
-            seed_df.at[index, 'evalue'] = tmp_evalue
+            seed_df.at[index, "evalue"] = tmp_evalue
 
         if "coverage" in seed_df.columns:
             tmp_coverage = row.coverage
         else:
             tmp_coverage = config["default_blast_option"]["cov"]
-            seed_df.at[index, 'coverage'] = tmp_coverage
+            seed_df.at[index, "coverage"] = tmp_coverage
 
         if "pident" in seed_df.columns:
             tmp_pident = row.pident
         else:
             tmp_pident = config["default_blast_option"]["pident"]
-            seed_df.at[index, 'pident'] = tmp_pident
+            seed_df.at[index, "pident"] = tmp_pident
 
         tmp_text = (
             f"{row.seed}_evalue_{tmp_evalue:.0e}_cov_{tmp_coverage}_pid_{tmp_pident}"
@@ -92,15 +92,16 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, change = False):
         elif not seed_df.protein_id.equals(start_seed_df.protein_id):
             seed_df.to_csv(start_seed_file, sep="\t", index=False)
         # If something else change
-        elif not seed_df.equals(start_seed_df) :
+        elif not seed_df.equals(start_seed_df):
             # Update new seed with information of seed
             columns2change = ["seed", "evalue", "pident", "coverage", "color"]
             new_seed_df.update(seed_df[columns2change])
             new_seed_df.to_csv(new_seed_file, sep="\t", index=False)
-    else :
+    else:
         seed_df.to_csv(start_seed_file, sep="\t", index=False)
 
     return
+
 
 ##########################################################################
 
