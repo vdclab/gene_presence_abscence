@@ -8,7 +8,7 @@
 
 import os, sys
 import pandas as pd
-from snakemake.utils import validate, logger
+from snakemake.utils import validate
 
 ##########################################################################
 ##########################################################################
@@ -32,28 +32,31 @@ def get_final_output():
 ##########################################################################
 
 
-def infer_gene_constrains(seed_table):
+def infer_gene_constrains(seed_df):
     """
     Infer gene_constrains from default config value or table
     """
 
     list_constrains = []
 
-    for index, row in seed_table.iterrows():
-        if "evalue" in seed_table.columns:
+    for index, row in seed_df.iterrows():
+        if "evalue" in seed_df.columns:
             tmp_evalue = row.evalue
         else:
             tmp_evalue = config["default_blast_option"]["e_val"]
+            seed_df.at[index, 'evalue'] = tmp_evalue
 
-        if "coverage" in seed_table.columns:
+        if "coverage" in seed_df.columns:
             tmp_coverage = row.coverage
         else:
             tmp_coverage = config["default_blast_option"]["cov"]
+            seed_df.at[index, 'coverage'] = tmp_coverage
 
-        if "pident" in seed_table.columns:
+        if "pident" in seed_df.columns:
             tmp_pident = row.pident
         else:
             tmp_pident = config["default_blast_option"]["pident"]
+            seed_df.at[index, 'pident'] = tmp_pident
 
         tmp_text = (
             f"{row.seed}_evalue_{tmp_evalue:.0e}_cov_{tmp_coverage}_pid_{tmp_pident}"
@@ -61,8 +64,43 @@ def infer_gene_constrains(seed_table):
 
         list_constrains.append(tmp_text)
 
-    return list_constrains
+    return list_constrains, seed_df
 
+
+##########################################################################
+
+
+def compare_seed_table(seed_df, new_seed_file, start_seed_file, change = False):
+    """
+    Compare the seed and new seed if exists to update the new_seed
+    Restart the pipeline from start if:
+        - New seed file not found
+        - Seed file and new seed file don't have the same number of seeds
+        - Protein id does not match
+    Else:
+        - Update new seed file
+    """
+
+    if os.path.isfile(new_seed_file):
+        new_seed_df = pd.read_table(new_seed_file).set_index("seed", drop=False)
+        start_seed_df = pd.read_table(start_seed_file).set_index("seed", drop=False)
+
+        # If seed is added
+        if seed_df.shape[0] != new_seed_df.shape[0]:
+            seed_df.to_csv(start_seed_file, sep="\t", index=False)
+        # If protein name change
+        elif not seed_df.protein_id.equals(start_seed_df.protein_id):
+            seed_df.to_csv(start_seed_file, sep="\t", index=False)
+        # If something else change
+        elif not seed_df.equals(start_seed_df) :
+            # Update new seed with information of seed
+            columns2change = ["seed", "evalue", "pident", "coverage", "color"]
+            new_seed_df.update(seed_df[columns2change])
+            new_seed_df.to_csv(new_seed_file, sep="\t", index=False)
+    else :
+        seed_df.to_csv(start_seed_file, sep="\t", index=False)
+
+    return
 
 ##########################################################################
 
@@ -175,4 +213,12 @@ else:
     )
 
 # Definition of the requirements for each seed
-gene_constrains = infer_gene_constrains(seed_table)
+gene_constrains, seed_table = infer_gene_constrains(seed_table)
+
+# Compare seed_table and new_seed_table (if exists) to update e_val, cov, pident
+new_seed_file = os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv")
+
+# Create a file as input of the first rule that change on if seeds.tsv change in required value
+start_seed_file = os.path.join(OUTPUT_FOLDER, "databases", "seeds", "start_seeds.tsv")
+
+compare_seed_table(seed_table, new_seed_file, start_seed_file)

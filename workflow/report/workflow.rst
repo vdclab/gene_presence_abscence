@@ -94,12 +94,6 @@ analysis`_ and `Analysis sets`_.
 Raw data analysis
 *****************
 
-.. figure:: {{ snakemake.config["__workflow_basedir__"] }}/report/dag_first_steps.svg
-   :width: 100%
-   :align: center
-
-   Schematic overview of the first steps.
-
 The raw data analysis generates silix results that serve as a
 starting point for subsequent analyses.
 
@@ -119,7 +113,7 @@ General results
 Figure
 ******
 
-.. figure:: {{ snakemake.config["__output_folder__"] }}/results/plots/gene_PA.png
+.. figure:: gene_PA.png_
    :width: 30%
    :align: center
 

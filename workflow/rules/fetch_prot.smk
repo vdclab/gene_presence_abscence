@@ -34,6 +34,7 @@ rule fetch_proteins_database:
         update_db=config["update_db"],
     resources:
         cpus=5,
+        time=120,
     threads: 5
     conda:
         "../envs/fetch_NCBI.yaml"
@@ -47,12 +48,17 @@ rule fetch_proteins_database:
 
 rule fetch_fasta_from_seed:
     input:
-        seed_file,
+        start_seed_file,
     output:
         fasta_seed=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.fasta"),
-        new_seed_file=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv")
-    log:
         new_seed_file=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv"),
+    log:
+        new_seed_file=os.path.join(
+            OUTPUT_FOLDER,
+            "logs",
+            "fetch_proteins",
+            "fetch_fasta_from_seed.log",
+        ),
     conda:
         "../envs/biopython.yaml"
     script:

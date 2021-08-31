@@ -58,6 +58,8 @@ rule prepare_for_silix:
             "format_table",
             "prepare_for_silix.log",
         ),
+    resources:
+        time=30,
     conda:
         "../envs/pandas.yaml"
     script:

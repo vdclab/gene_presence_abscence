@@ -243,7 +243,7 @@ This pipeline consists of 8/11 steps called rules that take input files and crea
 Rule description: Fetch the fasta of the seed from the seed table. Then they are writen in the output file.  
 
 ```
-· input file: 
+· params file: 
     - seed file: type = str
                  columns = seed name | protein id | e-value | percentage of identity | coverage | color
 
