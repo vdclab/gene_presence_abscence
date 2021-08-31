@@ -117,6 +117,25 @@ def infer_ngs_groups(taxid_df):
     return taxid_df
 
 
+##########################################################################################
+
+
+def create_folder(mypath):
+    """
+    Created the folder that I need to store my result if it doesn't exist
+    :param mypath: path where I want the folder (write at the end of the path)
+    :type: string
+    :return: Nothing
+    """
+
+    try:
+        os.makedirs(mypath)
+    except OSError:
+        pass
+
+    return
+
+
 ##########################################################################
 ##########################################################################
 ##
@@ -220,6 +239,7 @@ gene_constrains, seed_table = infer_gene_constrains(seed_table)
 new_seed_file = os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv")
 
 # Create a file as input of the first rule that change on if seeds.tsv change in required value
+create_folder(os.path.join(OUTPUT_FOLDER, "databases", "seeds"))
 start_seed_file = os.path.join(OUTPUT_FOLDER, "databases", "seeds", "start_seeds.tsv")
 
 compare_seed_table(seed_table, new_seed_file, start_seed_file)
