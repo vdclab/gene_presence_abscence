@@ -70,7 +70,7 @@ def infer_gene_constrains(seed_df):
 ##########################################################################
 
 
-def compare_seed_table(seed_df, new_seed_file, start_seed_file, change = False):
+def compare_seed_table(seed_df, new_seed_file, start_seed_file, change=False):
     """
     Compare the seed and new seed if exists to update the new_seed
     Restart the pipeline from start if:
