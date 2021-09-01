@@ -214,6 +214,7 @@ This pipeline consists of 8/11 steps called rules that take input files and crea
    │       └─ new_seeds.tsv                  <- Table with the informations about the seeds
    │
    └── results                               <- Final results for sharing with collaborators, typically derived from analysis sets
+       ├── fasta                             <- (optional) folder with the fasta file of the orthologs of the seeds
        ├── patab_melt.tsv                    <- Table with the information of presence-absence one information by line
        ├── patab_table.tsv                   <- Table with the information of presence absence with genome in index and seeds in columns and proteins Id in the cell
        └── plots                             <- Plots and table on which the plot are created
@@ -517,4 +518,22 @@ Exemple of the `presence/absence table` in the [doc](https://github.com/vdclab/g
            description = plots in pdf of the final table centered on one seed 
     - png: type = list of str
            description = plots in png of the final table centered on one seed
+```
+
+#### Rule A3: extract_protein
+
+Rule description: Create a fasta for each orthologs found (one fasta file per seed)
+
+```
+
+· input files:
+    - final table melt : type = str
+                         format = genome_id | genome_name | seed | PA | color | protein_id
+                         description = presence/abscence table, with header. Each line is a protein information
+    - prot sequence: type = str
+                     description =  multifasta file of all the unique protein ids                         
+  
+· output files:
+    - fasta files : type = list of str
+           description = name of all the fasta output with the format [name of the seed].fasta
 ```
