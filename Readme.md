@@ -117,7 +117,7 @@ snakemake --cores 1 --use-conda --allowed-rules silix find_family make_table plo
 
 ## Important Notes for running on the cluster
 
-### Step 1: log on the cluster
+### Step C-1: log on the cluster
 
 1) To work on the HiPerGator server, user must first open a terminal (for unix) or command prompt (for windows).  
 User must access the server by entering the following command:  
@@ -134,7 +134,7 @@ cd /blue/lagard/(GatorLink ID)
 You can access to the files of this folder on your computer by adding a server. The adresse is as follow: `\\exasmb.rc.ufl.edu`  
 For more info : https://help.rc.ufl.edu/doc/Samba_Access
 
-### Step 2: Installation
+### Step C-2: Installation
 
 Before starting the installion of the program, you will need to load `conda`; this required software is listed as follows:
 
@@ -144,7 +144,7 @@ module load conda
 
 After that the step are the same as in `Step 1: install Snakemake and Snakedeploy`, `Step 2: deploy workflow`, `Step 3: configure workflow`.
 
-### Step 3: Running the workflow
+### Step C-3: Running the workflow
 
 Given that the workflow has been properly deployed and configured, it can be executed as follows.
 
