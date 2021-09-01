@@ -154,6 +154,14 @@ For running the workflow while deploying any necessary software via conda and ru
 snakemake --cores 5 --use-conda --profile config/slurm
 ```
 
+As previously, if you want to run the workflow with the additional step to speedup the analysis that contains a big dataset you can either:
+- Change in the `config.yaml` the parameter `speedup` and change the value to `True`
+- Run the workflow adding `-C speedup=True` to the command line as follow
+
+```shell
+snakemake --cores 1 --use-conda --profile config/slurm -C speedup=True 
+```
+
 ### Additionnal information
 
 If you want to run it as a job,
