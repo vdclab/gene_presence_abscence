@@ -81,7 +81,7 @@ For running the workflow while deploying any necessary software via conda, run S
 snakemake --cores 1 --use-conda 
 ```
 
-If you want to run the pipeline with the additional step to speedup the analysis that contains a big dataset you can either:
+If you want to run the workflow with the additional step to speedup the analysis that contains a big dataset you can either:
 - Change in the `config.yaml` the parameter `speedup` and change the value to `True`
 - Run the workflow adding `-C speedup=True` to the command line as follow
 
