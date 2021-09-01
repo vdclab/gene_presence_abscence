@@ -142,7 +142,7 @@ Before starting the installion of the program, you will need to load `conda`; th
 module load conda
 ```
 
-After that the step are the in `Step 1: install Snakemake and Snakedeploy`
+After that the step are the same as in `Step 1: install Snakemake and Snakedeploy`, `Step 2: deploy workflow`, `Step 3: configure workflow`.
 
 ### Step 3: Running the workflow
 
@@ -161,6 +161,8 @@ As previously, if you want to run the workflow with the additional step to speed
 ```shell
 snakemake --cores 1 --use-conda --profile config/slurm -C speedup=True 
 ```
+
+As previously you can also generate a report following `Step 5: Generate report`.
 
 ### Additionnal information
 
