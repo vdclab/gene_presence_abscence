@@ -81,6 +81,14 @@ For running the workflow while deploying any necessary software via conda, run S
 snakemake --cores 1 --use-conda 
 ```
 
+If you want to run the pipeline with the additional step to speedup the analysis that contains a big dataset you can:
+- Change in the `config.yaml` the parameter `speedup` and change the value to `True`
+- Run the workflow adding `-C speedup=True` to the command line as follow
+
+```shell
+snakemake --cores 1 --use-conda -C speedup=True
+```
+
 #### Step 5: Generate report
 
 After finalizing your data analysis, you can automatically generate an interactive visual HTML report for inspection of results together with parameters and code inside of the browser via 
