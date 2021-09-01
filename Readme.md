@@ -71,7 +71,7 @@ Seed and taxonomy sheet
 
 Missing values can be specified by empty columns or by writing `NA`.
 
-### Step 4: Run the workflow
+### Step 4: run the workflow
 
 Given that the workflow has been properly deployed and configured, it can be executed as follows.
 
@@ -89,7 +89,7 @@ If you want to run the workflow with the additional step to speedup the analysis
 snakemake --cores 1 --use-conda -C speedup=True
 ```
 
-### Step 5: Generate report
+### Step 5: generate report
 
 After finalizing your data analysis, you can automatically generate an interactive visual HTML report for inspection of results together with parameters and code inside of the browser via 
 
@@ -117,7 +117,7 @@ snakemake --cores 1 --use-conda --allowed-rules silix find_family make_table plo
 
 ## Important Notes for running on the cluster
 
-### Step C-1: log on the cluster
+### Step C1: log on the cluster
 
 1) To work on the HiPerGator server, user must first open a terminal (for unix) or command prompt (for windows).  
 User must access the server by entering the following command:  
@@ -134,7 +134,7 @@ cd /blue/lagard/(GatorLink ID)
 You can access to the files of this folder on your computer by adding a server. The adresse is as follow: `\\exasmb.rc.ufl.edu`  
 For more info : https://help.rc.ufl.edu/doc/Samba_Access
 
-### Step C-2: Installation
+### Step C2: load conda
 
 Before starting the installion of the program, you will need to load `conda`; this required software is listed as follows:
 
@@ -144,7 +144,7 @@ module load conda
 
 After that the step are the same as in `Step 1: install Snakemake and Snakedeploy`, `Step 2: deploy workflow`, `Step 3: configure workflow`.
 
-### Step C-3: Running the workflow
+### Step C3: run the workflow
 
 Given that the workflow has been properly deployed and configured, it can be executed as follows.
 
@@ -203,9 +203,9 @@ sbatch my_project.sh
 
 ## Walk-Through and File Production
 
-This pipeline consists of 8/11 steps called rules that take input files and create output files. Here is a description of the pipeline.
+This pipeline consists of 9/12 steps called rules that take input files and create output files. Here is a description of the pipeline.
 
-1. As snakemake is set up, there is a 12th rule, called `all`, that serves to call the last output files and make sure they were created.
+1. As snakemake is set up, there is a last rule, called `all`, that serves to call the last output files and make sure they were created.
 
 2. A folder containing your work will be created:
 
@@ -353,10 +353,9 @@ Rule description: Create a fasta file from the psiblast results and the result o
 
 ```
 
+### Rule 3: merge_fasta
 
-### Rule 3: blast
-
-Rule description: Blast all versus all of the fasta of all proteins. 
+Rule description: Merge the proteome of interest with the seeds 
 
 ```
 
@@ -367,16 +366,31 @@ Rule description: Blast all versus all of the fasta of all proteins.
                   description = multifasta file of all the seeds from the rule fetch_fasta_from_seed
   
 · output files:
-    - blast out: type = str
-                 format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen | query start position | query end position | subject start position | subject end position | e-value | bitscore
-                 description = output format of blast
     - fasta for blast: type = str
                        description = concatenation of the 2 input multifasta files
 ```
 
 
 
-### Rule 4: prepare_for_silix
+### Rule 4: blast
+
+Rule description: Blast all versus all of the fasta of all proteins. 
+
+```
+
+· input files:
+    - fasta for blast: type = str
+                       description = concatenation of the the proteome taxid and seeds multifasta files
+  
+· output files:
+    - blast out: type = str
+                 format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen | query start position | query end position | subject start position | subject end position | e-value | bitscore
+                 description = output format of blast
+```
+
+
+
+### Rule 5: prepare_for_silix
 
 Rule description: Filter the blast results from the rule blast with the threshold specified for each seed in the seed file. Filters include the identity score, coverage and e-value, decided by the user. Create one new filtered blast result for each seed.  
 
@@ -400,7 +414,7 @@ Rule description: Filter the blast results from the rule blast with the threshol
 ```
 
 
-### Rule 5: silix
+### Rule 6: silix
 
 Rule description: Uses Silix to create a network of protein and give a file of the protein segregated in groups.  If the blast output file is empty, just create an empty file. 
 
@@ -425,7 +439,7 @@ Rule description: Uses Silix to create a network of protein and give a file of t
 ```
 
 
-### Rule 6: find_family
+### Rule 7: find_family
  
 Rule description: Find the group of each seed in each individual seed and record it. 
 
@@ -444,7 +458,7 @@ Rule description: Find the group of each seed in each individual seed and record
 ```
 
 
-### Rule 7: make_table
+### Rule 8: make_table
 
 Rule description: Check the presence of protein similar to the seed in each taxid and create a table of presence abscence. This table is then plotted in a colored table.
 
@@ -474,7 +488,7 @@ Rule description: Check the presence of protein similar to the seed in each taxi
 
 
 
-### Rule 8: plots
+### Rule 9: plots
 
 Rule description: The table from `make_table` is then plotted in a colored table.
 

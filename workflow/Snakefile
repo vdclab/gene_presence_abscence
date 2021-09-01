@@ -62,7 +62,8 @@ report: "report/workflow.rst"
 localrules:
     all,
     clean,
-
+    merge_fasta,
+    
 
 ##########################################################################
 # Load rules
@@ -75,7 +76,7 @@ include: "rules/format_tables.smk"
 include: "rules/ncbi_blast.smk"
 include: "rules/plots.smk"
 include: "rules/silix.smk"
-include: "rules/table2fasta.smk"
+include: "rules/make_fasta.smk"
 
 
 ##########################################################################

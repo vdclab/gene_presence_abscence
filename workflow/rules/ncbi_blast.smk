@@ -48,14 +48,12 @@ rule psiblast:
 
 rule blast:
     input:
-        taxid_fasta=speedup,
-        seed_fasta=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.fasta"),
+        fasta_for_blast=os.path.join(
+            OUTPUT_FOLDER, "databases", "merge_fasta", "all_protein_with_seeds.fasta"
+        ),
     output:
         blast_out=os.path.join(
             OUTPUT_FOLDER, "processing_files", "blast", "blastp--blast_evalue_1e-2.out"
-        ),
-        fasta_for_blast=os.path.join(
-            OUTPUT_FOLDER, "databases", "merge_fasta", "all_protein_with_seeds.fasta"
         ),
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "blast", "blast.log"),
@@ -70,12 +68,10 @@ rule blast:
     threads: 5
     shell:
         """
-        cat '{input.taxid_fasta}' '{input.seed_fasta}' > '{output.fasta_for_blast}' 
+        makeblastdb -dbtype prot -in '{input}' &> {log}
 
-        makeblastdb -dbtype prot -in '{output.fasta_for_blast}' &> {log}
-
-        blastp -query '{output.fasta_for_blast}' -db '{output.fasta_for_blast}' -evalue 0.01 \
+        blastp -query '{input}' -db '{input}' -evalue 0.01 \
                -outfmt 6 -out '{output.blast_out}' -num_threads {threads} -num_alignments 25000 2>> {log}
 
-        rm {output.fasta_for_blast}.*
+        rm {input}.*
         """

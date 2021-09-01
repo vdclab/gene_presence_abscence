@@ -68,30 +68,3 @@ rule fetch_fasta_from_seed:
 ##########################################################################
 ##########################################################################
 
-
-rule extract_protein:
-    input: 
-        PAtab=os.path.join(OUTPUT_FOLDER, "results", "patab_melt.tsv"),
-        fasta_protein=os.path.join(
-            OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
-        ),        
-    output:
-        expand(
-            os.path.join(OUTPUT_FOLDER, "results", "fasta", "{seed}.fasta"),
-            seed = seed_table.seed,
-        ),
-    log:
-        os.path.join(
-            OUTPUT_FOLDER,
-            "logs",
-            "fetch_proteins",
-            "extract_protein.log",
-        ),
-    conda:
-        "../envs/biopython.yaml"
-    script:
-        "../scripts/extract_protein.py"
-
-
-##########################################################################
-##########################################################################
