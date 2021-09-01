@@ -33,7 +33,77 @@ def get_cmdline_ndg(section, flat_output, file_formats, assembly_levels,
                                       -t {','.join(taxids)} {groups}"
 
     subprocess.run(shlex.split(cmd_line))
-    return                          
+    return
+
+##########################################################################
+
+
+def find_NCBIgroups(taxid, ncbi):
+    """
+    Infer taxid groups
+    """
+
+    dict_groups = {'':'invertebrate',}
+
+    lineage = ncbi.get_lineage(taxid)
+    names = ncbi.get_taxid_translator(lineage)
+    names = [names[taxid] for taxid in lineage]
+
+    protazoa = {'Cryptophyceae', 'Apusozoa', 'Amoebozoa', 'Haptista', 'Metamonada', 'Discoba', 'Sar'}
+
+
+    if 'Archaea' in names :
+        return 'archaea'
+    elif 'Bacteria' in names :
+        return 'bacteria'
+    elif 'Fungi' in names :
+        return 'fungi'
+    elif 'Viruses' in names:
+        return 'viral'
+    elif 'metagenomes' in names:
+        return 'metagenomes'
+    elif 'Viridiplantae' in names or 'Rhodophyta' in names:
+        return 'plant'
+    elif protazoa.intersection(set(names)) :
+        return 'protazoa'
+    elif 'Opisthokonta' in names:
+        if 'Vertebrata' in names:
+            if 'Mammalia' in names:
+                return 'vertebrate_mammalian'
+            else :
+                return 'vertebrate_other'
+        else :
+            return 'invertebrate'
+    else :
+        return 'all'
+
+
+##########################################################################
+
+
+def infer_ngs_groups(df_taxid, ncbi):
+    """
+    Infer taxid ngs option if not in taxid
+    """
+
+    if snakemake.config["ndg_option"]["groups"] != 'all':
+        if "NCBIGroups" not in df_taxid:
+            df_taxid["NCBIGroups"] = snakemake.config["ndg_option"]["groups"]
+        elif df_taxid.NCBIGroups.isnull().any():
+            df_taxid.loc[df_taxid.NCBIGroups.isnull(), "NCBIGroups"] = snakemake.config["ndg_option"]["groups"]
+    else:
+        if "NCBIGroups" not in df_taxid:
+            for index, row in df_taxid.iterrows():
+                df_taxid.at[index, "NCBIGroups"] = find_NCBIgroups(row.TaxId, ncbi)
+        elif df_taxid.NCBIGroups.isnull().any():
+            sub_df = df_taxid.loc[df_taxid.NCBIGroups.isnull()]
+            df_taxid = df_taxid.astype(str)
+            for index, row in sub_df.iterrows():
+                df_taxid.at[index, "NCBIGroups"] = find_NCBIgroups(row.TaxId, ncbi)
+
+    return df_taxid
+
+
 ##########################################################################
 
 def main():
@@ -54,6 +124,7 @@ def main():
        os.remove('taxdump.tar.gz')
 
     taxid_df = pd.read_table(snakemake.input[0])
+    taxid_df = infer_ngs_groups(taxid_df, ncbi)
 
     new_taxid_df = pd.DataFrame()
 

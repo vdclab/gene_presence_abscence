@@ -106,20 +106,6 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, change=False):
 ##########################################################################
 
 
-def infer_ngs_groups(taxid_df):
-    """
-    Infer taxid ngs option if not in taxid
-    """
-
-    if "NCBIGroups" not in taxid_df:
-        taxid_df["NCBIGroups"] = config["ndg_option"]["groups"]
-
-    return taxid_df
-
-
-##########################################################################################
-
-
 def create_folder(mypath):
     """
     Created the folder that I need to store my result if it doesn't exist
@@ -215,9 +201,6 @@ assembly_levels = config["ndg_option"]["assembly_levels"]
 
 # Values for refseq_categories :
 refseq_categories = config["ndg_option"]["refseq_categories"]
-
-# Values for groups :
-taxid_table = infer_ngs_groups(taxid_table)
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed
 if config["speedup"]:
