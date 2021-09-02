@@ -176,40 +176,42 @@ def main():
     assembly_final_df.iloc[:,:-1].to_csv(snakemake.output.assembly_output, index=False, sep='\t')
 
     # Now handeling the last step that is concatenate the fasta files downloaded
-    df_proteins = pd.DataFrame(columns = ['protein_id',
-                                          'protein_name',
-                                          'genome_name',
-                                          'genome_id',
-                                          'length'])
+    columns_protein_file =  ['protein_id',
+                             'protein_name',
+                             'genome_name',
+                             'genome_id',
+                             'length']
 
-    with open(snakemake.output.fasta_final, 'w') as w_file :
-        for index, genome in assembly_final_df.iterrows() :
-            with gzip.open(genome.local_filename, "rt") as handle:
-                parser = SeqIO.parse(handle, "fasta")
+    with open(snakemake.output.output_table_protein, 'wt') as protein_file:
+        header_prot = '\t'.join(columns_protein_file)
+        protein_file.write(f'{header_prot}\n')
 
-                for protein in parser : 
-                    description_split = protein.description.split(' [')
+        with open(snakemake.output.fasta_final, 'w') as fasta_file :
+            for index, genome in assembly_final_df.iterrows() :
+                with gzip.open(genome.local_filename, "rt") as handle:
+                    parser = SeqIO.parse(handle, "fasta")
 
-                    # To avoid duplicate name of proteins between close genomes
-                    protein.id = f'{protein.id}--{genome.assembly_accession}'
+                    for protein in parser : 
+                        description_split = protein.description.split(' [')
 
-                    df_proteins.at[-1, 'protein_id']   = protein.id
-                    df_proteins.at[-1, 'protein_name'] = ' '.join(description_split[0].split(' ')[1:])
-                    df_proteins.at[-1, 'genome_name']  = genome.organism_name
-                    df_proteins.at[-1, 'genome_id']    = genome.assembly_accession
-                    df_proteins.at[-1, 'length']       = len(protein.seq)
+                        # To avoid duplicate name of proteins between close genomes
+                        protein.id = f'{protein.id}--{genome.assembly_accession}'
 
-                    df_proteins.index += 1
+                        protein_id   = protein.id
+                        protein_name = ' '.join(description_split[0].split(' ')[1:])
+                        genome_name  = genome.organism_name
+                        genome_id    = genome.assembly_accession
+                        length       = len(protein.seq)
 
-                    SeqIO.write(protein, w_file, 'fasta')
+                        line_prot = f'{protein_id}\t{protein_name}\t{genome_name}\t{genome_id}\t{length}\n'
+                        protein_file.write(line_prot)
 
-
+                        SeqIO.write(protein, fasta_file, 'fasta')
 
             # Here to save space I decided to remove the file avec concatenation
             os.remove(genome.local_filename)
-
-    df_proteins.to_csv(snakemake.output.output_table_protein, sep='\t', index=False)
-
+    return
+    
 ##########################################################################
 
 if __name__ == "__main__":
