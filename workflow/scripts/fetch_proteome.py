@@ -43,16 +43,18 @@ def find_NCBIgroups(taxid, ncbi):
     Infer taxid groups
     """
 
-    dict_groups = {'':'invertebrate',}
-
     lineage = ncbi.get_lineage(taxid)
     names = ncbi.get_taxid_translator(lineage)
     names = [names[taxid] for taxid in lineage]
 
     protazoa = {'Cryptophyceae', 'Apusozoa', 'Amoebozoa', 'Haptista', 'Metamonada', 'Discoba', 'Sar'}
 
+    if 'etagenomes' in ','.join(names):
+        print(lineage)
 
-    if 'Archaea' in names :
+    if 'metagenomes' in names :
+        return 'metagenomes'
+    elif 'Archaea' in names:
         return 'archaea'
     elif 'Bacteria' in names :
         return 'bacteria'
@@ -60,8 +62,6 @@ def find_NCBIgroups(taxid, ncbi):
         return 'fungi'
     elif 'Viruses' in names:
         return 'viral'
-    elif 'metagenomes' in names:
-        return 'metagenomes'
     elif 'Viridiplantae' in names or 'Rhodophyta' in names:
         return 'plant'
     elif protazoa.intersection(set(names)) :
@@ -207,7 +207,7 @@ def main():
                         protein_file.write(line_prot)
 
                         SeqIO.write(protein, fasta_file, 'fasta')
-                
+
                 # Here to save space I decided to remove the file avec concatenation
                 os.remove(genome.local_filename)
     return

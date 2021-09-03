@@ -88,5 +88,8 @@ for pos in ['top', 'bottom', 'left', 'right']:
 plt.xlim(-0.5, num_seed - 0.5)
 plt.ylim(-0.5, num_genome - 0.5)
 
+# calculating dpi max pixel == 2**16
+dpi = 300 if 300*figheight < 2**16 else 2**16//figheight
+
 for plot_name in snakemake.output :
-    plt.savefig(plot_name, bbox_inches="tight", dpi=300)
+    plt.savefig(plot_name, bbox_inches="tight", dpi=dpi)
