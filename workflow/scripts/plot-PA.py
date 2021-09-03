@@ -89,7 +89,8 @@ plt.xlim(-0.5, num_seed - 0.5)
 plt.ylim(-0.5, num_genome - 0.5)
 
 # calculating dpi max pixel == 2**16
-dpi = 300 if 300*figheight < 2**16 else 2**16//figheight
+max_size_seed = max([len(seed) for seed in list_seed])
+dpi = 300 if 300*figheight < 2**16 else 2**16//(figheight+max_size_seed/categorysize)
 
 for plot_name in snakemake.output :
     plt.savefig(plot_name, bbox_inches="tight", dpi=dpi)
