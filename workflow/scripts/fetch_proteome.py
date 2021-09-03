@@ -207,9 +207,9 @@ def main():
                         protein_file.write(line_prot)
 
                         SeqIO.write(protein, fasta_file, 'fasta')
-
-            # Here to save space I decided to remove the file avec concatenation
-            os.remove(genome.local_filename)
+                
+                # Here to save space I decided to remove the file avec concatenation
+                os.remove(genome.local_filename)
     return
     
 ##########################################################################

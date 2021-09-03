@@ -40,8 +40,8 @@ with open(snakemake.input.blast_out, 'rt') as r_file :
         line_split = line.split()
 
         evalue_blast = float(line_split[10])
-        pident_blast = float(line_split[2])
-        length = float(line_split[3])
+        pident_blast = float(line_split[2]) / 100
+        length = float(line_split[7]) - float(line_split[6]) + 1
         qseqid = line_split[0]
 
         # start filtering blast out on e-value, coverage and percent identity
@@ -59,7 +59,7 @@ with open(snakemake.input.blast_out, 'rt') as r_file :
 
                     evalue = float(constrains_split[2])
                     coverage = float(constrains_split[4])
-                    pident = float(constrains_split[6])
+                    pident = float(constrains_split[6]) / 100
 
                     if evalue_blast <= evalue and pident_blast >= pident and coverage_blast >= coverage:
                         list_open_output[index].write(line)
