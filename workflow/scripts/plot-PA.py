@@ -43,7 +43,8 @@ dict_pos_seed = {list_seed[index]:index for index in range(num_seed)}
 # Try to have the magic figure size
 leftmargin = 0.5 #inches
 rightmargin = 0.3 #inches
-topmargin = bottommargin =  0.1 #inches
+topmargin = 0.5
+bottommargin =  0.1 #inches
 categorysize = 0.25 # inches
 
 figwidth = leftmargin + rightmargin + (num_seed+1)*categorysize
@@ -89,8 +90,7 @@ plt.xlim(-0.5, num_seed - 0.5)
 plt.ylim(-0.5, num_genome - 0.5)
 
 # calculating dpi max pixel == 2**16
-max_size_seed = max([len(seed) for seed in list_seed])
-dpi = 300 if 300*figheight < 2**16 else 2**16//(figheight+max_size_seed/categorysize)
+dpi = 300 if 300*figheight < 2**16 else 2**16//(figheight+1)
 
 for plot_name in snakemake.output :
     plt.savefig(plot_name, bbox_inches="tight", dpi=dpi)
