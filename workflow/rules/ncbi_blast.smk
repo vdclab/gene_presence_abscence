@@ -60,7 +60,7 @@ rule blast:
     resources:
         cpus=5,
         mem_mb=10000,
-        time=7200,
+        time=43200,
     conda:
         "../envs/blast.yaml"
     envmodules:
