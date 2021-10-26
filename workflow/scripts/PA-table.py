@@ -35,11 +35,7 @@ sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 seed_table = pd.read_table(snakemake.input.seed_file)
 seed_list = seed_table.seed.to_list()
 
-if 'color' in seed_table.columns:
-    seed_color_dict = seed_table.set_index('seed').color.to_dict()
-else :
-    seed_color_dict = {seed:snakemake.config['default_values_plot']['color'] 
-                          for seed in seed_list}
+seed_color_dict = seed_table.set_index('seed').color.to_dict()
 
 # list of all proteins
 all_proteins = pd.read_table(snakemake.input.protein_table)

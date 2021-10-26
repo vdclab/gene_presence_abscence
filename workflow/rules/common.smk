@@ -70,6 +70,20 @@ def infer_gene_constrains(seed_df):
 ##########################################################################
 
 
+def check_color_seed(seed_df):
+    """
+    Infer color if color is not set by the user in the seed's file
+    """
+
+    for index, row in seed_df.iterrows():
+        if "color" not in seed_df.columns:
+            seed_df.at[index, "color"] = config["default_values_plot"]["color"]
+
+    return seed_df
+
+##########################################################################
+
+
 def compare_seed_table(seed_df, new_seed_file, start_seed_file, change=False):
     """
     Compare the seed and new seed if exists to update the new_seed
@@ -95,6 +109,10 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, change=False):
         elif not seed_df.equals(start_seed_df):
             # Update new seed with information of seed
             columns2change = ["seed", "evalue", "pident", "coverage", "color"]
+
+            # Which columns to change that exist in the user file
+            columns2change = [column for column in columns2change if column in seed_df.columns]
+
             new_seed_df.update(seed_df[columns2change])
             new_seed_df.to_csv(new_seed_file, sep="\t", index=False)
     else:
@@ -217,6 +235,9 @@ else:
 
 # Definition of the requirements for each seed
 gene_constrains, seed_table = infer_gene_constrains(seed_table)
+
+# Check color of the seeds
+seed_table = check_color_seed(seed_table)
 
 # Compare seed_table and new_seed_table (if exists) to update e_val, cov, pident
 new_seed_file = os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv")
