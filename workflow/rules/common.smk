@@ -81,6 +81,7 @@ def check_color_seed(seed_df):
 
     return seed_df
 
+
 ##########################################################################
 
 
@@ -111,7 +112,9 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, change=False):
             columns2change = ["seed", "evalue", "pident", "coverage", "color"]
 
             # Which columns to change that exist in the user file
-            columns2change = [column for column in columns2change if column in seed_df.columns]
+            columns2change = [
+                column for column in columns2change if column in seed_df.columns
+            ]
 
             new_seed_df.update(seed_df[columns2change])
             new_seed_df.to_csv(new_seed_file, sep="\t", index=False)
