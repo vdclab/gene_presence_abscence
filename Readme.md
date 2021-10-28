@@ -117,21 +117,23 @@ snakemake --cores 1 --use-conda --allowed-rules silix find_family make_table plo
 
 ## Important Notes for running on the cluster
 
-### Step C1: log on the cluster
+### Step C1: log on the cluster [UFL users]
 
 1) To work on the HiPerGator server, user must first open a terminal (for unix) or command prompt (for windows).  
 User must access the server by entering the following command:  
 ```
 ssh (GatorLink ID)@hpg.rc.ufl.edu
 ```
-User will be required to enter their GatorLink account password. **No double tap verification needed.**  
+User will be required to enter their GatorLink account password.
       
 2) User will require access to files on the server. To access these files via command line, use the following:  
 ```
-cd /blue/lagard/(GatorLink ID)
+cd /blue/(your group)/(GatorLink ID)
 ```
 
-You can access to the files of this folder on your computer by adding a server. The adresse is as follow: `\\exasmb.rc.ufl.edu`  
+For exemple `group` is `lagard` for the VDCLab
+
+You can access to the files of this folder on your computer by adding a server. The address for Windows is as follow: `\\exasmb.rc.ufl.edu`, for Unix (Linux or MacOS) the address: smb://exasmb.rc.ufl.edu
 For more info : https://help.rc.ufl.edu/doc/Samba_Access
 
 ### Step C2: load conda
@@ -168,7 +170,7 @@ As previously you can also generate a report following `Step 5: Generate report`
 
 If you want to run it as a job,
 
-1. make sure that the pipeline is deploy where you are and that you change the ``config/config.yaml` accordingly to your needs
+1. make sure that the pipeline is deploy where you are and that you change the `config/config.yaml` accordingly to your needs
 2. create a file name for exemple `my_project.sh` and copy paste the following
 
 ```bash
