@@ -86,7 +86,7 @@ def check_color_seed(seed_df):
 ##########################################################################
 
 
-def compare_seed_table(seed_df, new_seed_file, start_seed_file, change=False):
+def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
     """
     Compare the seed and new seed if exists to update the new_seed
     Restart the pipeline from start if:
@@ -97,26 +97,28 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, change=False):
         - Update new seed file
     """
 
+    columns2change = ["seed", "evalue", "pident", "coverage", "color"]
+
+    # Reduce columns to columns that exist in the user file
+    columns2change = [
+        column for column in columns2change if column in seed_df.columns
+    ]
+
     if os.path.isfile(new_seed_file):
-        new_seed_df = pd.read_table(new_seed_file).set_index("seed", drop=False)
-        start_seed_df = pd.read_table(start_seed_file).set_index("seed", drop=False)
+        new_seed_df = pd.read_table(new_seed_file, dtype=seed_dtypes)
+        start_seed_df = pd.read_table(start_seed_file, dtype=seed_dtypes)
 
         # If seed is added
         if seed_df.shape[0] != new_seed_df.shape[0]:
             seed_df.to_csv(start_seed_file, sep="\t", index=False)
         # If protein name change
         elif not seed_df.protein_id.equals(start_seed_df.protein_id):
+            print(seed_df.protein_id)
+            print(start_seed_df.protein_id)
             seed_df.to_csv(start_seed_file, sep="\t", index=False)
         # If something else change
-        elif not seed_df.equals(start_seed_df):
+        elif not seed_df[columns2change].equals(new_seed_df[columns2change]):
             # Update new seed with information of seed
-            columns2change = ["seed", "evalue", "pident", "coverage", "color"]
-
-            # Which columns to change that exist in the user file
-            columns2change = [
-                column for column in columns2change if column in seed_df.columns
-            ]
-
             new_seed_df.update(seed_df[columns2change])
             new_seed_df.to_csv(new_seed_file, sep="\t", index=False)
     else:
@@ -264,4 +266,4 @@ new_seed_file = os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv
 create_folder(os.path.join(OUTPUT_FOLDER, "databases", "seeds"))
 start_seed_file = os.path.join(OUTPUT_FOLDER, "databases", "seeds", "start_seeds.tsv")
 
-compare_seed_table(seed_table, new_seed_file, start_seed_file)
+compare_seed_table(seed_table, new_seed_file, start_seed_file, seed_dtypes)

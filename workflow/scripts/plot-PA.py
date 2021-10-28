@@ -3,6 +3,23 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle  
 import sys
 
+##########################################################################
+
+def contrasting_text_color(hex_str):
+    '''
+    Input a string without hash sign of RGB hex digits to compute
+    complementary contrasting color such as for fonts
+    '''
+
+    (r, g, b) = (hex_str[1:3], hex_str[3:5], hex_str[5:])
+
+    luminosity = 1 - (int(r, 16) * 0.299 + int(g, 16) * 0.587 + int(b, 16) * 0.114) / 255
+
+    return '#131516' if luminosity < 0.5 else 'white'
+
+##########################################################################
+
+
 # It seems there is a bug if another backend is used
 import matplotlib
 matplotlib.use('Agg')
@@ -11,7 +28,7 @@ matplotlib.use('Agg')
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
 # Plot parameters
-plt.rcParams['text.color'] = 'black'
+plt.rcParams['text.color'] = '#131516'
 plt.rcParams['svg.fonttype'] = 'none'  # Editable SVG text
 plt.rcParams['pdf.fonttype'] = 42
 plt.rcParams['ps.fonttype'] = 42
@@ -64,14 +81,15 @@ for _, row in patab.iterrows():
                                 dict_pos_genome[row.genome_id]-size_rec/2),
                             facecolor = row.color,
                             width=size_rec, height=size_rec,
-                            edgecolor = 'black',
+                            edgecolor = '#131516',
                             lw=1))
 
     if row.PA > 1:
        ax.text(x = dict_pos_seed[row.seed],
                y = dict_pos_genome[row.genome_id],
                s = str(row.PA),
-               color='white',ha='center',va='center',
+               color = contrasting_text_color(row.color),
+               ha='center',va='center',
                fontweight='heavy')
 
 plt.yticks(range(num_genome),list_genome_name[::-1],**label_format)

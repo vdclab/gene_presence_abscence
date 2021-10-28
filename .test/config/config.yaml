@@ -39,12 +39,12 @@ ndg_option:
     groups: all
 
 # Speedup the blast all vs all by adding a psiblast step to reduce dataset
-speedup: False
+speedup: True
 
 # Default value for plot
 default_values_plot:
     # Color 
-    color: '#000000'
+    color: '#131516'
 
 # If you only want the plot need a table (TSV format, columns: gene1, gene2..., index: genome_ids)
 PAtab_table: results/plots/PAtab_table.tsv

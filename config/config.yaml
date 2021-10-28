@@ -43,8 +43,8 @@ speedup: False
 
 # Default value for plot
 default_values_plot:
-    # Color 
-    color: '#000000'
+    # Color
+    color: '#131516' # This color is a dark grey similar to black
 
 # If you only want the plot need a table (TSV format, columns: gene1, gene2..., index: genome_ids)
 PAtab_table: results/plots/PAtab_table.tsv

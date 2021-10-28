@@ -11,7 +11,7 @@ matplotlib.use('Agg')
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
 # Plot parameters
-plt.rcParams['text.color'] = 'black'
+plt.rcParams['text.color'] = '#131516'
 plt.rcParams['svg.fonttype'] = 'none'  # Editable SVG text
 plt.rcParams['pdf.fonttype'] = 42
 plt.rcParams['ps.fonttype'] = 42
@@ -64,7 +64,7 @@ for _, row in patab.iterrows():
                                 dict_pos_genome[row.genome_id]-size_rec/2),
                             facecolor = row.color,
                             width=size_rec, height=size_rec,
-                            edgecolor = 'black',
+                            edgecolor = '#131516',
                             lw=1))
 
 plt.yticks(range(num_genome),list_genome[::-1],**label_format)
