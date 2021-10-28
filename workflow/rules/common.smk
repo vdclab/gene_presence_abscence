@@ -8,6 +8,7 @@
 
 import os, sys
 import pandas as pd
+import numpy as np
 from snakemake.utils import validate
 
 ##########################################################################
@@ -40,19 +41,19 @@ def infer_gene_constrains(seed_df):
     list_constrains = []
 
     for index, row in seed_df.iterrows():
-        if "evalue" in seed_df.columns and not row.evalue != row.evalue:
+        if "evalue" in seed_df.columns and not pd.isna(row.evalue):
             tmp_evalue = row.evalue
         else:
             tmp_evalue = config["default_blast_option"]["e_val"]
             seed_df.at[index, "evalue"] = tmp_evalue
 
-        if "coverage" in seed_df.columns and not row.evalue != row.evalue:
+        if "coverage" in seed_df.columns and not pd.isna(row.evalue):
             tmp_coverage = row.coverage
         else:
             tmp_coverage = config["default_blast_option"]["cov"]
             seed_df.at[index, "coverage"] = tmp_coverage
 
-        if "pident" in seed_df.columns and not row.evalue != row.evalue:
+        if "pident" in seed_df.columns and not pd.isna(row.evalue):
             tmp_pident = row.pident
         else:
             tmp_pident = config["default_blast_option"]["pident"]
@@ -76,7 +77,7 @@ def check_color_seed(seed_df):
     """
 
     for index, row in seed_df.iterrows():
-        if "color" not in seed_df.columns or row.color != row.color:
+        if "color" not in seed_df.columns or pd.isna(row.color):
             seed_df.at[index, "color"] = config["default_values_plot"]["color"]
 
     return seed_df
@@ -158,7 +159,15 @@ validate(config, schema="../schemas/config.schema.yaml")
 seed_file = config["seed"]
 
 # Validation of the seed file
-seed_table = pd.read_table(seed_file).set_index("seed", drop=False)
+seed_dtypes = {"seed":"string",
+               "protein_id":"string",
+               "evalue":np.float64,
+               "pident":np.float64,
+               "coverage":np.float64,
+               "color":"string",
+               }
+
+seed_table = pd.read_table(seed_file, dtype=seed_dtypes)
 
 validate(seed_table, schema="../schemas/seeds.schema.yaml")
 
@@ -166,7 +175,11 @@ validate(seed_table, schema="../schemas/seeds.schema.yaml")
 taxid = config["taxid"]
 
 # Validation of the taxid file
-taxid_table = pd.read_table(taxid).set_index("TaxId", drop=False)
+taxid_dtypes = {"TaxId":"Int64",
+               "NCBIGroups":"string",
+               }
+
+taxid_table = pd.read_table(taxid, dtype=taxid_dtypes)
 
 validate(taxid_table, schema="../schemas/taxid.schema.yaml")
 
