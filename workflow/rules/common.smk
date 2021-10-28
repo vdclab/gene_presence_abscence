@@ -159,13 +159,14 @@ validate(config, schema="../schemas/config.schema.yaml")
 seed_file = config["seed"]
 
 # Validation of the seed file
-seed_dtypes = {"seed":"string",
-               "protein_id":"string",
-               "evalue":np.float64,
-               "pident":np.float64,
-               "coverage":np.float64,
-               "color":"string",
-               }
+seed_dtypes = {
+    "seed":"string",
+    "protein_id":"string",
+    "evalue":np.float64,
+    "pident":np.float64,
+    "coverage":np.float64,
+    "color":"string",
+}
 
 seed_table = pd.read_table(seed_file, dtype=seed_dtypes)
 
@@ -175,9 +176,10 @@ validate(seed_table, schema="../schemas/seeds.schema.yaml")
 taxid = config["taxid"]
 
 # Validation of the taxid file
-taxid_dtypes = {"TaxId":"Int64",
-               "NCBIGroups":"string",
-               }
+taxid_dtypes = {
+    "TaxId":"Int64",
+    "NCBIGroups":"string",
+}
 
 taxid_table = pd.read_table(taxid, dtype=taxid_dtypes)
 
