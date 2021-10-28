@@ -133,7 +133,7 @@ cd /blue/(your group)/(GatorLink ID)
 
 For exemple `group` is `lagard` for the VDCLab
 
-You can access to the files of this folder on your computer by adding a server. The address for Windows is as follow: `\\exasmb.rc.ufl.edu`, for Unix (Linux or MacOS) the address: smb://exasmb.rc.ufl.edu
+You can access to the files of this folder on your computer by adding a server. The address for Windows is as follow: `\\exasmb.rc.ufl.edu`, for Unix (Linux or MacOS) the address: `smb://exasmb.rc.ufl.edu`.  
 For more info : https://help.rc.ufl.edu/doc/Samba_Access
 
 ### Step C2: load conda
