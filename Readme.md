@@ -1,13 +1,13 @@
-# Snakemake workflow: presence-abscence
+# Snakemake workflow: sORTholog
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.4.1-brightgreen.svg)](https://snakemake.github.io)
-[![GitHub actions status](https://github.com/vdclab/gene_presence_abscence/workflows/Tests/badge.svg?branch=main)](https://github.com/vdclab/gene_presence_abscence/actions?query=branch%3Amain+workflow%3ATests)
+[![GitHub actions status](https://github.com/vdclab/sORTholog/workflows/Tests/badge.svg?branch=main)](https://github.com/vdclab/sORTholog/actions?query=branch%3Amain+workflow%3ATests)
 
 ## Aim
 
 This software will produce a table visualization of the presence and absence of encoded proteins in a given set of genomes. Both, the proteins and set of genomes are required as input by the user.
 
-The primary output will be the table of presence-absence protein data filled using the NCBI Protein Database, as well as PDF and PNG files of the table visualization.
+The primary output will be the table of sORTholog protein data filled using the NCBI Protein Database, as well as PDF and PNG files of the table visualization.
 
 ## Installation
 
@@ -53,7 +53,7 @@ In all following steps, we will assume that you are inside of that directory.
 Second, run 
 
 ```shell
-snakedeploy deploy-workflow https://github.com/vdclab/gene_presence_abscence . --tag 1.0.0
+snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 1.0.0
 ```
 
 Snakedeploy will create two folders `workflow` and `config`. The former contains the deployment of the chosen workflow as a [Snakemake module](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#using-and-combining-pre-exising-workflows), the latter contains configuration files which will be modified in the next step in order to configure the workflow to your needs. Later, when executing the workflow, Snakemake will automatically find the main `Snakefile` in the `workflow` subfolder.
@@ -65,9 +65,9 @@ Snakedeploy will create two folders `workflow` and `config`. The former contains
 To configure this workflow, modify `config/config.yaml` according to your needs, following the explanations provided in the file.  
 
 Seed and taxonomy sheet
-- Add seeds to `config/samples.tsv`. For each protein, the columns `seed`, and `protein_id` have to be defined. The protein_id is the protein id define by [NCBI](https://www.ncbi.nlm.nih.gov/). To include other relevant variables such as color, threshold (e-value, percentage identities and coverage), add a new column to the sheet. Exemple of the `seed file` is present in the `config` folder if needed or in the [doc](https://github.com/vdclab/gene_presence_abscence/blob/main/doc/dummy_seeds.tsv) folder in the GitHub page
+- Add seeds to `config/samples.tsv`. For each protein, the columns `seed`, and `protein_id` have to be defined. The protein_id is the protein id define by [NCBI](https://www.ncbi.nlm.nih.gov/). To include other relevant variables such as color, threshold (e-value, percentage identities and coverage), add a new column to the sheet. Exemple of the `seed file` is present in the `config` folder if needed or in the [doc](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_seeds.tsv) folder in the GitHub page
 - Add taxonimic id list to `config/taxid.tsv`. For each genome, the column `TaxId` has to be defined. The TaxId is the protein id define by [NCBI Taxonomy](https://www.ncbi.nlm.nih.gov/taxonomy). To include other relevant variables such as taxonimical groups (`NCBIGroups`), add a new column to the sheet.
-- You can also configure other parameter such as `project_name`, `output_folder` in the `config/config.yaml` file. Exemple of the `tanonomy file` is present in the `config` folder if needed or in the [doc](https://github.com/vdclab/gene_presence_abscence/blob/main/doc/dummy_taxids.tsv) folder in the GitHub page
+- You can also configure other parameter such as `project_name`, `output_folder` in the `config/config.yaml` file. Exemple of the `tanonomy file` is present in the `config` folder if needed or in the [doc](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_taxids.tsv) folder in the GitHub page
 
 Missing values can be specified by empty columns or by writing `NA`.
 
@@ -233,7 +233,7 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
    │
    └── results                               <- Final results for sharing with collaborators, typically derived from analysis sets
        ├── fasta                             <- (optional) folder with the fasta file of the orthologs of the seeds
-       ├── patab_melt.tsv                    <- Table with the information of presence-absence one information by line
+       ├── patab_melt.tsv                    <- Table with the information of sORTholog one information by line
        ├── patab_table.tsv                   <- Table with the information of presence absence with genome in index and seeds in columns and proteins Id in the cell
        └── plots                             <- Plots and table on which the plot are created
 
@@ -536,7 +536,7 @@ To run the rule do
 snakemake quick_plots -C PAtab_table=path/to/pa_table.tsv --use_conda --cores 1
 ```
 
-Exemple of the `presence/absence table` in the [doc](https://github.com/vdclab/gene_presence_abscence/blob/main/doc/dummy_PAtab.tsv) folder in the GitHub page
+Exemple of the `presence/absence table` in the [doc](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_PAtab.tsv) folder in the GitHub page
 
 ```
 

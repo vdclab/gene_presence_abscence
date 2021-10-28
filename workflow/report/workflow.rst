@@ -1,8 +1,8 @@
 ============================
-Gene presence-absence report
+Gene sORTholog report
 ============================
 
-gene-presence-abscence_ is a Snakemake workflow for ???
+sORTholog_ is a Snakemake workflow for ???
 . This analysis is based on commit version {{ snakemake.config["__workflow_version__"] }}_.
 
 The analysis can be rerun with the following command:
@@ -79,7 +79,7 @@ Data organization
    │       └─ new_seeds.tsv                  <- Table with the informations about the seeds
    │
    └── results                               <- Final results for sharing with collaborators, typically derived from analysis sets
-       ├── patab_melt.tsv                    <- Table with the information of presence-absence one information by line
+       ├── patab_melt.tsv                    <- Table with the information of sORTholog one information by line
        ├── patab_table.tsv                   <- Table with the information of presence absence with genome in index and seeds in columns and proteins Id in the cell
        └── plots                             <- Plots and table on which the plot are created
 
@@ -131,5 +131,5 @@ Workflow graph
 --------------
 
 
-.. _gene-presence-abscence: https://github.com/vdclab/gene_presence_abscence
+.. _sORTholog: https://github.com/vdclab/sORTholog
 .. _{{ snakemake.config["__workflow_version__"] }}: {{ snakemake.config["__workflow_version_link__"] }}
