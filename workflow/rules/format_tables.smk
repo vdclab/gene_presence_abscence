@@ -22,7 +22,7 @@ rule read_psiblast:
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "format_table", "read_psiblast.log"),
     conda:
-        "../envs/pandas.yaml"
+        "../envs/pandas_plots.yaml"
     script:
         "../scripts/format_psiblast.py"
 
@@ -61,7 +61,7 @@ rule prepare_for_silix:
     resources:
         time=30,
     conda:
-        "../envs/pandas.yaml"
+        "../envs/pandas_plots.yaml"
     script:
         "../scripts/prepare_silix.py"
 
@@ -96,7 +96,7 @@ rule find_family:
             "{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.find_family.log",
         ),
     conda:
-        "../envs/pandas.yaml"
+        "../envs/pandas_plots.yaml"
     script:
         "../scripts/find_family.py"
 
@@ -138,7 +138,7 @@ rule make_table:
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "format_table", "make_table.log"),
     conda:
-        "../envs/pandas.yaml"
+        "../envs/pandas_plots.yaml"
     script:
         "../scripts/PA-table.py"
 

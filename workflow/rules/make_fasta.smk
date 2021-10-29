@@ -25,7 +25,7 @@ rule make_fasta:
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "format_table", "make_fasta.log"),
     conda:
-        "../envs/biopython.yaml"
+        "../envs/biopython_ete3.yaml"
     script:
         "../scripts/hit2fasta.py"
 
@@ -53,7 +53,7 @@ rule extract_protein:
             "extract_protein.log",
         ),
     conda:
-        "../envs/biopython.yaml"
+        "../envs/biopython_ete3.yaml"
     script:
         "../scripts/extract_protein.py"
 

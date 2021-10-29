@@ -37,7 +37,7 @@ rule fetch_proteins_database:
         time=1440,
     threads: 5
     conda:
-        "../envs/fetch_NCBI.yaml"
+        "../envs/biopython_ete3.yaml"
     script:
         "../scripts/fetch_proteome.py"
 
@@ -60,7 +60,7 @@ rule fetch_fasta_from_seed:
             "fetch_fasta_from_seed.log",
         ),
     conda:
-        "../envs/biopython.yaml"
+        "../envs/biopython_ete3.yaml"
     script:
         "../scripts/fetch_seed.py"
 
