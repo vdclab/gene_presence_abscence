@@ -82,7 +82,7 @@ The shade of the border can be changed using the `design_border` options in the 
 Here a comparison of the two behaviours:
 
 <p align="center">
-  <img src="doc/design_border_option.png?raw=true" height="400">
+  <img src="doc/design_border_option.png?raw=true">
 </p>
 
 ##### Choose the border shape of the final figure
@@ -94,7 +94,7 @@ The shape of the border can be changed using the `round_border` option in the `c
 Here a comparison of the two behaviours:
 
 <p align="center">
-  <img src="doc/round_border_option.png?raw=true" height="400">
+  <img src="doc/round_border_option.png?raw=true">
 </p>
 
 ### Step 4: run the workflow
