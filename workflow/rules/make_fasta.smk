@@ -35,15 +35,15 @@ rule make_fasta:
 
 
 rule extract_protein:
-    input: 
+    input:
         PAtab=os.path.join(OUTPUT_FOLDER, "results", "patab_melt.tsv"),
         fasta_protein=os.path.join(
             OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
-        ),        
+        ),
     output:
         expand(
             os.path.join(OUTPUT_FOLDER, "results", "fasta", "{seed}.fasta"),
-            seed = seed_table.seed,
+            seed=seed_table.seed,
         ),
     log:
         os.path.join(
@@ -63,9 +63,9 @@ rule extract_protein:
 
 
 rule merge_fasta:
-    input: 
+    input:
         taxid_fasta=speedup,
-        seed_fasta=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.fasta"),        
+        seed_fasta=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.fasta"),
     output:
         fasta_for_blast=os.path.join(
             OUTPUT_FOLDER, "databases", "merge_fasta", "all_protein_with_seeds.fasta"
