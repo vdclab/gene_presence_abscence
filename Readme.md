@@ -71,6 +71,32 @@ Seed and taxonomy sheet
 
 Missing values can be specified by empty columns or by writing `NA`.
 
+#### Useful options
+
+##### Choose the border shade of the final figure
+
+The shade of the border can be changed using the `design_border` options in the `config/config.yaml` file:
+- if set to `True` the shade of the border is infered from the color set for the seed in the `seed file`
+- if set to `False` the color will be black 
+
+Here a comparison of the two behaviours:
+
+<p align="center">
+  <img src="doc/design_border_option.png?raw=true" height="400">
+</p>
+
+##### Choose the border shape of the final figure
+
+The shape of the border can be changed using the `round_border` option in the `config/config.yaml` file:
+- if set to `True` the shape of the border will be round
+- if set to `False` the shape of the border will be straight
+
+Here a comparison of the two behaviours:
+
+<p align="center">
+  <img src="doc/round_border_option.png?raw=true" height="400">
+</p>
+
 ### Step 4: run the workflow
 
 Given that the workflow has been properly deployed and configured, it can be executed as follows.
