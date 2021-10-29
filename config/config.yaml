@@ -1,8 +1,8 @@
 # path to seeds sheet (TSV format, columns: seed, protein_id, ...)
-seed: config/seeds.tsv
+seed: .test/config/seeds.tsv
 
 # path to taxonomic id to search seeds in (TSV format, columns: TaxId, NCBIGroups)
-taxid: config/taxid.tsv
+taxid: .test/config/taxid.tsv
 
 # name of the project 
 project_name: your_name_project

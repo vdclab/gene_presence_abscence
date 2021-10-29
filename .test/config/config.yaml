@@ -39,7 +39,7 @@ ndg_option:
     groups: all
 
 # Speedup the blast all vs all by adding a psiblast step to reduce dataset
-speedup: False
+speedup: True
 
 # Default value for plot
 default_values_plot:

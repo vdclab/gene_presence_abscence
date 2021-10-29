@@ -47,16 +47,16 @@ def infer_gene_constrains(seed_df):
             tmp_evalue = config["default_blast_option"]["e_val"]
             seed_df.at[index, "evalue"] = tmp_evalue
 
-        if "coverage" in seed_df.columns and not pd.isna(row.evalue):
+        if "coverage" in seed_df.columns and not pd.isna(row.coverage):
             tmp_coverage = row.coverage
         else:
             tmp_coverage = config["default_blast_option"]["cov"]
             seed_df.at[index, "coverage"] = tmp_coverage
 
-        if "pident" in seed_df.columns and not pd.isna(row.evalue):
+        if "pident" in seed_df.columns and not pd.isna(row.pident):
             tmp_pident = row.pident
         else:
-            tmp_pident = config["default_blast_option"]["pident"]
+            tmp_pident = config["default_blast_option"]["pid"]
             seed_df.at[index, "pident"] = tmp_pident
 
         tmp_text = (
@@ -99,22 +99,15 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
 
     columns2change = ["seed", "evalue", "pident", "coverage", "color"]
 
-    # Reduce columns to columns that exist in the user file
-    columns2change = [
-        column for column in columns2change if column in seed_df.columns
-    ]
-
     if os.path.isfile(new_seed_file):
         new_seed_df = pd.read_table(new_seed_file, dtype=seed_dtypes)
         start_seed_df = pd.read_table(start_seed_file, dtype=seed_dtypes)
 
         # If seed is added
-        if seed_df.shape[0] != new_seed_df.shape[0]:
+        if seed_df.shape[0] != start_seed_file.shape[0]:
             seed_df.to_csv(start_seed_file, sep="\t", index=False)
         # If protein name change
-        elif not seed_df.protein_id.equals(start_seed_df.protein_id):
-            print(seed_df.protein_id)
-            print(start_seed_df.protein_id)
+        elif not seed_df.protein_id.equals(start_seed_file.protein_id):
             seed_df.to_csv(start_seed_file, sep="\t", index=False)
         # If something else change
         elif not seed_df[columns2change].equals(new_seed_df[columns2change]):
