@@ -45,6 +45,10 @@ speedup: False
 default_values_plot:
     # Color
     color: '#131516' # This color is a dark grey similar to black
+    # Turn color of the border a darker shade infer from the background if True else set the color to black
+    design_border: True
+    # Turn border to roundish shape
+    round_border: False
 
 # If you only want the plot need a table (TSV format, columns: gene1, gene2..., index: genome_ids)
 PAtab_table: results/plots/PAtab_table.tsv

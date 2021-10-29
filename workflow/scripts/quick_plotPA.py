@@ -1,11 +1,36 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle  
+import matplotlib.colors as mc
+from matplotlib.patches import FancyBboxPatch  
+import colorsys
 import sys
 
 # It seems there is a bug if another backend is used
 import matplotlib
 matplotlib.use('Agg')
+
+##########################################################################
+
+def adjust_lightness(color, amount=0.5):
+    """
+    Lightens the given color by multiplying (1-luminosity) by the given amount.
+    Input can be matplotlib color string, hex string, or RGB tuple.
+
+    Examples:
+    >> lighten_color('g', 0.3)
+    >> lighten_color('#F034A3', 0.6)
+    >> lighten_color((.3,.55,.1), 0.5)
+    """
+
+    try:
+        c = mc.cnames[color]
+    except:
+        c = color
+    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
+    return colorsys.hls_to_rgb(c[0], max(0, min(1, amount * c[1])), c[2])
+
+##########################################################################
+
 
 # Put error and out into the log file
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
@@ -62,6 +87,18 @@ fig.subplots_adjust(left=leftmargin/figwidth, right=1-rightmargin/figwidth,
 label_format = {'fontweight': 'bold'}
 
 for _, row in patab.iterrows():
+    # Change the border's shade to a darker color infer from the background color
+    if snakemake.config['default_values_plot']['design_border']:
+        edge_color = "#37474F" if row.color == "#FFFFFF" else adjust_lightness(row.color)
+    else :
+        edge_color = '#131516'
+
+    # Change the border's shape to a round version
+    if snakemake.config['default_values_plot']['round_border']:
+        boxstyle = "round,pad=-0.0040,rounding_size=2"
+    else :
+        boxstyle = "round,pad=-0.04"
+
     ax.add_artist(Rectangle(xy=(dict_pos_seed[row.seed]-size_rec/2, 
                                 dict_pos_genome[row.genome_id]-size_rec/2),
                             facecolor = row.color,
