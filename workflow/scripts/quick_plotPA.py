@@ -19,7 +19,9 @@ plt.rcParams['font.family'] = 'Arial'
 plt.rcParams['font.weight'] = 'light'
 
 # Name in PAtab genome_id, seed, PA, color, genome_name
-patab = pd.read_table(snakemake.input.final_table, na_filter=False, index_col=0)
+patab = pd.read_table(snakemake.input.final_table, 
+                      na_filter=False, index_col=0,
+                      index_col=0)
 patab = patab.replace('.+', '1', regex=True).replace('', '0') 
 
 # Dict position genomes and gene
@@ -34,7 +36,7 @@ dict_pos_seed = {list_seed[index]:index for index in range(num_seed)}
 
 
 # Melt the table
-patab = patab.reset_index().rename(columns={'index':'genome_id'})
+patab = patab.reset_index()
 patab = patab.melt(id_vars='genome_id', var_name='seed', value_name='PA')
 patab['color'] = patab.PA.map({'1':snakemake.params.color, '0':'white'})
 

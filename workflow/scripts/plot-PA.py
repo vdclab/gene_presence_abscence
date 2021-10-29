@@ -35,17 +35,17 @@ plt.rcParams['ps.fonttype'] = 42
 plt.rcParams['font.family'] = 'Arial'
 plt.rcParams['font.weight'] = 'light'
 
-# Name in PAtab genome_id, seed, PA, color, genome_name
+# Name in PAtab assembly_id, seed, PA, color, genome_name
 patab = pd.read_table(snakemake.input.final_table)
 
 # Dict position genomes and gene
-list_genome = patab.genome_id.unique().tolist() 
+list_genome = patab.assembly_id.unique().tolist() 
 
 ### Amelioration purposes : The genome name could be followed by the id in parenthesis
 ### or we could ask the user for id or name in the figure
 
 # As some genome name could be the same I need to create a dict to convert the name
-genomeId_2_genomeName = patab.set_index('genome_id').genome_name.to_dict()
+genomeId_2_genomeName = patab.set_index('assembly_id').genome_name.to_dict()
 list_genome_name = [f'{genomeId_2_genomeName[genome]} ({genome})' 
                        for genome in list_genome] 
 
@@ -78,7 +78,7 @@ label_format = {'fontweight': 'bold'}
 
 for _, row in patab.iterrows():
     ax.add_artist(Rectangle(xy=(dict_pos_seed[row.seed]-size_rec/2, 
-                                dict_pos_genome[row.genome_id]-size_rec/2),
+                                dict_pos_genome[row.assembly_id]-size_rec/2),
                             facecolor = row.color,
                             width=size_rec, height=size_rec,
                             edgecolor = '#131516',
@@ -86,7 +86,7 @@ for _, row in patab.iterrows():
 
     if row.PA > 1:
        ax.text(x = dict_pos_seed[row.seed],
-               y = dict_pos_genome[row.genome_id],
+               y = dict_pos_genome[row.assembly_id],
                s = str(row.PA),
                color = contrasting_text_color(row.color),
                ha='center',va='center',

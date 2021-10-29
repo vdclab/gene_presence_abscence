@@ -78,14 +78,18 @@ for index, row in patab.iterrows():
     else :
         patab.at[index, 'color'] = '#FFFFFF' # White color
 
-patab = patab.merge(fam_id_table[['genome_id', 'seed', 'protein_id']], on=['genome_id', 'seed'], how='left')     
+patab = patab.merge(fam_id_table[['genome_id', 'seed', 'protein_id']], on=['genome_id', 'seed'], how='left')   
+
+# Change genome_id to assembly_id
+patab.rename(columns={'genome_id':'assembly_id'})
+
 # save the table
 patab.to_csv(snakemake.output.final_table, sep='\t', index=False)
 
 # Because seems to be needed same table but in pivot format with the name of the protein in cells
-patab_table = patab.pivot_table(index = 'genome_id', columns='seed', 
+patab_table = patab.pivot_table(index = 'assembly_id', columns='seed', 
                                 values='protein_id', aggfunc=proteins2csv, sort=False, dropna=False).reset_index()
 
-patab_table = patab_table.merge(fam_id_table[['genome_id','genome_name']].drop_duplicates(), on='genome_id')
+patab_table = patab_table.merge(fam_id_table[['assembly_id','genome_name']].drop_duplicates(), on='assembly_id')
 
-patab_table[['genome_id','genome_name'] + seed_list].to_csv(snakemake.output.final_table_2, sep='\t', index=False)
+patab_table[['assembly_id','genome_name'] + seed_list].to_csv(snakemake.output.final_table_2, sep='\t', index=False)
