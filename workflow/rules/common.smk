@@ -104,10 +104,10 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
         start_seed_df = pd.read_table(start_seed_file, dtype=seed_dtypes)
 
         # If seed is added
-        if seed_df.shape[0] != start_seed_file.shape[0]:
+        if seed_df.shape[0] != start_seed_df.shape[0]:
             seed_df.to_csv(start_seed_file, sep="\t", index=False)
         # If protein name change
-        elif not seed_df.protein_id.equals(start_seed_file.protein_id):
+        elif not seed_df.protein_id.equals(start_seed_df.protein_id):
             seed_df.to_csv(start_seed_file, sep="\t", index=False)
         # If something else change
         elif not seed_df[columns2change].equals(new_seed_df[columns2change]):
