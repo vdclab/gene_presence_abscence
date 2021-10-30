@@ -7,6 +7,8 @@ from urllib.request import urlopen
 import subprocess
 import shlex
 import ncbi_genome_download as ngd 
+import resource
+import numpy as np
 
 ##########################################################################
 
@@ -106,11 +108,31 @@ def infer_ngs_groups(df_taxid, ncbi):
 
 ##########################################################################
 
+def fetch_seq_assembly(mygroup, assembly_final_df, keyargs):
+    """
+    Function that will fetch the genome from the taxid in group and 
+    concat the assembly that is created by ngs
+    """
+
+    keyargs['taxids'] = [str(taxid) for taxid in mygroup.TaxId.tolist()]
+
+    #ngd.download(**keyargs)  
+    get_cmdline_ndg(**keyargs)
+
+    # Read the information about the assembly and concatenate with previous one
+    tmp_assembly = pd.read_table(snakemake.output.assembly_output)
+    return pd.concat([assembly_final_df, tmp_assembly])    
+
+##########################################################################
+
 def main():
     '''
     Here I define a main function because the library multiprocess 
     bug sometime when it is not this format of script
     '''
+
+    # The soft limit imposed by the current configuration
+    soft_limit = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
 
     # If never done, will download the last version of NCBI Taxonomy dump and create the SQL database
     ncbi = NCBITaxa()  
@@ -162,15 +184,18 @@ def main():
 
     # If think it is better to search for all the same NCBI groups in the same time as the function can be parallized
     for NCBIgroup, group in new_taxid_df.groupby('NCBIGroups'):
+        # Set the NCBI group
         keyargs['groups'] = NCBIgroup
-        keyargs['taxids'] = [str(taxid) for taxid in group.TaxId.tolist()]
 
-        #ngd.download(**keyargs)  
-        get_cmdline_ndg(**keyargs)
+        # Test if the number of TaxId is inferior to the soft limit imposed by the current configuration
+        if soft_limit < group.shape[0]:
+            number_of_file = soft_limit - 20
+            batch_group = np.arange(group.shape[0])//number_of_file
 
-        # Read the information about the assembly and concatenate with previous one
-        tmp_assembly = pd.read_table(snakemake.output.assembly_output)
-        assembly_final_df = pd.concat([assembly_final_df, tmp_assembly])
+            for batch in group.groupby(batch_group):
+                assembly_final_df = fetch_seq_assembly(batch, assembly_final_df, keyargs)
+        else :
+            assembly_final_df = fetch_seq_assembly(group, assembly_final_df, keyargs)          
 
     # Remove last column because the file doesn't exist at the end
     assembly_final_df.iloc[:,:-1].to_csv(snakemake.output.assembly_output, index=False, sep='\t')
