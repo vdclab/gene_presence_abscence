@@ -2,8 +2,7 @@
 Gene sORTholog report
 ============================
 
-sORTholog_ is a Snakemake workflow for ???
-. This analysis is based on commit version {{ snakemake.config["__workflow_version__"] }}_.
+sORTholog_ is a Snakemake workflow that produce a table visualization of the presence and absence of encoded proteins in a given set of genomes. The primary output will be the table of sORTholog protein data filled using the NCBI Protein Database, as well as PDF and PNG files of the table visualization. This analysis is based on commit version {{ snakemake.config["__workflow_version__"] }}_.
 
 The analysis can be rerun with the following command:
 
@@ -94,8 +93,10 @@ analysis`_ and `Analysis sets`_.
 Raw data analysis
 *****************
 
-The raw data analysis generates silix results that serve as a
-starting point for subsequent analyses.
+- In the first step it perform a blastp ALL VS ALL analysis using the genomes and the seeds as database. 
+- Using the results of the blastp a selection of the hits is perform using the evalue, percentage of identity and coverage gave by the user. 
+- For each file created a silix analysis is perform. 
+- The silix results will serve as a starting point for subsequent analyses.
 
 Analysis sets
 *************
@@ -104,7 +105,7 @@ Once fnodes data has been generated it can be further analyzed.
 
 For each seeds the workflow analyses in which family it belong.
 Find the proteins in the same family. Highlight the family on
-the genome
+the genome.
 
 
 General results
@@ -113,8 +114,8 @@ General results
 Figure
 ******
 
-.. figure:: gene_PA.png_
-   :width: 30%
+.. figure:: {{ snakemake.config["__output_folder__"] }}/results/plots/gene_PA.png
+   :width: 60%
    :align: center
 
 
