@@ -192,7 +192,7 @@ def main():
             number_of_file = soft_limit - 20
             batch_group = np.arange(group.shape[0])//number_of_file
 
-            for batch in group.groupby(batch_group):
+            for index, batch in group.groupby(batch_group):
                 assembly_final_df = fetch_seq_assembly(batch, assembly_final_df, keyargs)
         else :
             assembly_final_df = fetch_seq_assembly(group, assembly_final_df, keyargs)          
