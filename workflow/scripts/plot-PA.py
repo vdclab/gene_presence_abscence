@@ -120,7 +120,7 @@ for _, row in patab.iterrows():
                             lw=1))
 
     if row.PA > 1:
-       ax.text(x = dict_pos_seed[row.seed],
+        ax.text(x = dict_pos_seed[row.seed],
                y = dict_pos_genome[row.assembly_id],
                s = str(row.PA),
                color = contrasting_text_color(row.color),
