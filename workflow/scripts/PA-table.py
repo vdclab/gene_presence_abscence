@@ -60,10 +60,13 @@ patab = pd.crosstab(index = fam_id_table['genome_id'], columns = fam_id_table['s
 seed_missing = [seed for seed in seed_list if seed not in patab.columns]
 patab.loc[:,seed_missing] = 0
 
-patab = patab[seed_list].sort_values(by = seed_list, ascending = False).reset_index()
-
+patab = patab[seed_list].reset_index()
 # Add the genome name to the table in case needed
 patab = patab.merge(fam_id_table[['genome_id','genome_name']].drop_duplicates(), on='genome_id')
+
+# Sort the columns by seed_list and genomes name
+ascending_bool = [False]*len(seed_list) + [True]
+patab = patab.sort_values(by = seed_list + ['genome_name'], ascending = ascending_bool)
 
 patab = patab.melt(id_vars=['genome_id', 'genome_name'], var_name='seed', value_name='PA')
 
