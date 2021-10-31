@@ -1,9 +1,8 @@
 # Snakemake workflow: sORTholog
 
-![Downloads](https://static.pepy.tech/personalized-badge/panacota?period=total&units=international_system&left_color=grey&right_color=lightgrey&left_text=Downloads)
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.4.1-brightgreen.svg)](https://snakemake.github.io)
 [![GitHub actions status](https://github.com/vdclab/sORTholog/workflows/Tests/badge.svg?branch=main)](https://github.com/vdclab/sORTholog/actions?query=branch%3Amain+workflow%3ATests)
- [![License (AGPL version 3)](https://img.shields.io/badge/license-GNU%20AGPL%20version%203-green.svg)](COPYING)
+[![License (AGPL version 3)](https://img.shields.io/badge/license-GNU%20AGPL%20version%203-green.svg)](COPYING)
 
 ## Aim
 
