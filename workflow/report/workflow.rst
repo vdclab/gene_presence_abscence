@@ -111,6 +111,15 @@ the genome.
 General results
 ---------------
 
+Seeds parameters
+****************
+
+.. csv-table:: Presence Absence in genomes
+   :file: {{ snakemake.config["__output_folder__"] }}/databases/seeds/new_seeds.tsv
+   :width: 20%
+   :delim: tab
+   :align: center
+
 Figure
 ******
 

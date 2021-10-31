@@ -64,13 +64,27 @@ patab = patab[seed_list].reset_index()
 # Add the genome name to the table in case needed
 patab = patab.merge(fam_id_table[['genome_id','genome_name']].drop_duplicates(), on='genome_id')
 
+# Tmp tab for order genomes
+patab_tmp = patab.copy()
+
+# Find max value to change
+max_value = patab_tmp[seed_list].values.max()
+
+# Change value > 2 by 1
+patab_tmp = patab_tmp.replace(to_replace=range(2,max_value+1), value=1)
+
+# Create a temporary columns to know how many seed they have
+patab_tmp['total'] = patab_tmp[seed_list].sum(axis=1)
+
 # Sort the columns by seed_list and genomes name
-ascending_bool = [False]*len(seed_list) + [True]
-patab = patab.sort_values(by = seed_list + ['genome_name'], ascending = ascending_bool)
+ascending_bool = [False] + [False]*len(seed_list) + [True]
+patab_tmp = patab_tmp.sort_values(by = ['total'] + seed_list + ['genome_name'], ascending = ascending_bool)
+
+patab = patab.loc[patab_tmp.index,:]
 
 patab = patab.melt(id_vars=['genome_id', 'genome_name'], var_name='seed', value_name='PA')
 
-# Order the table by genome name to be more readable after
+# Order the table by genome id to be more readable after
 patab = patab.set_index('genome_id').loc[patab.genome_id.unique(),:].reset_index()
 
 # Put color instead of number
