@@ -213,28 +213,30 @@ def main():
 
         with open(snakemake.output.fasta_final, 'w') as fasta_file :
             for index, genome in assembly_final_df.iterrows() :
-                with gzip.open(genome.local_filename, "rt") as handle:
-                    parser = SeqIO.parse(handle, "fasta")
+                # Test if file exists before
+                if os.path.isfile(genome.local_filename):
+                    with gzip.open(genome.local_filename, "rt") as handle:
+                        parser = SeqIO.parse(handle, "fasta")
 
-                    for protein in parser : 
-                        description_split = protein.description.split(' [')
+                        for protein in parser : 
+                            description_split = protein.description.split(' [')
 
-                        # To avoid duplicate name of proteins between close genomes
-                        protein.id = f'{protein.id}--{genome.assembly_accession}'
+                            # To avoid duplicate name of proteins between close genomes
+                            protein.id = f'{protein.id}--{genome.assembly_accession}'
 
-                        protein_id   = protein.id
-                        protein_name = ' '.join(description_split[0].split(' ')[1:])
-                        genome_name  = genome.organism_name
-                        genome_id    = genome.assembly_accession
-                        length       = len(protein.seq)
+                            protein_id   = protein.id
+                            protein_name = ' '.join(description_split[0].split(' ')[1:])
+                            genome_name  = genome.organism_name
+                            genome_id    = genome.assembly_accession
+                            length       = len(protein.seq)
 
-                        line_prot = f'{protein_id}\t{protein_name}\t{genome_name}\t{genome_id}\t{length}\n'
-                        protein_file.write(line_prot)
+                            line_prot = f'{protein_id}\t{protein_name}\t{genome_name}\t{genome_id}\t{length}\n'
+                            protein_file.write(line_prot)
 
-                        SeqIO.write(protein, fasta_file, 'fasta')
+                            SeqIO.write(protein, fasta_file, 'fasta')
 
-                # Here to save space I decided to remove the file avec concatenation
-                os.remove(genome.local_filename)
+                    # Here to save space I decided to remove the file avec concatenation
+                    os.remove(genome.local_filename)
     return
     
 ##########################################################################
