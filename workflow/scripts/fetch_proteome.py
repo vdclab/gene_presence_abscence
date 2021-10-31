@@ -119,9 +119,17 @@ def fetch_seq_assembly(mygroup, assembly_final_df, keyargs):
     #ngd.download(**keyargs)  
     get_cmdline_ndg(**keyargs)
 
-    # Read the information about the assembly and concatenate with previous one
-    tmp_assembly = pd.read_table(snakemake.output.assembly_output)
-    return pd.concat([assembly_final_df, tmp_assembly])    
+    # Test if we download genomes else return assembly_final_df
+    if os.path.isfile(snakemake.output.assembly_output):
+        # Read the information about the assembly and concatenate with previous one
+        tmp_assembly = pd.read_table(snakemake.output.assembly_output)
+
+        # Remove the file
+        os.remove(snakemake.output.assembly_output)
+
+        return pd.concat([assembly_final_df, tmp_assembly])
+    else :
+        return assembly_final_df
 
 ##########################################################################
 
