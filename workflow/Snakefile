@@ -1,24 +1,28 @@
 # ###############################################################################
-# This file is part of sORTholog.                                       #
+# This file is part of sORTholog.                                               #
 #                                                                               #
-# Authors: Geoffrey Hutinet                                                     #
+# Authors: Geoffrey Hutinet and Remi Denise                                     #
 # Copyright © 2021 University of Forida (Gainesville, Florida).                 #
 # See the COPYRIGHT file for details.                                           #
 #                                                                               #
-# sORTholog is a software providing tools for ???                       #
+# sORTholog is a Snakemake workflow that produce a table visualization          #
+# of the presence and absence of encoded proteins in a given set of genomes.    #
+# The primary output will be the table of sORTholog protein data filled using   #
+# the NCBI Protein Database, as well as PDF and PNG files of the table          #
+# visualization.                                                                #
 #                                                                               #
-# sORTholog is free software: you can redistribute it and/or modify     #
+# sORTholog is free software: you can redistribute it and/or modify             #
 # it under the terms of the Affero GNU General Public License as published by   #
 # the Free Software Foundation, either version 3 of the License,                #
 # or (at your option) any later version.                                        #
 #                                                                               #
-# sORTholog is distributed in the hope that it will be useful, but      #
+# sORTholog is distributed in the hope that it will be useful, but              #
 # WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY    #
 # or FITNESSFOR A PARTICULAR PURPOSE. See the Affero GNU General Public License #
 # for more details.                                                             #
 #                                                                               #
 # You should have received a copy of the Affero GNU General Public License      #
-# along with sORTholog (COPYING file).                                  #
+# along with sORTholog (COPYING file).                                          #
 # If not, see <https://www.gnu.org/licenses/>.                                  #
 # ###############################################################################
 
