@@ -5,7 +5,7 @@ seed: config/seeds.tsv
 taxid: config/taxid.tsv
 
 # name of the project 
-project_name: your_name_project
+project_name: your_named_project
 
 # path to the result folder
 output_folder: results
@@ -20,7 +20,7 @@ default_blast_option:
     # Percentage of identity threshold
     pid: 0.8
     # Coverage of the query treshold
-    cov: 0.5
+    cov: 0.4
 
 # Option for the Taxonomy DB parser
 # If you want to update the Taxonomy dump, :warning: it increase the running time of the workflow
@@ -46,7 +46,7 @@ default_values_plot:
     # Color
     color: '#131516' # This color is a dark grey similar to black
     # Turn color of the border a darker shade infer from the background if True else set the color to black
-    design_border: True
+    design_border: False
     # Turn border to roundish shape
     round_border: False
 
