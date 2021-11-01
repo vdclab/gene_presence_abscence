@@ -544,7 +544,7 @@ Rule description: The table from `make_table` is then plotted in a colored table
 
 #### Rule A1: quick_plots
 
-Rule description: Plot a presence absence table in pdf and png.
+Rule description: Plot a presence absence table that you may have edited in pdf and png.
 
 To run the rule do
 
@@ -571,6 +571,12 @@ Exemple of the `presence/absence table` in the [doc](https://github.com/vdclab/s
 #### Rule A2: extract_protein
 
 Rule description: Create a fasta for each orthologs found (one fasta file per seed)
+
+To run the rule do
+
+```bash
+snakemake extract_protein --use_conda --cores 1
+```
 
 ```
 
