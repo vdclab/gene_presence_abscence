@@ -42,10 +42,15 @@ conda activate snakemake
 
  Given that Snakemake and Snakedeploy are installed and available (see Step 1), the workflow can be deployed as follows.
 
-First, create an appropriate project working directory on your system and enter it: 
+First, create an appropriate project working directory on your system in the place of your choice as follow (note to change the path and file name to the one you want to create): 
 
 ```shell
 mkdir -p path/to/project-workdir
+```
+
+Then enter the file you created as follow:
+
+```shell
 cd path/to/project-workdir
 ```
 
@@ -537,25 +542,7 @@ Rule description: The table from `make_table` is then plotted in a colored table
 
 ### Additionnal rules
 
-#### Rule A1: clean
-
-Rule description: Remove the folder database, logs and processing_files to only keep results
-
-To run the rule do
-
-```bash
-snakemake clean --cores 1
-```
-
-
-```
-
-· input files:
-    - database, logs and processing_files directory
-  
-```
-
-#### Rule A2: quick_plots
+#### Rule A1: quick_plots
 
 Rule description: Plot a presence absence table in pdf and png.
 
@@ -581,7 +568,7 @@ Exemple of the `presence/absence table` in the [doc](https://github.com/vdclab/s
            description = plots in png of the final table centered on one seed
 ```
 
-#### Rule A3: extract_protein
+#### Rule A2: extract_protein
 
 Rule description: Create a fasta for each orthologs found (one fasta file per seed)
 
@@ -597,4 +584,24 @@ Rule description: Create a fasta for each orthologs found (one fasta file per se
 · output files:
     - fasta files : type = list of str
            description = name of all the fasta output with the format [name of the seed].fasta
+```
+Note that if you already used the next rule, you cannot use Rule A2.
+
+
+#### Rule A3: clean
+
+Rule description: Remove the folder database, logs and processing_files to only keep results
+
+To run the rule do
+
+```bash
+snakemake clean --cores 1
+```
+
+
+```
+
+· input files:
+    - database, logs and processing_files directory
+  
 ```
