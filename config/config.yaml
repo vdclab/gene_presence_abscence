@@ -16,7 +16,7 @@ psiblast_e_val: 0.01
 # Blast option if not given in seeds.tsv
 default_blast_option:
     # E-value threshold
-    e_val: 0.000001
+    e_val: 0.0001
     # Percentage of identity threshold
     pid: 0.8
     # Coverage of the query treshold
