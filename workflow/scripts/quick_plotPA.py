@@ -88,7 +88,7 @@ label_format = {'fontweight': 'bold'}
 
 for _, row in patab.iterrows():
     # Change the border's shade to a darker color infer from the background color
-    if snakemake.config['default_values_plot']['design_border']:
+    if snakemake.config['default_values_plot']['colored_border']:
         edge_color = "#37474F" if row.color == "#FFFFFF" else adjust_lightness(row.color)
     else :
         edge_color = '#131516'

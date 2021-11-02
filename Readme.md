@@ -81,14 +81,14 @@ Missing values can be specified by empty columns or by writing `NA`.
 
 ##### Choose the border shade of the final figure
 
-The shade of the border can be changed using the `design_border` options in the `config/config.yaml` file:
+The shade of the border can be changed using the `colored_border` options in the `config/config.yaml` file:
 - if set to `True` the shade of the border is infered from the color set for the seed in the `seed file`
 - if set to `False` the color will be black 
 
 Here a comparison of the two behaviours:
 
 <p align="center">
-  <img src="doc/design_border_option.png?raw=true">
+  <img src="doc/colored_border_option.png?raw=true">
 </p>
 
 ##### Choose the border shape of the final figure

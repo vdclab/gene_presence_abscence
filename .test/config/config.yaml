@@ -46,7 +46,7 @@ default_values_plot:
     # Color 
     color: '#131516'
     # Turn color of the border a darker shade infer from the background if True else set the color to black
-    design_border: True
+    colored_border: True
     # Turn border to roundish shape
     round_border: False    
     
