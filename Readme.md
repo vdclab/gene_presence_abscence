@@ -42,10 +42,15 @@ conda activate snakemake
 
  Given that Snakemake and Snakedeploy are installed and available (see Step 1), the workflow can be deployed as follows.
 
-First, create an appropriate project working directory on your system and enter it: 
+First, create an appropriate project working directory on your system in the place of your choice as follow (note to change the path and file name to the one you want to create): : 
 
 ```shell
-mkdir -p path/to/project-workdir
+mkdir path/to/project-workdir
+```
+
+Then go to your project working directory as follow:
+
+```shell
 cd path/to/project-workdir
 ```
 
@@ -288,7 +293,7 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 
 ### Rule 1: fetch_fasta_from_seed
 
-Rule description: Fetch the fasta of the seed from the seed table. Then they are writen in the output file.  
+Rule description: Fetch the fasta of the seed from the seed table. Then they are writen in the output file.
 
 ```
 · params file: 
@@ -305,7 +310,7 @@ Rule description: Fetch the fasta of the seed from the seed table. Then they are
         
 ### Rule 2: fetch_proteins_database
 
-Rule description: Fetch the information for each protein of each genome in the taxid list. That includes: the protein ncbi id, sequence, length and annotation, as well as in which genome is found. Information for the genome include genome ncbi id, name, taxid and if complete or partial.  
+Rule description: Fetch the information for each protein of each genome in the taxid list. That includes: the protein ncbi id, sequence, length and annotation, as well as in which genome is found. Information for the genome include genome ncbi id, name, taxid and if complete or partial.
  
 ```
 
@@ -421,7 +426,7 @@ Rule description: Blast all versus all of the fasta of all proteins.
 
 ### Rule 5: prepare_for_silix
 
-Rule description: Filter the blast results from the rule blast with the threshold specified for each seed in the seed file. Filters include the identity score, coverage and e-value, decided by the user. Create one new filtered blast result for each seed.  
+Rule description: Filter the blast results from the rule blast with the threshold specified for each seed in the seed file. Filters include the identity score, coverage and e-value, decided by the user. Create one new filtered blast result for each seed.
 
 ```
 
@@ -563,7 +568,7 @@ snakemake extract_protein --use_conda --cores 1
 
 #### Rule A2: quick_plots
 
-Rule description: Plot a presence absence table in pdf and png.
+Rule description: Plot a presence absence table that you may have edited in pdf and png.
 
 To run the rule do
 

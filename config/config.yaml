@@ -5,7 +5,7 @@ seed: config/seeds.tsv
 taxid: config/taxid.tsv
 
 # name of the project 
-project_name: your_named_project
+project_name: your_project_name
 
 # path to the result folder
 output_folder: results
@@ -46,7 +46,7 @@ default_values_plot:
     # Color
     color: '#131516' # This color is a dark grey similar to black
     # Turn color of the border a darker shade infer from the background if True else set the color to black
-    design_border: False
+    design_border: True
     # Turn border to roundish shape
     round_border: False
 
