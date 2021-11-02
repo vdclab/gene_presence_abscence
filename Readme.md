@@ -83,7 +83,7 @@ Missing values can be specified by empty columns or by writing `NA`.
 
 The shade of the border can be changed using the `colored_border` options in the `config/config.yaml` file:
 - if set to `True` the shade of the border is infered from the color set for the seed in the `seed file`
-- if set to `False` the color will be black 
+- if set to `False` the color will be black (Default setting)
 
 Here a comparison of the two behaviours:
 
@@ -95,7 +95,7 @@ Here a comparison of the two behaviours:
 
 The shape of the border can be changed using the `round_border` option in the `config/config.yaml` file:
 - if set to `True` the shape of the border will be round
-- if set to `False` the shape of the border will be straight
+- if set to `False` the shape of the border will be straight (Default setting)
 
 Here a comparison of the two behaviours:
 
