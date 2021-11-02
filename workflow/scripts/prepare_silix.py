@@ -13,7 +13,7 @@ seed_table = (
 # Protein lenght dict
 protein_dict = {}
 
-with open("snakemake.input.protein_file)", 'rt') as r_file :
+with open(snakemake.input.protein_file, 'rt') as r_file :
     r_file.readline()
     for line in r_file:
         r_line = line.rstrip()
