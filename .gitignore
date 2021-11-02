@@ -19,3 +19,4 @@ results*
 
 # pycharm project files
 .idea
+*.ipynb
