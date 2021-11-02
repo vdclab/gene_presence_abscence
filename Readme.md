@@ -537,22 +537,28 @@ Rule description: The table from `make_table` is then plotted in a colored table
 
 ### Additionnal rules
 
-#### Rule A1: clean
+#### Rule A1: extract_protein
 
-Rule description: Remove the folder database, logs and processing_files to only keep results
+Rule description: Create a fasta for each orthologs found (one fasta file per seed)
 
 To run the rule do
 
 ```bash
-snakemake clean --cores 1
+snakemake extract_protein --use_conda --cores 1
 ```
-
 
 ```
 
 · input files:
-    - database, logs and processing_files directory
+    - final table melt : type = str
+                         format = genome_id | genome_name | seed | PA | color | protein_id
+                         description = presence/abscence table, with header. Each line is a protein information
+    - prot sequence: type = str
+                     description =  multifasta file of all the unique protein ids                         
   
+· output files:
+    - fasta files : type = list of str
+           description = name of all the fasta output with the format [name of the seed].fasta
 ```
 
 #### Rule A2: quick_plots
@@ -581,20 +587,20 @@ Exemple of the `presence/absence table` in the [doc](https://github.com/vdclab/s
            description = plots in png of the final table centered on one seed
 ```
 
-#### Rule A3: extract_protein
+#### Rule A3: clean
 
-Rule description: Create a fasta for each orthologs found (one fasta file per seed)
+Rule description: Remove the folder database, logs and processing_files to only keep results
+
+To run the rule do
+
+```bash
+snakemake clean --cores 1
+```
+
 
 ```
 
 · input files:
-    - final table melt : type = str
-                         format = genome_id | genome_name | seed | PA | color | protein_id
-                         description = presence/abscence table, with header. Each line is a protein information
-    - prot sequence: type = str
-                     description =  multifasta file of all the unique protein ids                         
+    - database, logs and processing_files directory
   
-· output files:
-    - fasta files : type = list of str
-           description = name of all the fasta output with the format [name of the seed].fasta
 ```
