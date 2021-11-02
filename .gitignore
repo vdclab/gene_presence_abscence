@@ -20,4 +20,4 @@ results*
 # pycharm project files
 .idea
 *.ipynb
-.pynb*
+.ipynb*
