@@ -24,7 +24,7 @@ with open(snakemake.input.protein_file, 'rt') as r_file :
 protein_dict.update(seed_table.length
                               .to_dict())
 
-# Opening blast_out and preparation
+# Blast_out and preparation
 blast_names = ['qseqid', 'sseqid', 'pident', 'length', 'mismatch', 'gapopen', 'qstart', 'qend',
                'sstart', 'send', 'evalue', 'bitscore']
 
@@ -62,7 +62,7 @@ with open(snakemake.input.blast_out, 'rt') as r_file :
 
                     evalue = float(constrains_split[2])
                     coverage = float(constrains_split[4])
-                    pident = float(constrains_split[6]) / 100
+                    pident = float(constrains_split[6])
 
                     if evalue_blast <= evalue and pident_blast >= pident and coverage_blast >= coverage:
                         list_open_output[index].write(line)
