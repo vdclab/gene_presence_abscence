@@ -21,6 +21,7 @@ rule psiblast:
         os.path.join(OUTPUT_FOLDER, "logs", "psiblast", "psiblast.log"),
     params:
         e_value=e_val_psiblast,
+        iteration=iteration_psiblast,
     resources:
         cpus=5,
         mem_mb=10000,
@@ -36,7 +37,7 @@ rule psiblast:
 
         psiblast -query '{input.seed}' -db '{input.taxid_db}' -evalue {params.e_value} \
                  -outfmt '7 qacc qlen qseq qstart qend sacc slen sseq sstart send length pident evalue bitscore qcovs' \
-                 -num_threads {threads} -num_iterations 3 -out '{output}' 2>> {log}
+                 -num_threads {threads} -num_iterations {params.iteration} -out '{output}' 2>> {log}
 
         rm {input.taxid_db}.*
         """

@@ -14,10 +14,17 @@ properties:
   output_folder:
     type: string
 
-  psiblast_e_val:
-    type: number
-    minimum: 0
-    maximum: 1
+  default_psiblast_option:
+    type: object
+    properties:
+      psiblast_e_val:
+        type: number
+        minimum: 0
+        maximum: 1        
+      iteration:
+        type: number
+        minimum: 1
+        maximum: 5
       
   default_blast_option:
     type: object

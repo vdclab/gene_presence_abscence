@@ -222,7 +222,10 @@ OUTPUT_FOLDER = os.path.join(config["output_folder"], project_name)
 config["__output_folder__"] = os.path.abspath(OUTPUT_FOLDER)
 
 # Psiblast default e-value thershold
-e_val_psiblast = config["psiblast_e_val"]
+e_val_psiblast = config["default_psiblast_option"]["psiblast_e_val"]
+
+# Psiblast default e-value thershold
+iteration_psiblast = config["default_psiblast_option"]["iteration"]
 
 # Option for ncbi_genome_download
 section = config["ndg_option"]["section"]
