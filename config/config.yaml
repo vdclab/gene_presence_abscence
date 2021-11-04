@@ -18,9 +18,9 @@ default_blast_option:
     # E-value threshold
     e_val: 0.0001
     # Percentage of identity threshold
-    pid: 0.8
+    pid: 0.35
     # Coverage of the query treshold
-    cov: 0.4
+    cov: 0.8
 
 # Option for the Taxonomy DB parser
 # If you want to update the Taxonomy dump, :warning: it increase the running time of the workflow
