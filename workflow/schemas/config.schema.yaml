@@ -86,7 +86,7 @@ required:
   - taxid
   - project_name
   - output_folder
-  - psiblast_e_val
+  - default_psiblast_option
   - default_blast_option
   - ndg_option
   - speedup
