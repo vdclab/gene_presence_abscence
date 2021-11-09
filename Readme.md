@@ -265,8 +265,14 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
    │       ├─ seeds.fasta                    <- Fasta file of the seeds
    │       └─ new_seeds.tsv                  <- Table with the informations about the seeds
    │
+   ├── analysis_thresholds                   <- (Optional) Generate by the rule report_thresholds
+   │   ├── tables                         
+   │   │   └─ table--seed.tsv                <- (Optional) Table with the information of each pair of hits in for the seed family (one per seed)
+   │   │
+   │   └── report_figure_thresholds.html     <- (Optional) HTML report with the plots made by report_thresholds                  
+   │
    └── results                               <- Final results for sharing with collaborators, typically derived from analysis sets
-       ├── fasta                             <- (optional) folder with the fasta file of the orthologs of the seeds
+       ├── fasta                             <- (Optional) folder with the fasta file of the orthologs of the seeds
        ├── patab_melt.tsv                    <- Table with the information of sORTholog one information by line
        ├── patab_table.tsv                   <- Table with the information of presence absence with genome in index and seeds in columns and proteins Id in the cell
        └── plots                             <- Plots and table on which the plot are created
