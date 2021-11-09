@@ -504,9 +504,9 @@ Rule description: Check the presence of protein similar to the seed in each taxi
     - protein table: type = str
                      format =  protein id | protein name | genome name | genome id | length
                      description = final table of protein information.
-    - fnodes: type = str
+    - updadted fnodes: type = str
               format = family | protein id | seed
-              description =  concatenated fnodes with each seed family
+              description =  updated fnodes with only the family of the seed
     - table of genomes informations: type = str
                                      format = assembly_accession | bioproject | biosample | wgs_master | excluded_from_refseq | refseq_category | relation_to_type_material | taxid | species_taxid | organism_name | infraspecific_name | isolate | version_status | assembly_level | release_type | genome_rep | seq_rel_date | asm_name | submitter | gbrs_paired_asm | paired_asm_comp | ftp_path
                                      description = table of the information collected from the NCBI Assembly.
@@ -542,7 +542,52 @@ Rule description: The table from `make_table` is then plotted in a colored table
 
 ### Additionnal rules
 
-#### Rule A1: extract_protein
+#### Rule A1: report_threshold
+
+Rule description: Pair of rules that works together. From the blast output, create a report containing 2 scatter plots: one comparing the coverage and percentage identity of the hits and the other adding the evalue to the comparaison.
+
+To run the rules do
+
+```bash
+snakemake report_threshold --cores 1 --use-conda
+```
+
+##### Sub rule A1a: blast2threshold_table
+```
+
+· input files:
+    - seed file: type = str
+                 columns = seed name | protein id | e-value | percentage of identity | coverage | color 
+    - protein table: type = str
+                     format =  protein id | protein name | genome name | genome id | length
+                     description = final table of protein information.
+    - updadted fnodes: type = str
+              format = family | protein id | seed
+              description =  updated fnodes with only the family of the seed
+    - blast out: type = str
+                 format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen | query start position | query end position | subject start position | subject end position | e-value | bitscore
+                 description = output format of blast                                 
+  
+· output files:
+    - table_thresholds : type = str
+           format = protein1 | protein 2 | pident | coverage | evalue | length
+           description = table with the columns from the blast output of only the pairs containing at least one member of the seed family.
+```
+
+##### Sub rule A1a: report_threshold
+```
+
+· input files:
+    - tables_thresholds : type = list of str
+           format = protein1 | protein 2 | pident | coverage | evalue | length
+           description = table with the columns from the blast output of only the pairs containing at least one member of the seed family.                               
+  
+· output files:
+    - report_html : type = str
+           description = report in html that contains the figure made using the coverage/percentage identity/evalue of all hits for each seeds family
+```
+
+#### Rule A2: extract_protein
 
 Rule description: Create a fasta for each orthologs found (one fasta file per seed)
 
@@ -566,7 +611,7 @@ snakemake extract_protein --use_conda --cores 1
            description = name of all the fasta output with the format [name of the seed].fasta
 ```
 
-#### Rule A2: quick_plots
+#### Rule A3: quick_plots
 
 Rule description: Plot a presence absence table that you may have edited in pdf and png.
 
@@ -592,7 +637,7 @@ Exemple of the `presence/absence table` in the [doc](https://github.com/vdclab/s
            description = plots in png of the final table centered on one seed
 ```
 
-#### Rule A3: clean
+#### Rule A4: clean
 
 Rule description: Remove the folder database, logs and processing_files to only keep results
 
