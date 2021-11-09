@@ -19,7 +19,8 @@ rule blast2threshold_table:
             "silix",
             "modif",
             "filtered_blast--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes.flushed",
-        ),        protein_file=os.path.join(
+        ),
+        protein_file=os.path.join(
             OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
         ),     
     output:
@@ -33,8 +34,10 @@ rule blast2threshold_table:
             OUTPUT_FOLDER,
             "logs",
             "analysis_thresholds",
-            "blast2threshold_table.log"
+            "blast2threshold_table--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.log"
         ),
+    resources:
+        mem_mb=8000,
     conda:
         "../envs/pandas_plots.yaml"
     script:
@@ -62,7 +65,7 @@ rule report_threshold:
             "report_figure_thresholds.html",
         ),
     params:
-        css="../report/threshold_report.css",
+        css=workflow.source_path("../report/threshold_report.css"),
     log:
         os.path.join(
             OUTPUT_FOLDER,

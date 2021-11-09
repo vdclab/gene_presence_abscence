@@ -1,14 +1,14 @@
 # path to seeds sheet (TSV format, columns: seed, protein_id, ...)
-seed: config/seeds.tsv
+seed: ../sORTholog_deployed/config/seeds.tsv
 
 # path to taxonomic id to search seeds in (TSV format, columns: TaxId, NCBIGroups)
-taxid: config/taxid.tsv
+taxid: ../sORTholog_deployed/config/taxid.tsv
 
 # name of the project 
-project_name: your_project_name
+project_name: yhf_operon
 
 # path to the result folder
-output_folder: results
+output_folder: ../sORTholog_deployed/results
 
 # e value threshold to use for psiblast (and blast as default is not in seeds.tsv)
 default_psiblast_option:

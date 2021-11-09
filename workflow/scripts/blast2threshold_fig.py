@@ -1,7 +1,10 @@
 import plotly.io as pio
 import plotly.express as px
+import plotly
 import pandas as pd
-import os
+import sys, os
+
+sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
 ##########################################################################
 
@@ -321,7 +324,7 @@ def fig2html(plot2D_file, plot3D_file, report, css=snakemake.params.css):
 
     # Read the custom css to inject it directly to be portable
     with open(css, 'r', encoding='utf8') as r_file:
-        css_string = css.read()
+        css_string = r_file.read()
 
     # Write the html and inject css, plot2D and plot3D
     html_start = '''
@@ -495,7 +498,7 @@ tmp_plot2D = scatter2D_plotly(all_fam_file)
 
 tmp_plot3D = scatter3D_plotly(all_fam_file)
 
-fig2html(tmp_plot2D, tmp_plot3D, snakemake.output)
+fig2html(tmp_plot2D, tmp_plot3D, snakemake.output[0])
 
 ##########################################################################
 

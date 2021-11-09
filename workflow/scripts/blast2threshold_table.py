@@ -1,4 +1,7 @@
 import pandas as pd
+import sys, os
+
+sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
 ##########################################################################
 
@@ -62,14 +65,13 @@ seed_eval = snakemake.wildcards.eval
 
 # Read blast_out line by line
 with open(blast_out, 'rt') as r_file :
-    with open(snakemake.output, 'wt') as w_file:
+    with open(snakemake.output[0], 'wt') as w_file:
     	# Write the header in two times because format string need that
         header = '\t'.join(final_header)
         w_file.write(f"{header}\n")
 
         # Read the blast line by line
         for line in r_file:            
-
         	# Split the line to be easier to handle            
             line_split = line.split()
 
