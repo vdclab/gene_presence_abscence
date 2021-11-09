@@ -1,8 +1,8 @@
 # path to seeds sheet (TSV format, columns: seed, protein_id, ...)
-seed: ../sORTholog_deployed/config/seeds.tsv
+seed: config/seeds.tsv
 
 # path to taxonomic id to search seeds in (TSV format, columns: TaxId, NCBIGroups)
-taxid: ../sORTholog_deployed/config/taxid.tsv
+taxid: config/taxid.tsv
 
 # name of the project 
 project_name: yhf_operon
