@@ -27,6 +27,7 @@ rule blast2threshold_table:
         os.path.join(
             OUTPUT_FOLDER,
             "analysis_thresholds",
+            "tables",
             "table_hits_family--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.tsv"
         ),
     log:
@@ -54,6 +55,7 @@ rule report_threshold:
             os.path.join(
                 OUTPUT_FOLDER,
                 "analysis_thresholds",
+                "tables",
                 "table_hits_family--{gene_constrains}.tsv"
             ),
             gene_constrains=gene_constrains,
