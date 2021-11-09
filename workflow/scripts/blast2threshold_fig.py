@@ -55,15 +55,36 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
                             custom_data=['protein1','protein2', 'evalue'])
 
         # Update the information show when cliking on the point
-        tmp_fig.update_traces(
-            hovertemplate="<br>".join([
-                "Protein 1 id: %{customdata[0]}",
-                "Protein 2 id: %{customdata[1]}",
-                "Percentage of identity: %{x}",
-                "Coverage: %{y}",
-                "E-value: %{customdata[2]}",
-            ])
-        )            
+        i = 0
+
+        # To be more precise in the change we will change it manually:
+        # trace 0 and 3 are the scatter plot
+        # traco 1 and 4 are the histogram of the percentage of identity
+        # trace 2 and 5 are the histogram of the coverage
+        for data in tmp_fig.data:
+            if i == 0 or i == 3 :
+                data['hovertemplate'] = "<br>".join([
+                        "Protein 1 id: %{customdata[0]}",
+                        "Protein 2 id: %{customdata[1]}",
+                        "Percentage of identity: %{x}",
+                        "Coverage: %{y}",
+                        "E-value: %{customdata[2]}",
+                    ])
+            # Here only the value x (percentage id) and y (count)
+            # are to change
+            elif i == 1 or i == 4 :
+                data['hovertemplate'] = "<br>".join([
+                        "Percentage of identity: %{x}",
+                        "Number: %{y}",
+                    ])  
+             # Here only the value y (coverage) and x (count)
+            # are to change
+            else :
+                data['hovertemplate'] = "<br>".join([
+                        "Coverage: %{y}",
+                        "Number: %{x}",
+                    ])              
+            i+=1        
 
         for data in tmp_fig.data:
             # We want here to see the first figure but not the other one
