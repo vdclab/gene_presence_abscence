@@ -46,6 +46,11 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
         df_fam.replace(f"in_family_{seed}", 'Both in the family', inplace=True)
         df_fam.replace(f"out_family_{seed}", 'Only one in the family', inplace=True)
         
+        # Reductio of the dataframe to remove the point in the same place on the plot 
+        df_fam_drop = df_fam.drop_duplicates(['pident', 'coverage', 'fam']).reset_index(drop=True)  
+
+
+        # create a figur efor the two histograms
         tmp_fig = px.scatter(df_fam, x='pident', y='coverage', color='fam', 
                              marginal_x='histogram', 
                              marginal_y='histogram',
@@ -53,6 +58,16 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
                             labels={"fam": "Pair of proteins"},
                             category_orders={"fam": ["Only one in the family", "Both in the family"]},
                             custom_data=['protein1','protein2', 'evalue'])
+
+        # Create a figure for the scatter plot 
+        tmp_fig_drop = px.scatter(df_fam_drop, x='pident', y='coverage', color='fam', 
+                                 marginal_x='histogram', 
+                                 marginal_y='histogram',
+                                color_discrete_sequence=px.colors.qualitative.Set1,
+                                labels={"fam": "Pair of proteins"},
+                                category_orders={"fam": ["Only one in the family", "Both in the family"]},
+                                custom_data=['protein1','protein2', 'evalue', 'count_representative'],
+                                )  
 
         # Update the information show when cliking on the point
         i = 0
@@ -63,6 +78,11 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
         # trace 2 and 5 are the histogram of the coverage
         for data in tmp_fig.data:
             if i == 0 or i == 3 :
+                # Replace the scatter plot of the drop dataframe instead of the full one
+                data['customdata'] = tmp_fig_drop.data[i]['customdata']
+                data['x'] = tmp_fig_drop.data[i]['x']
+                data['y'] = tmp_fig_drop.data[i]['y']
+
                 data['hovertemplate'] = "<br>".join([
                         "Protein 1 id: %{customdata[0]}",
                         "Protein 2 id: %{customdata[1]}",
@@ -177,7 +197,9 @@ def scatter3D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter3D.html"):
                                'coverage': 'float',
                                'fam': 'category',}
                                   )
-                
+        
+        df_fam = df_fam.drop_duplicates(['pident', 'coverage', 'evalue', 'fam']).reset_index(drop=True)
+
         # First element of family columns = in|out_family_seed
         seed = df_fam.fam[0].split('_')[-1]
         all_seeds.append(seed)
@@ -204,7 +226,7 @@ def scatter3D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter3D.html"):
                 "Protein 2 id: %{customdata[1]}",
                 "Percentage of identity: %{x}",
                 "Coverage: %{y}",
-                "E-value: %{customdata[2]}",
+                "E-value: %{z}",
             ])
         )   
         
