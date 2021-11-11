@@ -66,7 +66,7 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
                                 color_discrete_sequence=px.colors.qualitative.Set1,
                                 labels={"fam": "Pair of proteins"},
                                 category_orders={"fam": ["Only one in the family", "Both in the family"]},
-                                custom_data=['protein1','protein2', 'evalue', 'count_representative'],
+                                custom_data=['protein1','protein2', 'evalue'],
                                 )  
 
         # Update the information show when cliking on the point
