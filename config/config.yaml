@@ -8,7 +8,7 @@ taxid: config/taxid.tsv
 project_name: yhf_operon
 
 # path to the result folder
-output_folder: ../sORTholog_deployed/results
+output_folder: results
 
 # e value threshold to use for psiblast (and blast as default is not in seeds.tsv)
 default_psiblast_option:
