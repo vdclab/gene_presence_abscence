@@ -101,7 +101,9 @@ rule all:
 
 rule clean:
     input:
-        os.path.join(OUTPUT_FOLDER, "database"),
+        os.path.join(OUTPUT_FOLDER, "database", "all_taxid"),
+        os.path.join(OUTPUT_FOLDER, "database", "merge_fasta"),
+        os.path.join(OUTPUT_FOLDER, "database", "reduce_taxid"),
         os.path.join(OUTPUT_FOLDER, "processing_files"),
         os.path.join(OUTPUT_FOLDER, "logs"),
     log:
