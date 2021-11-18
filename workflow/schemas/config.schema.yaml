@@ -54,12 +54,16 @@ properties:
     properties:
       section:
         type: string
+        enum: ["refseq","genbank"]
       assembly_levels:
         type: string
+        enum: ["all", "complete", "chromosome", "scaffold", "contig"]
       refseq_categories:
         type: string
+        enum: ["reference", "all"]
       groups:
         type: string
+        enum: ["all", "archaea", "bacteria", "fungi", "invertebrate", "metagenomes", "plant", "protozoa", "vertebrate_mammalian", "vertebrate_other", "viral"]
     required:
       - section
       - assembly_levels

@@ -32,7 +32,7 @@ update_db: False
 
 # Option for ncbi_download_genome
 ndg_option:
-    # Values for section : {refseq,genbank}
+    # Values for section : {'refseq','genbank'}
     section: refseq
     # Values for assembly_levels : ['all', 'complete', 'chromosome', 'scaffold', 'contig']
     assembly_levels: all

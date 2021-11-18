@@ -90,11 +90,10 @@ def infer_ngs_groups(df_taxid, ncbi):
 
     if snakemake.config["ndg_option"]["groups"] != 'all':
         if "NCBIGroups" not in df_taxid:
-            df_taxid["NCBIGroups"] = snakemake.config["ndg_option"]["groups"].lower()
+            df_taxid["NCBIGroups"] = snakemake.config["ndg_option"]["groups"]
         elif df_taxid.NCBIGroups.isnull().any():
-            df_taxid.loc[df_taxid.NCBIGroups.isnull(), "NCBIGroups"] = snakemake.config["ndg_option"]["groups"].lower()
-        else :
-            df_taxid["NCBIGroups"] = df_taxid["NCBIGroups"].str.lower()
+            df_taxid.loc[df_taxid.NCBIGroups.isnull(), "NCBIGroups"] = snakemake.config["ndg_option"]["groups"]
+
     else:
         if "NCBIGroups" not in df_taxid:
             for index, row in df_taxid.iterrows():

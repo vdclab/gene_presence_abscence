@@ -72,7 +72,7 @@ To configure this workflow, modify `config/config.yaml` according to your needs,
 
 Seed and taxonomy sheet
 - Add seeds to `config/samples.tsv`. For each protein, the columns `seed`, and `protein_id` have to be defined. The protein_id is the protein id define by [NCBI](https://www.ncbi.nlm.nih.gov/). To include other relevant variables such as color, threshold (e-value, percentage identities and coverage), add a new column to the sheet. Exemple of the `seed file` is present in the `config` folder if needed or in the [doc](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_seeds.tsv) folder in the GitHub page
-- Add taxonimic id list to `config/taxid.tsv`. For each genome, the column `TaxId` has to be defined. The TaxId is the protein id define by [NCBI Taxonomy](https://www.ncbi.nlm.nih.gov/taxonomy). To include other relevant variables such as taxonimical groups (`NCBIGroups`), add a new column to the sheet.
+- Add taxonomic id list to `config/taxid.tsv`. For each genome, the column `TaxId` has to be defined. The TaxId is define by [NCBI Taxonomy](https://www.ncbi.nlm.nih.gov/taxonomy). To include other relevant variables such as taxonimical groups (`NCBIGroups`), add a new column to the sheet. The groups that could be used are : `all`, `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other` or `viral`.
 - You can also configure other parameter such as `project_name`, `output_folder` in the `config/config.yaml` file. Exemple of the `tanonomy file` is present in the `config` folder if needed or in the [doc](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_taxids.tsv) folder in the GitHub page
 
 Missing values can be specified by empty columns or by writing `NA`.
