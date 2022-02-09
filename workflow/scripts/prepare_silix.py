@@ -60,9 +60,10 @@ with open(snakemake.input.blast_out, 'rt') as r_file :
 
                     constrains_split = constrains.split('_')
 
-                    evalue = float(constrains_split[2])
-                    coverage = float(constrains_split[4])
-                    pident = float(constrains_split[6])
+                    # As i have the control about the end of the file name it is better to go this way in case "_" in the gene name
+                    evalue = float(constrains_split[-5])
+                    coverage = float(constrains_split[-3])
+                    pident = float(constrains_split[-1])
 
                     if evalue_blast <= evalue and pident_blast >= pident and coverage_blast >= coverage:
                         list_open_output[index].write(line)
