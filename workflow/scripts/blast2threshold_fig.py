@@ -40,7 +40,8 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
         all_seeds.append(seed)
         
         # It is multiply by 6 because there is 6 traces for one plot 3 for in_fam et 3 for out_fam
-        list_trace += [seed] * 6
+        # As one of the category could not exists we look at the possible values
+        list_trace += [seed] * df_fam.fam.unique().shape[0] * 2
         
         # Change the name inside the columns to be more readable in the legend of the figure
         df_fam.replace(f"in_family_{seed}", 'Both in the family', inplace=True)
@@ -209,7 +210,7 @@ def scatter3D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter3D.html"):
         df_fam.replace(f"out_family_{seed}", 'Only one in the family', inplace=True)    
         
         # list of the trace, two traces per seed (one in and one out)
-        list_trace += [seed]*2
+        list_trace += [seed] * df_fam.fam.unique().shape[0]
 
         tmp_fig = px.scatter_3d(df_fam, x='pident', y='coverage', z='evalue',color='fam', 
                                 color_discrete_sequence=px.colors.qualitative.Set1,
