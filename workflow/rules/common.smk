@@ -249,7 +249,7 @@ merge_db = os.path.join(
         ),
 
 # Check if there is a database specified in the config file
-if config['perso_database']:
+if 'perso_database' in config and config['perso_database']:
     list_starting_database = [config['perso_database'], starting_database]
 else :
     list_starting_database = starting_database
