@@ -7,9 +7,7 @@
 rule psiblast:
     input:
         seed=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.fasta"),
-        taxid_db=os.path.join(
-            OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
-        ),
+        taxid_db=merge_db,
     output:
         os.path.join(
             OUTPUT_FOLDER,
@@ -74,5 +72,5 @@ rule blast:
         blastp -query '{input}' -db '{input}' -evalue 0.01 \
                -outfmt 6 -out '{output.blast_out}' -num_threads {threads} -num_alignments 25000 2>> {log}
 
-        rm {input}.*
+        rm '{input}'.*
         """

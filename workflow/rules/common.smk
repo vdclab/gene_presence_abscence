@@ -236,6 +236,25 @@ assembly_levels = config["ndg_option"]["assembly_levels"]
 # Values for refseq_categories :
 refseq_categories = config["ndg_option"]["refseq_categories"]
 
+# Name of the file with all the taxids 
+starting_database = os.path.join(
+        OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
+    )
+
+merge_db = os.path.join(
+            OUTPUT_FOLDER,
+            "databases",
+            "merge_databases",
+            "databases_all_together.fasta",
+        ),
+
+# Check if there is a database specified in the config file
+if config['perso_database']:
+    list_starting_database = [config['perso_database'], starting_database]
+else :
+    list_starting_database = starting_database
+    merge_db = starting_database
+
 # Seepup option that create a reduce dataset using a psiblast step with the seed
 if config["speedup"]:
     speedup = os.path.join(
@@ -245,9 +264,7 @@ if config["speedup"]:
         f"all_protein--eval_{e_val_psiblast:.0e}.fasta",
     )
 else:
-    speedup = os.path.join(
-        OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
-    )
+    speedup = merge_db
 
 # Definition of the requirements for each seed
 gene_constrains, seed_table = infer_gene_constrains(seed_table)

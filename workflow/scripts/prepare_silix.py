@@ -30,8 +30,8 @@ blast_names = ['qseqid', 'sseqid', 'pident', 'length', 'mismatch', 'gapopen', 'q
 
 # Calculating the max and min value of interest
 max_eval = seed_table.evalue.max()
-min_pident = seed_table.pident.min()
-min_coverage = seed_table.coverage.min()
+# min_pident = seed_table.pident.min()
+# min_coverage = seed_table.coverage.min()
 
 # Open all the output
 list_open_output = [open(tsv_output, 'wt') for tsv_output in snakemake.output]
@@ -43,29 +43,31 @@ with open(snakemake.input.blast_out, 'rt') as r_file :
         line_split = line.split()
 
         evalue_blast = float(line_split[10])
-        pident_blast = float(line_split[2]) / 100
-        length = float(line_split[7]) - float(line_split[6]) + 1
-        qseqid = line_split[0]
+        # pident_blast = float(line_split[2]) / 100
+        # length = float(line_split[7]) - float(line_split[6]) + 1
+        # qseqid = line_split[0]
 
         # start filtering blast out on e-value, coverage and percent identity
-        if evalue_blast <= max_eval and pident_blast >= min_pident :
-            coverage_blast = length / protein_dict[qseqid]
+        if evalue_blast <= max_eval :
+        #if evalue_blast <= max_eval and pident_blast >= min_pident :
+            # coverage_blast = length / protein_dict[qseqid]
 
             # Calculating the coverage on the query
-            if coverage_blast >= min_coverage :
-                for index in range(num_output) :
-                    file_out_path = snakemake.output[index]
+            # if coverage_blast >= min_coverage :
+            for index in range(num_output) :
+                file_out_path = snakemake.output[index]
 
-                    constrains = file_out_path.split('--')[-1].split('.out')[0]
+                constrains = file_out_path.split('--')[-1].split('.out')[0]
 
-                    constrains_split = constrains.split('_')
+                constrains_split = constrains.split('_')
 
-                    evalue = float(constrains_split[2])
-                    coverage = float(constrains_split[4])
-                    pident = float(constrains_split[6])
+                evalue = float(constrains_split[2])
+                # coverage = float(constrains_split[4])
+                # pident = float(constrains_split[6])
 
-                    if evalue_blast <= evalue and pident_blast >= pident and coverage_blast >= coverage:
-                        list_open_output[index].write(line)
+                # if evalue_blast <= evalue and pident_blast >= pident and coverage_blast >= coverage:
+                if evalue_blast <= evalue:
+                    list_open_output[index].write(line)
 
 for file_open in list_open_output :
     file_open.close()

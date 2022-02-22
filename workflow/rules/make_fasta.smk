@@ -83,3 +83,25 @@ rule merge_fasta:
 
 ##########################################################################
 ##########################################################################
+
+
+rule merge_databases:
+    input:
+        all_databases = list_starting_database,
+    output:
+        taxid_db=os.path.join(
+            OUTPUT_FOLDER, "databases", "merge_databases", "databases_all_together.fasta"
+        ),
+    log:
+         os.path.join(
+            OUTPUT_FOLDER,
+            "logs",
+            "fetch_proteins",
+            "merge_databases.log",
+        ),   
+    shell:
+        """cat '{input.all_databases}' > '{output.taxid_db}'"""
+
+
+##########################################################################
+##########################################################################

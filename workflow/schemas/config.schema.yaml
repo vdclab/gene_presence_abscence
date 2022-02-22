@@ -9,6 +9,8 @@ properties:
     type: string
   taxid:
     type: string
+  perso_database:
+    type: string
   project_name:
     type: string
   output_folder:
