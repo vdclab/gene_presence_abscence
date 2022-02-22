@@ -22,7 +22,7 @@ rule psiblast:
         iteration=iteration_psiblast,
     resources:
         cpus=5,
-        mem_mb=10000,
+        mem_mb=20000,
         time=7200,
     conda:
         "../envs/blast.yaml"
@@ -58,7 +58,7 @@ rule blast:
         os.path.join(OUTPUT_FOLDER, "logs", "blast", "blast.log"),
     resources:
         cpus=5,
-        mem_mb=10000,
+        mem_mb=20000,
         time=43200,
     conda:
         "../envs/blast.yaml"
