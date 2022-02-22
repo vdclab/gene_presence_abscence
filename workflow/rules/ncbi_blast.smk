@@ -31,7 +31,7 @@ rule psiblast:
     threads: 5
     shell:
         """
-        makeblastdb -dbtype prot -in '{input.taxid_db}' -parse_seqids &> {log}
+        makeblastdb -dbtype prot -in '{input.taxid_db}' &> {log}
 
         psiblast -query '{input.seed}' -db '{input.taxid_db}' -evalue {params.e_value} \
                  -outfmt '7 qacc qlen qseq qstart qend sacc slen sseq sstart send length pident evalue bitscore qcovs' \
