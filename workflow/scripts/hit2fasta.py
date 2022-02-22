@@ -26,7 +26,7 @@ with open(snakemake.input.list_all_prot, 'rt') as r_file :
                 list_cutname.append(proteins_of_interest)
 
         # Now parse the file to get the trucatenate fasta sequences
-        parser = SeqIO.index(snakemake.input.protein_fasta, 'fasta')
+        parser = SeqIO.parse(snakemake.input.protein_fasta, 'fasta')
 
         for prot in parser:
             for cutname in list_cutname:
