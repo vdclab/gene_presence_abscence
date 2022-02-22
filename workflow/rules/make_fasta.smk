@@ -100,7 +100,12 @@ rule merge_databases:
             "merge_databases.log",
         ),   
     shell:
-        """cat '{input.all_databases}' > '{output.taxid_db}'"""
+        """
+        for singlefile in {input.all_databases}
+        do 
+            cat "$singlefile" >> '{output.taxid_db}'
+        done
+        """
 
 
 ##########################################################################
