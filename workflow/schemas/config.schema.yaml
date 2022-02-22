@@ -89,7 +89,6 @@ properties:
 
 required:
   - seed
-  - taxid
   - project_name
   - output_folder
   - default_psiblast_option

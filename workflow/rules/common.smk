@@ -167,18 +167,20 @@ seed_table = pd.read_table(seed_file, dtype=seed_dtypes)
 
 validate(seed_table, schema="../schemas/seeds.schema.yaml")
 
-# path to taxonomic id to search seeds in (TSV format, columns: TaxId, NCBIGroups)
-taxid = config["taxid"]
+if "taxid" in config:
+    # path to taxonomic id to search seeds in (TSV format, columns: TaxId, NCBIGroups)
+    taxid = config["taxid"]
 
-# Validation of the taxid file
-taxid_dtypes = {
-    "TaxId": "Int64",
-    "NCBIGroups": "string",
-}
+    # Validation of the taxid file
+    taxid_dtypes = {
+        "TaxId": "Int64",
+        "NCBIGroups": "string",
+    }
 
-taxid_table = pd.read_table(taxid, dtype=taxid_dtypes)
+    taxid_table = pd.read_table(taxid, dtype=taxid_dtypes)
 
-validate(taxid_table, schema="../schemas/taxid.schema.yaml")
+    validate(taxid_table, schema="../schemas/taxid.schema.yaml")
+
 
 ##########################################################################
 ##########################################################################
@@ -249,11 +251,16 @@ merge_db = os.path.join(
         ),
 
 # Check if there is a database specified in the config file
-if 'perso_database' in config and config['perso_database']:
-    list_starting_database = [config['perso_database'], starting_database]
-else :
+if 'perso_database' in config and os.path.isfile(config["perso_database"]) and "taxid" in config and not taxid_table.empty :
+    list_starting_database = [config["perso_database"], starting_database]
+elif "taxid" in config and not taxid_table.empty :
     list_starting_database = starting_database
     merge_db = starting_database
+elif "perso_database" in config and os.path.isfile(config["perso_database"]):
+    list_starting_database = config["perso_database"]
+    merge_db = config["perso_database"]
+else:
+    sys.exit("Missing input file, no perso_database nor taxid table found")
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed
 if config["speedup"]:
