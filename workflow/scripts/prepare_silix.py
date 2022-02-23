@@ -11,18 +11,18 @@ seed_table = (
 )
 
 # Protein lenght dict
-protein_dict = {}
+# protein_dict = {}
 
-with open(snakemake.input.protein_file, 'rt') as r_file :
-    r_file.readline()
-    for line in r_file:
-        r_line = line.rstrip()
-        split_line = r_line.split('\t')
+# with open(snakemake.input.protein_file, 'rt') as r_file :
+#     r_file.readline()
+#     for line in r_file:
+#         r_line = line.rstrip()
+#         split_line = r_line.split('\t')
         
-        protein_dict[split_line[0]] = int(split_line[-1])
+#         protein_dict[split_line[0]] = int(split_line[-1])
 
-protein_dict.update(seed_table.length
-                              .to_dict())
+# protein_dict.update(seed_table.length
+#                               .to_dict())
 
 # Blast_out and preparation
 blast_names = ['qseqid', 'sseqid', 'pident', 'length', 'mismatch', 'gapopen', 'qstart', 'qend',

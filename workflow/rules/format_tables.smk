@@ -31,12 +31,68 @@ rule read_psiblast:
 ##########################################################################
 
 
+rule make_persoDatabase_table:
+    input:
+        protein_fasta=config['perso_database'],
+    output:
+        tsv=os.path.join(
+            OUTPUT_FOLDER,
+            "databases",
+            "merge_databases",
+            "protein_table.perso_database.tsv"
+        ),
+    log:
+        os.path.join(OUTPUT_FOLDER,
+            "logs",
+            "format_table",
+            "make_persoDatabase_table.log"
+        ),
+    conda:
+        "../envs/biopython_ete3.yaml"
+    script:
+        "../scripts/persodatabase2table.py"
+
+
+##########################################################################
+##########################################################################
+
+
+rule merge_protein_table:
+    input:
+        perso=os.path.join(
+            OUTPUT_FOLDER,
+            "databases",
+            "merge_databases",
+            "protein_table.perso_database.tsv"
+        ),
+        taxid=os.path.join(
+            OUTPUT_FOLDER,
+            "databases",
+            "all_taxid",
+            "protein_table.tsv"
+        ),
+    output:
+        tsv=os.path.join(
+            OUTPUT_FOLDER,
+            "databases",
+            "merge_databases",
+            "protein_table.merged.tsv"
+        ),
+    log:
+        os.path.join(OUTPUT_FOLDER, "logs", "format_table", "merge_protein_table.log"),
+    conda:
+        "../envs/pandas_plots.yaml"
+    script:
+        "../scripts/merge_protein_table.py"
+
+
+##########################################################################
+##########################################################################
+
+
 rule prepare_for_silix:
     input:
         seed_file=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv"),
-        protein_file=os.path.join(
-            OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
-        ),
         blast_out=os.path.join(
             OUTPUT_FOLDER, "processing_files", "blast", "blastp--blast_evalue_1e-2.out"
         ),
@@ -105,15 +161,10 @@ rule find_family:
 ##########################################################################
 
 
-rule make_table:
+rule make_PA_table:
     input:
         seed_file=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv"),
-        protein_table=os.path.join(
-            OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
-        ),
-        assembly_table=os.path.join(
-            OUTPUT_FOLDER, "databases", "all_taxid", "summary_assembly_taxid.tsv"
-        ),
+        protein_table=protein_table,
         fnodes=expand(
             os.path.join(
                 OUTPUT_FOLDER,

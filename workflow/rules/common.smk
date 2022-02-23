@@ -250,15 +250,37 @@ merge_db = os.path.join(
             "databases_all_together.fasta",
         ),
 
+# Get the output protein table name to activate the needed rules
+protein_table_taxid = os.path.join(
+            OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
+        ),
+
+protein_table_perso = os.path.join(
+            OUTPUT_FOLDER,
+            "databases",
+            "merge_databases",
+            "protein_table.perso_database.tsv"
+        ),
+
+protein_table_merge = os.path.join(
+            OUTPUT_FOLDER,
+            "databases",
+            "merge_databases",
+            "protein_table.merged.tsv"
+        ),
+
 # Check if there is a database specified in the config file
 if 'perso_database' in config and os.path.isfile(config["perso_database"]) and "taxid" in config and not taxid_table.empty :
     list_starting_database = [config["perso_database"], starting_database]
+    protein_table = protein_table_merge
 elif "taxid" in config and not taxid_table.empty :
     list_starting_database = starting_database
     merge_db = starting_database
+    protein_table = protein_table_taxid
 elif "perso_database" in config and os.path.isfile(config["perso_database"]):
     list_starting_database = config["perso_database"]
     merge_db = config["perso_database"]
+    protein_table = protein_table_perso
 else:
     sys.exit("Missing input file, no perso_database nor taxid table found")
 
