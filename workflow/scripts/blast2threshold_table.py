@@ -28,7 +28,7 @@ with open(snakemake.input.protein_file, 'rt') as r_file :
 
     # Read the rest of the line
     for line in r_file:
-    	# Remove any blank character at the end
+        # Remove any blank character at the end
         r_line = line.rstrip()
         # Split by the tabulation as it is a tsv
         split_line = r_line.split('\t')
@@ -66,13 +66,13 @@ seed_eval = snakemake.wildcards.eval
 # Read blast_out line by line
 with open(blast_out, 'rt') as r_file :
     with open(snakemake.output[0], 'wt') as w_file:
-    	# Write the header in two times because format string need that
+        # Write the header in two times because format string need that
         header = '\t'.join(final_header)
         w_file.write(f"{header}\n")
 
         # Read the blast line by line
         for line in r_file:            
-        	# Split the line to be easier to handle            
+            # Split the line to be easier to handle            
             line_split = line.split()
 
             # Get the information wanted

@@ -7,6 +7,9 @@ taxid: config/taxid.tsv
 # Path to personal database, it consists of a fasta file with all the proteins you want to add to the search
 perso_database: 
 
+# Path to personal database annoation tsv file if fasta headers are not in the format: "sequence_name--genome_id description"
+perso_annotation:
+
 # name of the project 
 project_name: your_project_name
 

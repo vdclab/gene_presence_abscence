@@ -1,0 +1,14 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+description: columns of the personal database annotation
+type: object
+properties:
+  protein_id:
+    type: string
+    description: protein identifier of your sequence
+  genome_id:
+    type: string
+    description: genome identifier of the genome to whom the sequence belong
+
+required:
+  - genome_id
+  - protein_id

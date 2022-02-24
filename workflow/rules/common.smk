@@ -140,6 +140,36 @@ def create_folder(mypath):
 
 
 ##########################################################################
+
+
+def check_annotation(mypath):
+    """
+    Check the presence of annotation file or if at least the name are in 
+    right format in the fasta file
+    :param mypath: path to perso_database if exists
+    :type: string
+    :return: The path of the annotation file if exists and validated or empty string
+             if fasta formated
+    """
+
+    with open(mypath) as r_file:
+        first_header = r_file.readline()
+
+        if "perso_annotation" in config and os.path.isfile(config["perso_annotation"]):
+            perso_annotation = pd.read_table(config["perso_annotation"], 
+                                             dtype="string")
+            validate(perso_annotation, schema="../schemas/annotations.schema.yaml")
+
+            return config["perso_annotation"]
+        elif "--" in first_header:
+            return ""
+        else:
+            sys.exit("ERROR: Please provided an annotation file for your database or \
+                     format the header of the fasta file as: sequence_name--genome_id \
+                     description")
+
+
+##########################################################################
 ##########################################################################
 ##
 ##                                Variables
@@ -248,41 +278,36 @@ merge_db = os.path.join(
             "databases",
             "merge_databases",
             "databases_all_together.fasta",
-        ),
+        )
 
 # Get the output protein table name to activate the needed rules
 protein_table_taxid = os.path.join(
             OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
-        ),
-
-protein_table_perso = os.path.join(
-            OUTPUT_FOLDER,
-            "databases",
-            "merge_databases",
-            "protein_table.perso_database.tsv"
-        ),
+        )
 
 protein_table_merge = os.path.join(
             OUTPUT_FOLDER,
             "databases",
             "merge_databases",
             "protein_table.merged.tsv"
-        ),
+        )
+
+
+proteinTable = protein_table_merge
 
 # Check if there is a database specified in the config file
 if 'perso_database' in config and os.path.isfile(config["perso_database"]) and "taxid" in config and not taxid_table.empty :
     list_starting_database = [config["perso_database"], starting_database]
-    protein_table = protein_table_merge
+    annotationTable = [check_annotation(config["perso_database"]), protein_table_taxid]
 elif "taxid" in config and not taxid_table.empty :
     list_starting_database = starting_database
     merge_db = starting_database
-    protein_table = protein_table_taxid
+    proteinTable = protein_table_taxid
 elif "perso_database" in config and os.path.isfile(config["perso_database"]):
-    list_starting_database = config["perso_database"]
-    merge_db = config["perso_database"]
-    protein_table = protein_table_perso
+    list_starting_database = [config["perso_database"]]
+    annotationTable = [check_annotation(config["perso_database"])]
 else:
-    sys.exit("Missing input file, no perso_database nor taxid table found")
+    sys.exit("ERROR: Missing input file, no perso_database nor taxid table found")
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed
 if config["speedup"]:

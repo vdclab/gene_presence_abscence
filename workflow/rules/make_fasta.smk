@@ -6,9 +6,7 @@
 
 rule make_fasta:
     input:
-        protein_fasta=os.path.join(
-            OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
-        ),
+        protein_fasta=merge_db,
         list_all_prot=os.path.join(
             OUTPUT_FOLDER,
             "processing_files",
@@ -88,9 +86,16 @@ rule merge_fasta:
 rule merge_databases:
     input:
         all_databases = list_starting_database,
+        annotations = annotationTable,
     output:
-        taxid_db=os.path.join(
+        taxid_db=temp(os.path.join(
             OUTPUT_FOLDER, "databases", "merge_databases", "databases_all_together.fasta"
+        )),
+        tsv=os.path.join(
+            OUTPUT_FOLDER,
+            "databases",
+            "merge_databases",
+            "protein_table.merged.tsv"
         ),
     log:
          os.path.join(
@@ -99,13 +104,10 @@ rule merge_databases:
             "fetch_proteins",
             "merge_databases.log",
         ),   
-    shell:
-        """
-        for singlefile in {input.all_databases}
-        do 
-            cat "$singlefile" >> '{output.taxid_db}'
-        done
-        """
+    conda:
+        "../envs/biopython_ete3.yaml"
+    script:
+        "../scripts/merge_protein.py"
 
 
 ##########################################################################
