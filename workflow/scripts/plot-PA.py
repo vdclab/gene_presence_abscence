@@ -4,6 +4,11 @@ import matplotlib.colors as mc
 from matplotlib.patches import FancyBboxPatch  
 import colorsys
 import sys
+import numpy as np
+
+# It seems there is a bug if another backend is used
+import matplotlib
+matplotlib.use('Agg')
 
 ##########################################################################
 
@@ -41,10 +46,6 @@ def adjust_lightness(color, amount=0.5):
 
 ##########################################################################
 
-# It seems there is a bug if another backend is used
-import matplotlib
-matplotlib.use('Agg')
-
 # Put error and out into the log file
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
@@ -57,7 +58,16 @@ plt.rcParams['font.family'] = 'Arial'
 plt.rcParams['font.weight'] = 'light'
 
 # Name in PAtab assembly_id, seed, PA, color, genome_name
-patab = pd.read_table(snakemake.input.final_table)
+patab_dtypes = {
+            'assembly_id': 'object',
+            'seed': 'object',
+            'PA': np.int8,
+            'color': 'string',
+            'genome_name': 'string',
+        }
+
+patab = pd.read_table(snakemake.input.final_table, dtype=patab_dtypes)
+patab.fillna('', inplace=True)
 
 # Dict position genomes and gene
 list_genome = patab.assembly_id.unique().tolist() 

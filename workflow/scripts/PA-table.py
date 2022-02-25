@@ -38,7 +38,8 @@ seed_list = seed_table.seed.to_list()
 seed_color_dict = seed_table.set_index('seed').color.to_dict()
 
 # list of all proteins
-all_proteins = pd.read_table(snakemake.input.protein_table)
+all_proteins = pd.read_table(snakemake.input.protein_table, dtype='string')
+all_proteins.fillna("", inplace=True)
 
 # fnodes opening
 fam_id_table = pd.DataFrame()

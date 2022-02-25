@@ -303,6 +303,7 @@ elif "taxid" in config and not taxid_table.empty :
     list_starting_database = starting_database
     merge_db = starting_database
     proteinTable = protein_table_taxid
+    annotationTable = protein_table_taxid
 elif "perso_database" in config and os.path.isfile(config["perso_database"]):
     list_starting_database = [config["perso_database"]]
     annotationTable = [check_annotation(config["perso_database"])]
