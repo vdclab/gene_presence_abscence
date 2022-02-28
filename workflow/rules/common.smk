@@ -79,8 +79,8 @@ def check_color_seed(seed_df):
     if "color" not in seed_df.columns:
         seed_df['color'] = config["default_values_plot"]["color"]
     else:
-        seed_df.fillna(value={'color':config["default_values_plot"]["color"]})
-        
+        seed_df.fillna(value={'color':config["default_values_plot"]["color"]}, inplace=True)
+
     return seed_df
 
 

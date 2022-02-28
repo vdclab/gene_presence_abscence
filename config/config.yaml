@@ -1,8 +1,8 @@
 # path to seeds sheet (TSV format, columns: seed, protein_id, ...)
-seed: config/seeds.tsv
+seed: .test/config/seeds.tsv
 
 # path to taxonomic id to search seeds in (TSV format, columns: TaxId, NCBIGroups)
-taxid: config/taxid.tsv
+taxid: .test/config/taxid.tsv
 
 # Path to personal database, it consists of a fasta file with all the proteins you want to add to the search: (TSV format, columns: protein_id, genome_id[, genome_name])
 perso_database: ''
