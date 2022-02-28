@@ -20,9 +20,7 @@ rule blast2threshold_table:
             "modif",
             "filtered_blast--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes.flushed",
         ),
-        protein_file=os.path.join(
-            OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
-        ),     
+        protein_file=proteinTable,
     output:
         os.path.join(
             OUTPUT_FOLDER,

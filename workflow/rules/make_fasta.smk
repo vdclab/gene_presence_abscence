@@ -36,7 +36,7 @@ rule extract_protein:
     input:
         PAtab=os.path.join(OUTPUT_FOLDER, "results", "patab_melt.tsv"),
         fasta_protein=os.path.join(
-            OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
+            OUTPUT_FOLDER, "databases", "merge_fasta", "all_protein_with_seeds.fasta"
         ),
     output:
         expand(
