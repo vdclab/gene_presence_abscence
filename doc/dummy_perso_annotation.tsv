@@ -1,0 +1,4 @@
+genome_id	protein_id	genome_name
+genomeA	proteinA		PhageA
+genomeA	proteinB	PhageA
+genomeB	protein1	BacteriaB

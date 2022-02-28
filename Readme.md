@@ -59,7 +59,7 @@ In all following steps, we will assume that you are inside of that directory.
 Second, run 
 
 ```shell
-snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.1.0
+snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.1.1
 ```
 
 Snakedeploy will create two folders `workflow` and `config`. The former contains the deployment of the chosen workflow as a [Snakemake module](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#using-and-combining-pre-exising-workflows), the latter contains configuration files which will be modified in the next step in order to configure the workflow to your needs. Later, when executing the workflow, Snakemake will automatically find the main `Snakefile` in the `workflow` subfolder.
@@ -70,12 +70,18 @@ Snakedeploy will create two folders `workflow` and `config`. The former contains
 
 To configure this workflow, modify `config/config.yaml` according to your needs, following the explanations provided in the file.  
 
-Seed and taxonomy sheet
+Seed and taxonomy sheet:
 - Add seeds to `config/samples.tsv`. For each protein, the columns `seed`, and `protein_id` have to be defined. The protein_id is the protein id define by [NCBI](https://www.ncbi.nlm.nih.gov/). To include other relevant variables such as color, threshold (e-value, percentage identities and coverage), add a new column to the sheet. Exemple of the `seed file` is present in the `config` folder if needed or in the [doc](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_seeds.tsv) folder in the GitHub page
 - Add taxonomic id list to `config/taxid.tsv`. For each genome, the column `TaxId` has to be defined. The TaxId is define by [NCBI Taxonomy](https://www.ncbi.nlm.nih.gov/taxonomy). To include other relevant variables such as taxonimical groups (`NCBIGroups`), add a new column to the sheet. The groups that could be used are : `all`, `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other` or `viral`.
 - You can also configure other parameter such as `project_name`, `output_folder` in the `config/config.yaml` file. Exemple of the `tanonomy file` is present in the `config` folder if needed or in the [doc](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_taxids.tsv) folder in the GitHub page
 
 Missing values can be specified by empty columns or by writing `NA`.
+
+You can also specify a personal protein fasta file as input for the search. To do so you can add the path to this database in the `perso_database` item in the config file. If you don't have one put an empty string or remove the item. 
+
+If you want to add your personnal database you need to have one of the two:
+- The header for each protein sequences in the fasta file should be format as: >protein_id--genome_id description. Example of the perso database file could be find in the [doc](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_perso_database.fasta)
+- You should provide the path to an annotation file in the config file at `perso_annotation`. The anntation file should contains the columns `protein_id` (that correspond to the id of your proteins in the fasta file `perso_database`) and `genome_id` that contains the identifier of the genome from which the protein belongs. As an additionnal columns you can provide a `genome_name` that will be used in the final figure. Example of the anntation file could be find in the [doc](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_perso_annotation.tsv)
 
 #### Useful options
 

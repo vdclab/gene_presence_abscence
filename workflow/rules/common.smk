@@ -76,10 +76,11 @@ def check_color_seed(seed_df):
     Infer color if color is not set by the user in the seed's file
     """
 
-    for index, row in seed_df.iterrows():
-        if "color" not in seed_df.columns or pd.isna(row.color):
-            seed_df.at[index, "color"] = config["default_values_plot"]["color"]
-
+    if "color" not in seed_df.columns:
+        seed_df['color'] = config["default_values_plot"]["color"]
+    else:
+        seed_df.fillna(value={'color':config["default_values_plot"]["color"]})
+        
     return seed_df
 
 
