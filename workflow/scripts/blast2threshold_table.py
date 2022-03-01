@@ -1,5 +1,5 @@
 import pandas as pd
-import sys, os
+import sys
 
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
@@ -24,7 +24,9 @@ protein_dict = {}
 
 with open(snakemake.input.protein_file, 'rt') as r_file :
     # Remove the first line because header
-    r_file.readline()
+    header = r_file.readline().split('\t')
+    protein_index = header.index('protein_id')
+    length_index = header.index('length')
 
     # Read the rest of the line
     for line in r_file:
@@ -34,7 +36,7 @@ with open(snakemake.input.protein_file, 'rt') as r_file :
         split_line = r_line.split('\t')
         
         # Put the information in the protein dict
-        protein_dict[split_line[0]] = int(split_line[-1])
+        protein_dict[split_line[protein_index]] = int(split_line[length_index])
 
 # Update with the seeds
 protein_dict.update(seed_table.length
