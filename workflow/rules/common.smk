@@ -198,7 +198,7 @@ seed_table = pd.read_table(seed_file, dtype=seed_dtypes)
 
 validate(seed_table, schema="../schemas/seeds.schema.yaml")
 
-if "taxid" in config:
+if "taxid" in config and os.path.isfile(config["taxid"]):
     # path to taxonomic id to search seeds in (TSV format, columns: TaxId, NCBIGroups)
     taxid = config["taxid"]
 
@@ -211,7 +211,9 @@ if "taxid" in config:
     taxid_table = pd.read_table(taxid, dtype=taxid_dtypes)
 
     validate(taxid_table, schema="../schemas/taxid.schema.yaml")
-
+else:
+    # Create empty DataFrame if file doesn't exists
+    taxid = pd.DataFrame()
 
 ##########################################################################
 ##########################################################################
