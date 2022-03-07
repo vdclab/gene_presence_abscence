@@ -1,4 +1,3 @@
-from posixpath import split
 import pandas as pd
 import sys
 from common import utils_blast

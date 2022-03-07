@@ -49,7 +49,8 @@ rule prepare_for_silix:
             gene_constrains=gene_constrains,
         ),
     params:
-        minimum_length = length_min,          
+        minimum_length = length_min,
+        common = workflow.source_path('../scripts/common/utils_blast.py'),
     log:
         os.path.join(
             OUTPUT_FOLDER,
