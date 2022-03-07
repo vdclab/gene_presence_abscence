@@ -1,6 +1,7 @@
 import pandas as pd
 import sys
-from common import utils_blast
+
+import utils_blast
 
 # Put error and out into the log file
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
