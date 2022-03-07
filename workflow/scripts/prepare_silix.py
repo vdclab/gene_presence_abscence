@@ -54,7 +54,7 @@ list_open_output = [open(tsv_output, 'wt') for tsv_output in snakemake.output]
 num_output = len(list_open_output)
 
 # Read the blast hsp by hsp
-for sub_blast in utils_blast.iterrator_on_blast_hsp(blast_out=file_out) :
+for sub_blast in utils_blast.iterrator_on_blast_hsp(blast_out=snakemake.input.blast_out) :
     # Variable to get the lines 
     line = ""
 
@@ -62,13 +62,13 @@ for sub_blast in utils_blast.iterrator_on_blast_hsp(blast_out=file_out) :
     num_HSPs = len(sub_blast)
 
     if num_HSPs == 1:
-        evalue_blast = split_line[blast_header.index('evalue')]
+        evalue_blast = float(sub_blast[0][blast_names.index('evalue')])
         line = "\t".join(sub_blast[0]) + "\n"
     else:
         df_hsps = utils_blast.prepare_df_hsps(list_hsps = sub_blast,
                                             blast_dtypes = blast_dtypes, 
                                             blast_names = blast_names,
-                                            HSPMIN = snakemake.params.minumum_length)
+                                            HSPMIN = snakemake.params.minimum_length)
 
         evalue_blast = df_hsps.evalue.max()
 

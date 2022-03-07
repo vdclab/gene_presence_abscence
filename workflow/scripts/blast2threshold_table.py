@@ -25,7 +25,7 @@ protein_dict = {}
 
 with open(snakemake.input.protein_file, 'rt') as r_file :
     # Remove the first line because header
-    header = r_file.readline().split('\t')
+    header = r_file.readline().rstrip().split('\t')
     protein_index = header.index('protein_id')
     length_index = header.index('length')
 
@@ -87,7 +87,7 @@ with open(snakemake.output[0], 'wt') as w_file:
     w_file.write(f"{header}\n")
 
     # Read the blast hsp by hsp
-    for sub_blast in utils_blast.iterrator_on_blast_hsp(blast_out=file_out) :
+    for sub_blast in utils_blast.iterrator_on_blast_hsp(blast_out=blast_out) :
         # Get the number of hsps
         num_HSPs = len(sub_blast)
 
@@ -101,7 +101,7 @@ with open(snakemake.output[0], 'wt') as w_file:
             df_hsps = utils_blast.prepare_df_hsps(list_hsps = sub_blast,
                                                 blast_dtypes = blast_dtypes, 
                                                 blast_names = blast_names,
-                                                HSPMIN = snakemake.params.minumum_length)
+                                                HSPMIN = snakemake.params.minimum_length)
 
             sseqid = df_hsps.sseqid.values[0]
             qseqid = df_hsps.qseqid.values[0]

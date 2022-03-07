@@ -58,7 +58,7 @@ properties:
         enum: ["mean","subject", "query", "shortest", "longest"]
       pid_min:
         type: string
-        enum: ["mean","subject", "query", "shortest", "longest". "HSP"]
+        enum: ["mean","subject", "query", "shortest", "longest", "HSP"]
       length_min:
         type: number
     required:
@@ -109,8 +109,9 @@ required:
   - seed
   - project_name
   - output_folder
-  - default_psiblast_option
-  - default_blast_option
-  - ndg_option
+  - default_psiblast_options
+  - default_blast_options
+  - ndg_options
+  - silix_options
   - speedup
   - default_values_plot

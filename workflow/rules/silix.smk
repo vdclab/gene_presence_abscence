@@ -27,7 +27,7 @@ rule silix:
     params:
         minimum_overlap = silix_dict[cov_min],
         minimum_percId = silix_dict[pid_min],
-        minumum_length = length_min,
+        minimum_length = length_min,
     log:
         os.path.join(
             OUTPUT_FOLDER,

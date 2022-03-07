@@ -40,7 +40,7 @@ silix_options:
     pid_min: mean
     # Min length to accept partial sequences in families
     length_min: 100
-    
+
 # Option for the Taxonomy DB parser
 # If you want to update the Taxonomy dump, :warning: it increase the running time of the workflow
 update_db: False

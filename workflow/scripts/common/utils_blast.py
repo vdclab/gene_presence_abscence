@@ -295,15 +295,15 @@ def prepare_df_hsps(list_hsps, blast_names, blast_dtypes, HSPMIN=100):
     df_hsps['pos'] = df_hsps['id']
     
     # Get the sens of the HSP on the subject
-    df_hsps['sens'] = get_orientation(df_hsps.sstart.values, df_hsps.send.values)
+    df_hsps['sens'] = get_orientation(sstart=df_hsps.sstart.values, send=df_hsps.send.values)
     
     # Update the values of the position in case the sens is changed
-    df_hsps['sstart'] = update_values(df_hsps.sstart.values, df_hsps.sens.values)
-    df_hsps['send'] = update_values(df_hsps.send.values, df_hsps.sens.values)
+    df_hsps['sstart'] = update_values(old_values=df_hsps.sstart.values, sens=df_hsps.sens.values)
+    df_hsps['send'] = update_values(old_values=df_hsps.send.values, sens=df_hsps.sens.values)
     
     # Calculate the length of the alignment on the subject and query
-    df_hsps['lg_aln_subject'] = length_aln_on_sequence(df_hsps.sstart.values, df_hsps.send.values)
-    df_hsps['lg_aln_query'] = length_aln_on_sequence(df_hsps.qstart.values, df_hsps.qend.values)
+    df_hsps['lg_aln_subject'] = length_aln_on_sequence(start=df_hsps.sstart.values, end=df_hsps.send.values)
+    df_hsps['lg_aln_query'] = length_aln_on_sequence(start=df_hsps.qstart.values, end=df_hsps.qend.values)
     
     # Calculate length of the HSP
     df_hsps['lgHSP'] = np.max([df_hsps.lg_aln_subject.values, df_hsps.lg_aln_query.values], axis=0)
@@ -317,7 +317,9 @@ def prepare_df_hsps(list_hsps, blast_names, blast_dtypes, HSPMIN=100):
     for hsp1_index in range(df_hsps.shape[0] - 1):
         for hsp2_index in range(hsp1_index + 1, df_hsps.shape[0]):
             if df_hsps.at[hsp1_index, 'stat'] and df_hsps.at[hsp2_index, 'stat'] :                
-                values2update = checkHSPS(df_hsps.iloc[hsp1_index].copy(), df_hsps.iloc[hsp2_index].copy(), HSPMIN)
+                values2update = checkHSPS(hsp1=df_hsps.iloc[hsp1_index].copy(), 
+                                          hsp2=df_hsps.iloc[hsp2_index].copy(), 
+                                          HSPMIN=HSPMIN)
 
                 for value in values2update:
                     df_hsps.at[hsp2_index, value] = values2update[value]
@@ -423,10 +425,17 @@ def summarize_hits(df_hsps, length_query, length_subject, option_cov='mean', opt
     # id_total = np.sum(df_hsps.id.values)
     
     # Cumulative length of HSPs / shortest seq. length = % coverage
-    frac_HSPshlen = calculate_coverage(length_total, length_query, length_subject, option_cov)
+    frac_HSPshlen = calculate_coverage(length_total=length_total, 
+                                       length_query=length_query, 
+                                       length_subject=length_subject, 
+                                       option_cov=option_cov)
     
     # Number of positives / shortest seq. length = percentage of identity
-    pospercentsh = calculate_percid(pos_total, length_query, length_subject, length_total, option_pid)
+    pospercentsh = calculate_percid(pos_total=pos_total, 
+                                    length_query=length_query, 
+                                    length_subject=length_subject, 
+                                    length_total=length_total, 
+                                    option_pid=option_pid)
     
     evalue = max(df_hsps.evalue.values)
 
@@ -452,28 +461,35 @@ def summarize_hit_only(split_line, blast_header, dict_protein, option_cov='mean'
     sseqid = split_line[blast_header.index('sseqid')]
 
     # Get all the identical in the sequence
-    perc_id = split_line[blast_header.index('pident')]
-    aln_length = split_line[blast_header.index('length')]
+    perc_id = float(split_line[blast_header.index('pident')])
+    aln_length = int(split_line[blast_header.index('length')])
     pos = np.floor(perc_id * aln_length / 100 + 0.5)
 
-    sstart = split_line[blast_header.index('sstart')]
-    qstart = split_line[blast_header.index('qstart')]
-    send = split_line[blast_header.index('send')]
-    qend = split_line[blast_header.index('qend')]
+    sstart = int(split_line[blast_header.index('sstart')])
+    qstart = int(split_line[blast_header.index('qstart')])
+    send = int(split_line[blast_header.index('send')])
+    qend = int(split_line[blast_header.index('qend')])
 
     # Calculation as if multiple hit
-    lg_aln_subject = length_aln_on_sequence(sstart, send)
-    lg_aln_query = length_aln_on_sequence(qstart, qend)
+    lg_aln_subject = length_aln_on_sequence(start=sstart, end=send)
+    lg_aln_query = length_aln_on_sequence(start=qstart, end=qend)
 
     lg_total = max(lg_aln_query, lg_aln_subject)
 
-    perc_id = calculate_percid(pos, dict_protein[qseqid], dict_protein[sseqid], lg_total, option_pid)
+    perc_id = calculate_percid(pos_total=pos,
+                               length_query=dict_protein[qseqid],
+                               length_subject=dict_protein[sseqid],
+                               length_total=lg_total, 
+                               option_pid=option_pid)
 
-    cov = calculate_coverage(lg_total, dict_protein[qseqid], dict_protein[sseqid], option_cov)
+    cov = calculate_coverage(length_total=lg_total,
+                             length_query=dict_protein[qseqid],
+                             length_subject=dict_protein[sseqid], 
+                             option_cov=option_cov)
 
     # Get the rest
-    evalue = split_line[blast_header.index('evalue')]
-    score = split_line[blast_header.index('bitscore')]
+    evalue = float(split_line[blast_header.index('evalue')])
+    score = float(split_line[blast_header.index('bitscore')])
 
     return qseqid, sseqid, perc_id, cov, evalue, score
 

@@ -59,7 +59,7 @@ In all following steps, we will assume that you are inside of that directory.
 Second, run 
 
 ```shell
-snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.1.2
+snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.2.0
 ```
 
 Snakedeploy will create two folders `workflow` and `config`. The former contains the deployment of the chosen workflow as a [Snakemake module](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#using-and-combining-pre-exising-workflows), the latter contains configuration files which will be modified in the next step in order to configure the workflow to your needs. Later, when executing the workflow, Snakemake will automatically find the main `Snakefile` in the `workflow` subfolder.
@@ -191,7 +191,7 @@ Given that the workflow has been properly deployed and configured, it can be exe
 For running the workflow while deploying any necessary software via conda and running on the cluster, run Snakemake with 
 
 ```shell
-snakemake --cores 5 --use-conda --profile config/slurm
+snakemake -j 5 --use-conda --profile config/slurm
 ```
 
 As previously, if you want to run the workflow with the additional step to speedup the analysis that contains a big dataset you can either:
@@ -199,7 +199,7 @@ As previously, if you want to run the workflow with the additional step to speed
 - Run the workflow adding `-C speedup=True` to the command line as follow
 
 ```shell
-snakemake --cores 1 --use-conda --profile config/slurm -C speedup=True 
+snakemake -j 5 --use-conda --profile config/slurm -C speedup=True 
 ```
 
 As previously you can also generate a report following `Step 5: Generate report`.

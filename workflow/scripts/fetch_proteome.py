@@ -88,11 +88,11 @@ def infer_ngs_groups(df_taxid, ncbi):
     Infer taxid ngs option if not in taxid
     """
 
-    if snakemake.config["ndg_option"]["groups"] != 'all':
+    if snakemake.config["ndg_options"]["groups"] != 'all':
         if "NCBIGroups" not in df_taxid:
-            df_taxid["NCBIGroups"] = snakemake.config["ndg_option"]["groups"]
+            df_taxid["NCBIGroups"] = snakemake.config["ndg_options"]["groups"]
         elif df_taxid.NCBIGroups.isnull().any():
-            df_taxid.loc[df_taxid.NCBIGroups.isnull(), "NCBIGroups"] = snakemake.config["ndg_option"]["groups"]
+            df_taxid.loc[df_taxid.NCBIGroups.isnull(), "NCBIGroups"] = snakemake.config["ndg_options"]["groups"]
 
     else:
         if "NCBIGroups" not in df_taxid:

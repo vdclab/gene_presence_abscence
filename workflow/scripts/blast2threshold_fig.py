@@ -55,7 +55,7 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
         tmp_fig = px.scatter(df_fam, x='pident', y='coverage', color='fam', 
                             marginal_x='histogram', 
                             marginal_y='histogram',
-                            color_discrete_map={'Only one in the family':'#A61515', 'Both in the family':'#3888AC'},
+                            color_discrete_map={'Only one in the family':'#E41A1C', 'Both in the family':'#377EB8'},
                             labels={"fam": "Pair of proteins"},
                             category_orders={"fam": ["Only one in the family", "Both in the family"]},
                             custom_data=['protein1','protein2', 'evalue'])
@@ -64,7 +64,7 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
         tmp_fig_drop = px.scatter(df_fam_drop, x='pident', y='coverage', color='fam', 
                                 marginal_x='histogram', 
                                 marginal_y='histogram',
-                                color_discrete_map={'Only one in the family':'#A61515', 'Both in the family':'#3888AC'},
+                                color_discrete_map={'Only one in the family':'#E41A1C', 'Both in the family':'#377EB8'},
                                 labels={"fam": "Pair of proteins"},
                                 category_orders={"fam": ["Only one in the family", "Both in the family"]},
                                 custom_data=['protein1','protein2', 'evalue'],
@@ -213,7 +213,7 @@ def scatter3D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter3D.html"):
         list_trace += [seed] * df_fam.fam.unique().shape[0]
 
         tmp_fig = px.scatter_3d(df_fam, x='pident', y='coverage', z='evalue',color='fam', 
-                               color_discrete_map={'Only one in the family':'#A61515', 'Both in the family':'#3888AC'},
+                               color_discrete_map={'Only one in the family':'#E41A1C', 'Both in the family':'#377EB8'},
                                labels={"fam": "Pair of proteins"},
                                category_orders={"fam": ["Only one in the family", "Both in the family"]},
                                custom_data=['protein1','protein2', 'evalue'])
