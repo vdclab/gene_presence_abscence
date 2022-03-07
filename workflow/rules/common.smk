@@ -213,7 +213,7 @@ if "taxid" in config and os.path.isfile(config["taxid"]):
     validate(taxid_table, schema="../schemas/taxid.schema.yaml")
 else:
     # Create empty DataFrame if file doesn't exists
-    taxid = pd.DataFrame()
+    taxid_table = pd.DataFrame()
 
 ##########################################################################
 ##########################################################################
