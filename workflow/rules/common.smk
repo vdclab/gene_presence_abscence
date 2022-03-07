@@ -44,19 +44,19 @@ def infer_gene_constrains(seed_df):
         if "evalue" in seed_df.columns and not pd.isna(row.evalue):
             tmp_evalue = row.evalue
         else:
-            tmp_evalue = config["default_blast_option"]["e_val"]
+            tmp_evalue = config["default_blast_options"]["e_val"]
             seed_df.at[index, "evalue"] = tmp_evalue
 
         if "coverage" in seed_df.columns and not pd.isna(row.coverage):
             tmp_coverage = row.coverage
         else:
-            tmp_coverage = config["default_blast_option"]["cov"]
+            tmp_coverage = config["default_blast_options"]["cov"]
             seed_df.at[index, "coverage"] = tmp_coverage
 
         if "pident" in seed_df.columns and not pd.isna(row.pident):
             tmp_pident = row.pident
         else:
-            tmp_pident = config["default_blast_option"]["pid"]
+            tmp_pident = config["default_blast_options"]["pid"]
             seed_df.at[index, "pident"] = tmp_pident
 
         tmp_text = (
@@ -255,19 +255,38 @@ OUTPUT_FOLDER = os.path.join(config["output_folder"], project_name)
 config["__output_folder__"] = os.path.abspath(OUTPUT_FOLDER)
 
 # Psiblast default e-value thershold
-e_val_psiblast = config["default_psiblast_option"]["psiblast_e_val"]
+e_val_psiblast = config["default_psiblast_options"]["psiblast_e_val"]
 
-# Psiblast default e-value thershold
-iteration_psiblast = config["default_psiblast_option"]["iteration"]
+# Psiblast default iteration thershold
+iteration_psiblast = config["default_psiblast_options"]["iteration"]
+
+# Silix option coverage
+cov_min = config["silix_options"]["cov_min"]
+
+# Silix option percentage identity
+pid_min = config["silix_options"]["pid_min"]
+
+# Silix option minimum length
+length_min = config["silix_options"]["length_min"]
+
+# Dictionary translation option for silix
+silix_dict = {
+    "mean":"0",
+    "subject":"1",
+    "query":"-1",
+    "shortest":"2",
+    "longest":"-2",
+    "HSP":"3",
+    }
 
 # Option for ncbi_genome_download
-section = config["ndg_option"]["section"]
+section = config["ndg_options"]["section"]
 
 # Values for assembly_levels :
-assembly_levels = config["ndg_option"]["assembly_levels"]
+assembly_levels = config["ndg_options"]["assembly_levels"]
 
 # Values for refseq_categories :
-refseq_categories = config["ndg_option"]["refseq_categories"]
+refseq_categories = config["ndg_options"]["refseq_categories"]
 
 # Name of the file with all the taxids 
 starting_database = os.path.join(

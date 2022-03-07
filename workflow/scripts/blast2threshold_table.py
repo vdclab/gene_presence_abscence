@@ -1,5 +1,6 @@
 import pandas as pd
 import sys
+from common import utils_blast
 
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
@@ -46,6 +47,20 @@ protein_dict.update(seed_table.length
 blast_names = ['qseqid', 'sseqid', 'pident', 'length', 'mismatch', 'gapopen', 'qstart', 'qend',
                'sstart', 'send', 'evalue', 'bitscore']
 
+# Get the types of te columns for multiple HSPs dataframe
+blast_dtypes = {'qseqid':'string',
+                'sseqid':'string',
+                'pident':'float64',
+                'length':'int32',
+                'mismatch':'int32',
+                'gapopen':'int32',
+                'qstart':'int32',
+                'qend':'int32',
+                'sstart':'int32',
+                'send':'int32',
+                'evalue':'float64',
+                'bitscore':'float64'}
+
 # Header of the output
 final_header = ['protein1', 'protein2', 'pident', 'evalue', 'coverage', 'fam']
 
@@ -61,45 +76,52 @@ seed_name = snakemake.wildcards.seed
 # Get all the threshold used by the user
 split_info = seed_family.split('.fnodes')[0].split('_')
 
-seed_cov = snakemake.wildcards.coverage
-seed_pid = snakemake.wildcards.pid
-seed_eval = snakemake.wildcards.eval
+# seed_cov = snakemake.wildcards.coverage
+# seed_pid = snakemake.wildcards.pid
+# seed_eval = snakemake.wildcards.eval
 
 # Read blast_out line by line
-with open(blast_out, 'rt') as r_file :
-    with open(snakemake.output[0], 'wt') as w_file:
-        # Write the header in two times because format string need that
-        header = '\t'.join(final_header)
-        w_file.write(f"{header}\n")
+with open(snakemake.output[0], 'wt') as w_file:
+    # Write the header in two times because format string need that
+    header = '\t'.join(final_header)
+    w_file.write(f"{header}\n")
 
-        # Read the blast line by line
-        for line in r_file:            
-            # Split the line to be easier to handle            
-            line_split = line.split()
+    # Read the blast hsp by hsp
+    for sub_blast in utils_blast.iterrator_on_blast_hsp(blast_out=file_out) :
+        # Get the number of hsps
+        num_HSPs = len(sub_blast)
 
-            # Get the information wanted
-            evalue_blast = line_split[10]
-            qseqid = line_split[0]
-            sseqid = line_split[1]
+        if num_HSPs == 1:
+            qseqid, sseqid, pident_blast, coverage_blast, evalue_blast, score = utils_blast.summarize_hit_only(split_line = sub_blast[0], 
+                                                                                                               blast_header = blast_names,
+                                                                                                               dict_protein = protein_dict,
+                                                                                                               option_cov = snakemake.params.option_cov,
+                                                                                                               option_pid = snakemake.params.option_pid)
+        else:
+            df_hsps = utils_blast.prepare_df_hsps(list_hsps = sub_blast,
+                                                blast_dtypes = blast_dtypes, 
+                                                blast_names = blast_names,
+                                                HSPMIN = snakemake.params.minumum_length)
 
-            # Look if both proteins are in the family
-            if qseqid in fam_protein_name and sseqid in fam_protein_name:
-                # Try to save calculation time
-                pident_blast = float(line_split[2]) / 100
-                length = float(line_split[7]) - float(line_split[6]) + 1
-                coverage_blast = length / protein_dict[qseqid]
-                # If exist put in the table because both are in the family
-                line2write = f'{qseqid}\t{sseqid}\t{pident_blast}\t{evalue_blast}\t{coverage_blast}\tin_family_{seed_name}\n'
-                w_file.write(line2write)
+            sseqid = df_hsps.sseqid.values[0]
+            qseqid = df_hsps.qseqid.values[0]
 
-            # Look if one protein is in the family
-            elif qseqid in fam_protein_name or sseqid in fam_protein_name:
-                # Try to save calculation time
-                pident_blast = float(line_split[2]) / 100
-                length = float(line_split[7]) - float(line_split[6]) + 1
-                coverage_blast = length / protein_dict[qseqid]
-                # If exist put in the table because one of them is in the family
-                line2write = f'{qseqid}\t{sseqid}\t{pident_blast}\t{evalue_blast}\t{coverage_blast}\tout_family_{seed_name}\n'
-                w_file.write(line2write)
+            delta_lg, coverage_blast, pident_blast, evalue_blast, score = utils_blast.summarize_hits(df_hsps = df_hsps, 
+                                                                                                    length_query = protein_dict[qseqid], 
+                                                                                                    length_subject = protein_dict[sseqid],
+                                                                                                    option_cov = snakemake.params.option_cov, 
+                                                                                                    option_pid = snakemake.params.option_pid)
+
+        # Look if both proteins are in the family
+        if qseqid in fam_protein_name and sseqid in fam_protein_name:
+            # If exist put in the table because both are in the family
+            line2write = f'{qseqid}\t{sseqid}\t{pident_blast}\t{evalue_blast}\t{coverage_blast}\tin_family_{seed_name}\n'
+            w_file.write(line2write)
+
+        # Look if one protein is in the family
+        elif qseqid in fam_protein_name or sseqid in fam_protein_name:
+            # If exist put in the table because one of them is in the family
+            line2write = f'{qseqid}\t{sseqid}\t{pident_blast}\t{evalue_blast}\t{coverage_blast}\tout_family_{seed_name}\n'
+            w_file.write(line2write)
                 
 ##########################################################################

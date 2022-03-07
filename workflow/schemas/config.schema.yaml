@@ -18,7 +18,7 @@ properties:
   output_folder:
     type: string
 
-  default_psiblast_option:
+  default_psiblast_options:
     type: object
     properties:
       psiblast_e_val:
@@ -30,7 +30,7 @@ properties:
         minimum: 1
         maximum: 5
       
-  default_blast_option:
+  default_blast_options:
     type: object
     properties:
       e_val:
@@ -50,10 +50,26 @@ properties:
       - pid
       - cov
 
+  silix_options:
+    type: object
+    properties:
+      cov_min:
+        type: string
+        enum: ["mean","subject", "query", "shortest", "longest"]
+      pid_min:
+        type: string
+        enum: ["mean","subject", "query", "shortest", "longest". "HSP"]
+      length_min:
+        type: number
+    required:
+      - cov_min
+      - pid_min
+      - length_min
+
   update_db:
     type: boolean
 
-  ndg_option:
+  ndg_options:
     type: object
     properties:
       section:

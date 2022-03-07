@@ -17,14 +17,14 @@ project_name: your_name_project
 output_folder: results
 
 # e value threshold to use for psiblast (and blast as default is not in seeds.tsv)
-default_psiblast_option:
+default_psiblast_options:
     # E-value threshold
     psiblast_e_val: 0.01
     # Iteration 
     iteration: 3
 
 # Blast option if not given in seeds.tsv
-default_blast_option:
+default_blast_options:
     # E-value threshold
     e_val: 0.0001
     # Percentage of identity threshold
@@ -32,12 +32,21 @@ default_blast_option:
     # Coverage of the query treshold
     cov: 0.8
 
+# Silix option for the calculation of the percentage of identity and coverage
+silix_options:
+    # Minimum coverage option: ['mean':mean of the 2 lengths (default), 'subject':subject length, 'query':query length, 'shortest':shortest length, 'longest'=longest length]
+    cov_min: mean
+    # Minimum percentage of identity: ['mean':mean of the 2 lengths (default), 'subject':subject length, 'query':query length, 'shortest':shortest length, 'longest'=longest length, 'HSP'=HSP length]
+    pid_min: mean
+    # Min length to accept partial sequences in families
+    length_min: 100
+    
 # Option for the Taxonomy DB parser
 # If you want to update the Taxonomy dump, :warning: it increase the running time of the workflow
 update_db: False
 
 # Option for ncbi_download_genome
-ndg_option:
+ndg_options:
     # Values for section : {refseq,genbank}
     section: refseq
     # Values for assembly_levels : ['all', 'complete', 'chromosome', 'scaffold', 'contig']

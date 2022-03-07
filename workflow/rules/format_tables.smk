@@ -48,6 +48,8 @@ rule prepare_for_silix:
             ),
             gene_constrains=gene_constrains,
         ),
+    params:
+        minumum_length = length_min,          
     log:
         os.path.join(
             OUTPUT_FOLDER,

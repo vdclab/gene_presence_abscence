@@ -28,6 +28,10 @@ rule blast2threshold_table:
             "tables",
             "table_hits_family--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.tsv"
         ),
+    params:
+        option_cov = silix_dict[cov_min],
+        option_pid = silix_dict[pid_min],
+        minumum_length = length_min,        
     log:
         os.path.join(
             OUTPUT_FOLDER,
