@@ -417,11 +417,12 @@ def summarize_hits(df_hsps, length_query, length_subject, option_cov='mean', opt
     # C-term delta between query and subject and add to length difference between aligned sequences
     delta_lg += abs((length_query - df_hsps.iloc[-1].qend) - (length_subject - df_hsps.iloc[-1].send))
     
-    # Internal gaps
+    # Internal gaps 
+    # Here the end for a loc is at -2 because it is inclusive (for normal behaviour, do iloc)
     query_starts = df_hsps.loc[1:, 'qstart'].values
-    query_ends = df_hsps.loc[:numberOfHSPs-1, 'qend'].values
+    query_ends = df_hsps.loc[:numberOfHSPs-2, 'qend'].values
     subject_starts = df_hsps.loc[1:, 'sstart'].values
-    subject_ends = df_hsps.loc[:numberOfHSPs-1, 'send'].values
+    subject_ends = df_hsps.loc[:numberOfHSPs-2, 'send'].values
     
     delta_lg += np.sum(np.abs((query_starts - query_ends) - (subject_starts - subject_ends)))
     
