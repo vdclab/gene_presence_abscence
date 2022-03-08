@@ -1,7 +1,7 @@
 import pandas as pd
 import sys
 
-from common import utils_blast
+from scripts.common import utils_blast
 # import importlib.util
 
 ##########################################################################
