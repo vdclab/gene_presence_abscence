@@ -50,6 +50,7 @@ rule prepare_for_silix:
         ),
     params:
         minimum_length = length_min,
+        utils_blast = workflow.source_path("../scripts/common/utils_blast.py"),
     log:
         os.path.join(
             OUTPUT_FOLDER,

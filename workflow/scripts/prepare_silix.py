@@ -1,7 +1,17 @@
 import pandas as pd
 import sys
 
-import utils_blast
+import importlib.util
+
+##########################################################################
+# Import module as it is not direct while using snakedeploy
+
+spec = importlib.util.spec_from_file_location("utils_blast", snakemake.params.utils_blast)
+utils_blast = importlib.util.module_from_spec(spec)
+sys.modules[utils_blast] = utils_blast
+spec.loader.exec_module(utils_blast)
+
+##########################################################################
 
 # Put error and out into the log file
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
