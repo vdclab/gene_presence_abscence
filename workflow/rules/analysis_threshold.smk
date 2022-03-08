@@ -32,7 +32,6 @@ rule blast2threshold_table:
         option_cov = cov_min,
         option_pid = pid_min,
         minimum_length = length_min,
-        utils_blast = workflow.source_path("../scripts/common/utils_blast.py"),   
     log:
         os.path.join(
             OUTPUT_FOLDER,
