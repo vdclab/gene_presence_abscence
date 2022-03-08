@@ -1,15 +1,16 @@
 import pandas as pd
 import sys
 
-import importlib.util
+from common import utils_blast
+# import importlib.util
 
 ##########################################################################
 # Import module as it is not direct while using snakedeploy
 
-spec = importlib.util.spec_from_file_location("utils_blast", snakemake.params.utils_blast)
-utils_blast = importlib.util.module_from_spec(spec)
-sys.modules[utils_blast] = utils_blast
-spec.loader.exec_module(utils_blast)
+# spec = importlib.util.spec_from_file_location("utils_blast", snakemake.params.utils_blast)
+# utils_blast = importlib.util.module_from_spec(spec)
+# sys.modules[utils_blast] = utils_blast
+# spec.loader.exec_module(utils_blast)
 
 ##########################################################################
 
