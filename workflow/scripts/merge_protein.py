@@ -39,7 +39,7 @@ with open(snakemake.output.taxid_db, 'wt') as fasta_file:
             genome_name = annotations_name_dict[prot.id]
         else:
             # if no genome name create a fake one
-            genome_name = f'genome_{str(i).zfill(5)}'
+            genome_name = f'genome_{str(number).zfill(5)}'
             number += 1
 
         if annotations_id_dict:
