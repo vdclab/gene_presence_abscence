@@ -8,6 +8,9 @@ properties:
   protein_id:
     type: string
     description: protein NCBI id
+  hmm:
+    type: string
+    description: hmm profile file name
   evalue:
     type: number
     description: e-value for the blast threshold for the protein

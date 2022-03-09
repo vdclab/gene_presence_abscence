@@ -4,11 +4,6 @@ import matplotlib.colors as mc
 from matplotlib.patches import FancyBboxPatch  
 import colorsys
 import sys
-import numpy as np
-
-# It seems there is a bug if another backend is used
-import matplotlib
-matplotlib.use('Agg')
 
 ##########################################################################
 
@@ -46,6 +41,10 @@ def adjust_lightness(color, amount=0.5):
 
 ##########################################################################
 
+# It seems there is a bug if another backend is used
+import matplotlib
+matplotlib.use('Agg')
+
 # Put error and out into the log file
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
@@ -58,16 +57,7 @@ plt.rcParams['font.family'] = 'Arial'
 plt.rcParams['font.weight'] = 'light'
 
 # Name in PAtab assembly_id, seed, PA, color, genome_name
-patab_dtypes = {
-            'assembly_id': 'object',
-            'seed': 'object',
-            'PA': np.int8,
-            'color': 'string',
-            'genome_name': 'string',
-        }
-
-patab = pd.read_table(snakemake.input.final_table, dtype=patab_dtypes)
-patab.fillna('', inplace=True)
+patab = pd.read_table(snakemake.input.final_table)
 
 # Dict position genomes and gene
 list_genome = patab.assembly_id.unique().tolist() 
@@ -98,14 +88,10 @@ categorysize = 0.25 # inches
 figwidth = leftmargin + rightmargin + (num_seed+1)*categorysize
 figheight = topmargin + bottommargin + (num_genome+1)*categorysize
 
-# Allows to controle the size of the box marker
 size_rec = 0.8
 
-# calculating dpi max pixel == 2**16
-dpi = 300 if 300*figheight < 2**16 else 2**16//(figheight+1)
-
 # figsize = (width, height) plosBio ((7.5, 8.75))
-fig, ax = plt.subplots(1,1, figsize=(figwidth, figheight), dpi=dpi)
+fig, ax = plt.subplots(1,1, figsize=(figwidth, figheight))
 fig.subplots_adjust(left=leftmargin/figwidth, right=1-rightmargin/figwidth,
                     top=1-topmargin/figheight, bottom=bottommargin/figheight)
 
@@ -156,5 +142,8 @@ for pos in ['top', 'bottom', 'left', 'right']:
 plt.xlim(-0.5, num_seed - 0.5)
 plt.ylim(-0.5, num_genome - 0.5)
 
+# calculating dpi max pixel == 2**16
+dpi = 300 if 300*figheight < 2**16 else 2**16//(figheight+1)
+
 for plot_name in snakemake.output :
-    plt.savefig(plot_name, bbox_inches="tight")
+    plt.savefig(plot_name, bbox_inches="tight", dpi=dpi)

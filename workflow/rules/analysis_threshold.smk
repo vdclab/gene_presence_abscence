@@ -20,7 +20,9 @@ rule blast2threshold_table:
             "modif",
             "filtered_blast--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes.flushed",
         ),
-        protein_file=proteinTable,
+        protein_file=os.path.join(
+            OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
+        ),     
     output:
         os.path.join(
             OUTPUT_FOLDER,
@@ -28,10 +30,6 @@ rule blast2threshold_table:
             "tables",
             "table_hits_family--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.tsv"
         ),
-    params:
-        option_cov = cov_min,
-        option_pid = pid_min,
-        minimum_length = length_min,
     log:
         os.path.join(
             OUTPUT_FOLDER,

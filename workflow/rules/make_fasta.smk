@@ -6,19 +6,16 @@
 
 rule make_fasta:
     input:
-        protein_fasta=merge_db,
-        list_all_prot=os.path.join(
-            OUTPUT_FOLDER,
-            "processing_files",
-            "psiblast",
-            f"list_all_protein--eval_{e_val_psiblast:.0e}.tsv",
+        protein_fasta=os.path.join(
+            OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
         ),
+        list_all_prot=list_all_proteins,
     output:
         fasta=os.path.join(
             OUTPUT_FOLDER,
             "databases",
             "reduce_taxid",
-            f"all_protein--eval_{e_val_psiblast:.0e}.fasta",
+            f"all_protein--psi_blast_eval_{e_val_psiblast:.0e}_hmm_eval_{e_val_HMM:.0e}.fasta",
         ),
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "format_table", "make_fasta.log"),
@@ -36,7 +33,7 @@ rule extract_protein:
     input:
         PAtab=os.path.join(OUTPUT_FOLDER, "results", "patab_melt.tsv"),
         fasta_protein=os.path.join(
-            OUTPUT_FOLDER, "databases", "merge_fasta", "all_protein_with_seeds.fasta"
+            OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
         ),
     output:
         expand(
@@ -77,37 +74,6 @@ rule merge_fasta:
         ),
     shell:
         """cat '{input.taxid_fasta}' '{input.seed_fasta}' > '{output.fasta_for_blast}'"""
-
-
-##########################################################################
-##########################################################################
-
-
-rule merge_databases:
-    input:
-        all_databases = list_starting_database,
-        annotations = annotationTable,
-    output:
-        taxid_db=temp(os.path.join(
-            OUTPUT_FOLDER, "databases", "merge_databases", "databases_all_together.fasta"
-        )),
-        tsv=os.path.join(
-            OUTPUT_FOLDER,
-            "databases",
-            "merge_databases",
-            "protein_table.merged.tsv"
-        ),
-    log:
-         os.path.join(
-            OUTPUT_FOLDER,
-            "logs",
-            "fetch_proteins",
-            "merge_databases.log",
-        ),   
-    conda:
-        "../envs/biopython_ete3.yaml"
-    script:
-        "../scripts/merge_protein.py"
 
 
 ##########################################################################

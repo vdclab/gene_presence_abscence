@@ -67,3 +67,32 @@ rule fetch_fasta_from_seed:
 
 ##########################################################################
 ##########################################################################
+
+
+rule fasta_for_psiblast:
+    input:
+        fasta_seed=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.fasta"),
+    output:
+        fasta_for_psiblast=os.path.join(
+            OUTPUT_FOLDER,
+            "databases",
+            "seeds",
+            "psiblast_seeds.fasta",
+        ),
+    params:
+        seed2psiblast=seed2psiblast,
+    log:
+        os.path.join(
+            OUTPUT_FOLDER,
+            "logs",
+            "fetch_proteins",
+            "fasta_for_psiblast.log",
+        ),
+    conda:
+        "../envs/biopython_ete3.yaml"
+    script:
+        "../scripts/sort_seed_fasta.py"
+
+
+##########################################################################
+##########################################################################

@@ -1,9 +1,6 @@
 $schema: "http://json-schema.org/draft-04/schema#"
-
 description: row of the taxid.tsv, taxonomic id are the id of genomes in NCBI Taxonomy
-
 type: object
-
 properties:
   TaxId:
     type: integer
@@ -11,8 +8,6 @@ properties:
   NCBIGroups:
     type: string
     description: taxomic NCBI group 
-    enum: ["all", "archaea", "bacteria", "fungi", "invertebrate", "metagenomes", "plant", "protozoa", "vertebrate_mammalian", "vertebrate_other", "viral", ""]
-
 
 required:
   - TaxId

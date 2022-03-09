@@ -1,0 +1,9 @@
+seed	protein_id	hmm	evalue	pident	coverage	color	length
+DpdA1	YP_009032326.1	none	0.01	0.2	0.3	#00760e	317
+DpdA2	YP_008125322.2	none	0.01	0.2	0.3	#00cc00	464
+FolE	YP_009032327.1	none	0.01	0.2	0.8	#0127e1	204
+QueD	YP_009032328.1	none	0.01	0.2	0.3	#016ae1	177
+QueE	YP_009032331.1	QueE.hmm	0.01	0.2	0.8	#018ce1	254
+QueC	YP_009196836.1	none	0.01	0.4	0.9	#01d0e1	240
+QueF	YP_004306889.1	none	0.03	0.2	0.3	#cc0000	173
+ArcS	YP_008125320.1	ArcS.hmm	0.0001	0.35	0.8	#131516	226

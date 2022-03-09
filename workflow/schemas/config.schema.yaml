@@ -9,16 +9,12 @@ properties:
     type: string
   taxid:
     type: string
-  perso_database:
-    type: string
-  perso_annotation:
-    type: string
   project_name:
     type: string
   output_folder:
     type: string
 
-  default_psiblast_options:
+  default_psiblast_option:
     type: object
     properties:
       psiblast_e_val:
@@ -30,7 +26,7 @@ properties:
         minimum: 1
         maximum: 5
       
-  default_blast_options:
+  default_blast_option:
     type: object
     properties:
       e_val:
@@ -50,40 +46,20 @@ properties:
       - pid
       - cov
 
-  silix_options:
-    type: object
-    properties:
-      cov_min:
-        type: string
-        enum: ["mean","subject", "query", "shortest", "longest"]
-      pid_min:
-        type: string
-        enum: ["mean","subject", "query", "shortest", "longest", "HSP"]
-      length_min:
-        type: number
-    required:
-      - cov_min
-      - pid_min
-      - length_min
-
   update_db:
     type: boolean
 
-  ndg_options:
+  ndg_option:
     type: object
     properties:
       section:
         type: string
-        enum: ["refseq","genbank"]
       assembly_levels:
         type: string
-        enum: ["all", "complete", "chromosome", "scaffold", "contig"]
       refseq_categories:
         type: string
-        enum: ["reference", "all"]
       groups:
         type: string
-        enum: ["all", "archaea", "bacteria", "fungi", "invertebrate", "metagenomes", "plant", "protozoa", "vertebrate_mammalian", "vertebrate_other", "viral"]
     required:
       - section
       - assembly_levels
@@ -107,11 +83,11 @@ properties:
 
 required:
   - seed
+  - taxid
   - project_name
   - output_folder
-  - default_psiblast_options
-  - default_blast_options
-  - ndg_options
-  - silix_options
+  - default_psiblast_option
+  - default_blast_option
+  - ndg_option
   - speedup
   - default_values_plot

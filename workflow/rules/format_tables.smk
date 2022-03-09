@@ -31,9 +31,42 @@ rule read_psiblast:
 ##########################################################################
 
 
+rule read_hmmsearch:
+    input:
+        hmm_out=os.path.join(
+            OUTPUT_FOLDER,
+            "processing_files",
+            "HMM",
+            f"HMM--eval_{e_val_HMM:.0e}.out",
+        ),
+
+    output:
+        list_all_prot=os.path.join(
+            OUTPUT_FOLDER,
+            "processing_files",
+            "HMM",
+            f"list_all_protein--eval_{e_val_HMM:.0e}.tsv",
+        ),
+    log:
+        os.path.join(OUTPUT_FOLDER, "logs", "hmm", "read_hmmsearch_out.log",),
+    resources:
+        time=30,
+    conda:
+        "../envs/pandas_plots.yaml"
+    script:
+        "../scripts/read_hmmsearch.py"
+
+
+##########################################################################
+##########################################################################
+
+
 rule prepare_for_silix:
     input:
         seed_file=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv"),
+        protein_file=os.path.join(
+            OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
+        ),
         blast_out=os.path.join(
             OUTPUT_FOLDER, "processing_files", "blast", "blastp--blast_evalue_1e-2.out"
         ),
@@ -48,8 +81,6 @@ rule prepare_for_silix:
             ),
             gene_constrains=gene_constrains,
         ),
-    params:
-        minimum_length = length_min,
     log:
         os.path.join(
             OUTPUT_FOLDER,
@@ -104,10 +135,15 @@ rule find_family:
 ##########################################################################
 
 
-rule make_PA_table:
+rule make_table:
     input:
         seed_file=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv"),
-        protein_table=proteinTable,
+        protein_table=os.path.join(
+            OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
+        ),
+        assembly_table=os.path.join(
+            OUTPUT_FOLDER, "databases", "all_taxid", "summary_assembly_taxid.tsv"
+        ),
         fnodes=expand(
             os.path.join(
                 OUTPUT_FOLDER,

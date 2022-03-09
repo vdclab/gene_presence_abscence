@@ -88,12 +88,13 @@ def infer_ngs_groups(df_taxid, ncbi):
     Infer taxid ngs option if not in taxid
     """
 
-    if snakemake.config["ndg_options"]["groups"] != 'all':
+    if snakemake.config["ndg_option"]["groups"] != 'all':
         if "NCBIGroups" not in df_taxid:
-            df_taxid["NCBIGroups"] = snakemake.config["ndg_options"]["groups"]
+            df_taxid["NCBIGroups"] = snakemake.config["ndg_option"]["groups"].lower()
         elif df_taxid.NCBIGroups.isnull().any():
-            df_taxid.loc[df_taxid.NCBIGroups.isnull(), "NCBIGroups"] = snakemake.config["ndg_options"]["groups"]
-
+            df_taxid.loc[df_taxid.NCBIGroups.isnull(), "NCBIGroups"] = snakemake.config["ndg_option"]["groups"].lower()
+        else :
+            df_taxid["NCBIGroups"] = df_taxid["NCBIGroups"].str.lower()
     else:
         if "NCBIGroups" not in df_taxid:
             for index, row in df_taxid.iterrows():
@@ -211,7 +212,7 @@ def main():
 
     # Now handeling the last step that is concatenate the fasta files downloaded
     columns_protein_file =  ['protein_id',
-                             'protein_description',
+                             'protein_name',
                              'genome_name',
                              'genome_id',
                              'length']
@@ -233,13 +234,13 @@ def main():
                             # To avoid duplicate name of proteins between close genomes
                             protein.id = f'{protein.id}--{genome.assembly_accession}'
 
-                            protein_id         = protein.id
-                            protein_desciption = ' '.join(description_split[0].split(' ')[1:])
-                            genome_name        = genome.organism_name
-                            genome_id          = genome.assembly_accession
-                            length             = len(protein.seq)
+                            protein_id   = protein.id
+                            protein_name = ' '.join(description_split[0].split(' ')[1:])
+                            genome_name  = genome.organism_name
+                            genome_id    = genome.assembly_accession
+                            length       = len(protein.seq)
 
-                            line_prot = f'{protein_id}\t{protein_desciption}\t{genome_name}\t{genome_id}\t{length}\n'
+                            line_prot = f'{protein_id}\t{protein_name}\t{genome_name}\t{genome_id}\t{length}\n'
                             protein_file.write(line_prot)
 
                             SeqIO.write(protein, fasta_file, 'fasta')

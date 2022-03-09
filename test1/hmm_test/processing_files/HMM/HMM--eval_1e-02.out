@@ -1,0 +1,21 @@
+#                                                                                       --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                   accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#           ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+YP_009032331.1--GCF_000920815.1 -            254 K10026               -            284   2.9e-54  179.5   0.0   1   1   3.3e-56   3.3e-54  179.3   0.0    45   248    26   253     2   254 0.73 YP_009032331.1 organic radical activating enzyme [Enterobacteria phage 9g]
+YP_007675725.1--GCF_000904495.1 -            238 K10026               -            284   1.3e-49  164.3   0.0   1   1   1.4e-51   1.4e-49  164.1   0.0    47   255     8   238     1   238 0.78 YP_007675725.1 radical SAM domain-containing protein [Cellulophaga phage phiSM]
+YP_004306892.1--GCF_000893335.1 -            264 K10026               -            284   3.1e-47  156.5   0.0   1   1   3.7e-49   3.6e-47  156.2   0.0    46   255    21   264     2   264 0.74 YP_004306892.1 QueE [Streptococcus phage Dp-1]
+NP_817766.1--GCF_000842345.1    -            237 K10026               -            284   2.7e-46  153.4   0.0   1   1   3.3e-48   3.3e-46  153.1   0.0    47   253     7   235     2   237 0.71 NP_817766.1 gp5 [Mycobacterium phage Rosebush]
+YP_008125479.1--GCF_000910195.2 -            291 K10026               -            284   1.5e-39  131.3   0.1   1   1   1.6e-41   1.6e-39  131.1   0.1    47   250     2   288     1   291 0.70 YP_008125479.1 radical SAM domain protein [Vibrio phage nt-1]
+YP_008125467.1--GCF_000910195.2 -            351 K10026               -            284   1.4e-09   32.9   0.1   1   1   1.9e-11   1.9e-09   32.5   0.1    75   179   103   223   101   323 0.64 YP_008125467.1 radical SAM domain protein [Vibrio phage nt-1]
+YP_008125215.2--GCF_000910195.2 -            140 K10026               -            284   8.6e-06   20.5   0.0   1   1     1e-07     1e-05   20.2   0.0    73   137     5    71     2    95 0.71 YP_008125215.2 NrdG anaerobic NTP reductase small subunit [Vibrio phage nt-1]
+YP_007675729.1--GCF_000904495.1 -            240 K18779               -            522    0.0062   10.5   0.0   1   1   1.2e-05    0.0085   10.0   0.0    82   156    40   113    11   135 0.78 YP_007675729.1 hypothetical protein CEPG_00053 [Cellulophaga phage phiSM]
+#
+# Program:         hmmsearch
+# Version:         3.3.2 (Nov 2020)
+# Pipeline mode:   SEARCH
+# Query file:      test1/hmm_test/processing_files/HMM/merged_HMM.hmm
+# Target file:     test1/hmm_test/databases/all_taxid/taxid_all_together.fasta
+# Option settings: hmmsearch --domtblout test1/hmm_test/processing_files/HMM/HMM--eval_1e-02.out -E 0.01 --cpu 1 test1/hmm_test/processing_files/HMM/merged_HMM.hmm test1/hmm_test/databases/all_taxid/taxid_all_together.fasta 
+# Current dir:     /blue/lagard/ghutinet/devellopment/sORTholog_hmm2
+# Date:            Wed Mar  9 13:56:03 2022
+# [ok]

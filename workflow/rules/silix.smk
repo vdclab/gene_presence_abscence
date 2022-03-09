@@ -24,10 +24,6 @@ rule silix:
             "fnodes_files",
             "filtered_blast--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes",
         ),
-    params:
-        minimum_overlap = silix_dict[cov_min],
-        minimum_percId = silix_dict[pid_min],
-        minimum_length = length_min,
     log:
         os.path.join(
             OUTPUT_FOLDER,
@@ -43,9 +39,7 @@ rule silix:
         """
         if [ -s {input.blast_out} ]
         then   
-            sh -c 'silix "{input.fasta}" "{input.blast_out}" -f "{wildcards.seed}"\
-               -i "{wildcards.pid}" -r "{wildcards.coverage}" -q "{params.minimum_overlap}"\
-               -s "{params.minimum_percId}" -l "{params.minimum_length}" > "{output}" 2> {log}'
+            sh -c 'silix "{input.fasta}" "{input.blast_out}" -f "{wildcards.seed}" -i "{wildcards.pid}" -r "{wildcards.coverage}" > "{output}" 2> {log}'
         else
             touch '{output}'
         fi

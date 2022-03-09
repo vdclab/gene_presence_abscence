@@ -6,10 +6,17 @@
 
 rule psiblast:
     input:
-        seed=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.fasta"),
-        taxid_db=merge_db,
+        seed=os.path.join(
+            OUTPUT_FOLDER,
+            "databases",
+            "seeds",
+            "psiblast_seeds.fasta",
+        ),
+        taxid_db=os.path.join(
+            OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
+        ),
     output:
-        os.path.join(
+        psiblast=os.path.join(
             OUTPUT_FOLDER,
             "processing_files",
             "psiblast",
@@ -22,16 +29,17 @@ rule psiblast:
         iteration=iteration_psiblast,
     resources:
         cpus=5,
-        mem_mb=20000,
+        mem_mb=10000,
         time=7200,
     conda:
         "../envs/blast.yaml"
     envmodules:
         "ncbi_blast/2.10.1",
-    threads: 5
+    threads:
+        5
     shell:
         """
-        makeblastdb -dbtype prot -in '{input.taxid_db}' &> {log}
+        makeblastdb -dbtype prot -in '{input.taxid_db}' -parse_seqids &> {log}
 
         psiblast -query '{input.seed}' -db '{input.taxid_db}' -evalue {params.e_value} \
                  -outfmt '7 qacc qlen qseq qstart qend sacc slen sseq sstart send length pident evalue bitscore qcovs' \
@@ -58,7 +66,7 @@ rule blast:
         os.path.join(OUTPUT_FOLDER, "logs", "blast", "blast.log"),
     resources:
         cpus=5,
-        mem_mb=20000,
+        mem_mb=10000,
         time=43200,
     conda:
         "../envs/blast.yaml"
@@ -72,5 +80,5 @@ rule blast:
         blastp -query '{input}' -db '{input}' -evalue 0.01 \
                -outfmt 6 -out '{output.blast_out}' -num_threads {threads} -num_alignments 25000 2>> {log}
 
-        rm '{input}'.*
+        rm {input}.*
         """

@@ -36,12 +36,11 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
                                   )
         
         # First element of family columns = in|out_family_seed
-        seed = df_fam.fam[0].split('family_')[-1]
+        seed = df_fam.fam[0].split('_')[-1]
         all_seeds.append(seed)
         
         # It is multiply by 6 because there is 6 traces for one plot 3 for in_fam et 3 for out_fam
-        # As one of the category could not exists we look at the possible values
-        list_trace += [seed] * df_fam.fam.unique().shape[0] * 3
+        list_trace += [seed] * 6
         
         # Change the name inside the columns to be more readable in the legend of the figure
         df_fam.replace(f"in_family_{seed}", 'Both in the family', inplace=True)
@@ -53,18 +52,18 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
 
         # create a figur efor the two histograms
         tmp_fig = px.scatter(df_fam, x='pident', y='coverage', color='fam', 
-                            marginal_x='histogram', 
-                            marginal_y='histogram',
-                            color_discrete_map={'Only one in the family':'#E41A1C', 'Both in the family':'#377EB8'},
+                             marginal_x='histogram', 
+                             marginal_y='histogram',
+                            color_discrete_sequence=px.colors.qualitative.Set1,
                             labels={"fam": "Pair of proteins"},
                             category_orders={"fam": ["Only one in the family", "Both in the family"]},
                             custom_data=['protein1','protein2', 'evalue'])
 
         # Create a figure for the scatter plot 
         tmp_fig_drop = px.scatter(df_fam_drop, x='pident', y='coverage', color='fam', 
-                                marginal_x='histogram', 
-                                marginal_y='histogram',
-                                color_discrete_map={'Only one in the family':'#E41A1C', 'Both in the family':'#377EB8'},
+                                 marginal_x='histogram', 
+                                 marginal_y='histogram',
+                                color_discrete_sequence=px.colors.qualitative.Set1,
                                 labels={"fam": "Pair of proteins"},
                                 category_orders={"fam": ["Only one in the family", "Both in the family"]},
                                 custom_data=['protein1','protein2', 'evalue'],
@@ -202,7 +201,7 @@ def scatter3D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter3D.html"):
         df_fam = df_fam.drop_duplicates(['pident', 'coverage', 'evalue', 'fam']).reset_index(drop=True)
 
         # First element of family columns = in|out_family_seed
-        seed = df_fam.fam[0].split('family_')[-1]
+        seed = df_fam.fam[0].split('_')[-1]
         all_seeds.append(seed)
 
         # Change the name inside the columns to be more readable in the legend of the figure
@@ -210,10 +209,10 @@ def scatter3D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter3D.html"):
         df_fam.replace(f"out_family_{seed}", 'Only one in the family', inplace=True)    
         
         # list of the trace, two traces per seed (one in and one out)
-        list_trace += [seed] * df_fam.fam.unique().shape[0]
+        list_trace += [seed]*2
 
         tmp_fig = px.scatter_3d(df_fam, x='pident', y='coverage', z='evalue',color='fam', 
-                               color_discrete_map={'Only one in the family':'#E41A1C', 'Both in the family':'#377EB8'},
+                                color_discrete_sequence=px.colors.qualitative.Set1,
                                labels={"fam": "Pair of proteins"},
                                category_orders={"fam": ["Only one in the family", "Both in the family"]},
                                custom_data=['protein1','protein2', 'evalue'])

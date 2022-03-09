@@ -1,5 +1,5 @@
 import pandas as pd
-import sys,os
+import sys
 
 ##########################################################################
 
@@ -38,8 +38,7 @@ seed_list = seed_table.seed.to_list()
 seed_color_dict = seed_table.set_index('seed').color.to_dict()
 
 # list of all proteins
-all_proteins = pd.read_table(snakemake.input.protein_table, dtype='string')
-all_proteins.fillna("", inplace=True)
+all_proteins = pd.read_table(snakemake.input.protein_table)
 
 # fnodes opening
 fam_id_table = pd.DataFrame()
@@ -69,6 +68,7 @@ patab = patab.merge(fam_id_table[['genome_id','genome_name']].drop_duplicates(),
 patab_tmp = patab.copy()
 
 # Find max value to change
+print(patab_tmp)
 max_value = patab_tmp[seed_list].values.max()
 
 # Change value > 2 by 1
