@@ -1,5 +1,5 @@
 import pandas as pd
-import sys, os
+import sys
 from Bio import SeqIO
 
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
@@ -32,15 +32,11 @@ with open(snakemake.output.taxid_db, 'wt') as fasta_file:
         description = prot.description.replace(f"{prot.id} ", "")
         description = prot.description.replace(f"{prot.id}", "")
 
-        # To have the number of genome without name
-        number = 1
-
         if annotations_name_dict:
             genome_name = annotations_name_dict[prot.id]
         else:
             # if no genome name create a fake one
-            genome_name = f'genome_{str(number).zfill(5)}'
-            number += 1
+            genome_name = ''
 
         if annotations_id_dict:
             genome_id = annotations_id_dict[prot.id]
