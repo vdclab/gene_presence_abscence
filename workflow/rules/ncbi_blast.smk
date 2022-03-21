@@ -35,7 +35,8 @@ rule psiblast:
 
         psiblast -query '{input.seed}' -db '{input.taxid_db}' -evalue {params.e_value} \
                  -outfmt '7 qacc qlen qseq qstart qend sacc slen sseq sstart send length pident evalue bitscore qcovs' \
-                 -num_threads {threads} -num_iterations {params.iteration} -out '{output}' 2>> {log}
+                 -num_threads {threads} -num_iterations {params.iteration} -out '{output}' \
+                 -num_alignments 250000 2>> {log}
 
         rm {input.taxid_db}.*
         """
