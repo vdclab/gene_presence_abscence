@@ -13,17 +13,15 @@ list_cutname = []
 # Read line by line the protein table hit without loading it in memory
 with open(snakemake.input.list_all_prot, 'rt') as r_file :
     with open(snakemake.output.fasta, 'wt') as w_file :
-        header = r_file.readline().rstrip().split() 
-        index_proteinId = header.index('protein_id') 
-
-        for line in r_file : 
-            tmp_line = line.split() 
-            proteins_of_interest = tmp_line[index_proteinId]
-            
-            if proteins_of_interest in all_index_fasta:
-                SeqIO.write(all_index_fasta[proteins_of_interest], w_file, 'fasta')
-            else :
-                list_cutname.append(proteins_of_interest)
+        for line in r_file :
+            if not line.startswith('protein_id'):
+                tmp_line = line.split() 
+                proteins_of_interest = tmp_line[0]
+                
+                if proteins_of_interest in all_index_fasta:
+                    SeqIO.write(all_index_fasta[proteins_of_interest], w_file, 'fasta')
+                else :
+                    list_cutname.append(proteins_of_interest)
 
         # Now parse the file to get the trucatenate fasta sequences
         parser = SeqIO.parse(snakemake.input.protein_fasta, 'fasta')

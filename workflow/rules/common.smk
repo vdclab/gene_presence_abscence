@@ -110,6 +110,9 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
         # If protein name change
         elif not seed_df.protein_id.equals(start_seed_df.protein_id):
             seed_df.to_csv(start_seed_file, sep="\t", index=False)
+        # If protein name change
+        elif not seed_df.hmm.equals(start_seed_df.hmm):
+            seed_df.to_csv(start_seed_file, sep="\t", index=False)
         # If something else change
         elif not seed_df[columns2change].equals(new_seed_df[columns2change]):
             # Update new seed with information of seed
@@ -123,6 +126,28 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
 
 ##########################################################################
 
+
+def get_list_hmm(seed_df):
+    """
+    Gather the list of HMM files from a folder and make sure they are in the seed table
+    Update the seed table with the proper hmm profile file name
+    """
+
+    if "hmm" not in seed_df.columns:
+        seed_df['color'] = ''
+    else:
+        seed_df.fillna(value={'hmm':''}, inplace=True)
+
+    # Check the index where hmm are
+    index_hmm = (seed_df.hmm != '')
+
+    list_psiblast = seed_df[~index_hmm].protein_id
+    list_hmm = seed_df[~index_hmm].hmm
+
+    return list_hmm, list_psiblast, seed_df
+
+
+##########################################################################
 
 def create_folder(mypath):
     """
@@ -188,6 +213,7 @@ seed_file = config["seed"]
 seed_dtypes = {
     "seed": "string",
     "protein_id": "string",
+    "hmm": "string",
     "evalue": np.float64,
     "pident": np.float64,
     "coverage": np.float64,
@@ -196,7 +222,17 @@ seed_dtypes = {
 
 seed_table = pd.read_table(seed_file, dtype=seed_dtypes)
 
+# Definition of the requirements for each seed
+gene_constrains, seed_table = infer_gene_constrains(seed_table)
+
+# Check color of the seeds
+seed_table = check_color_seed(seed_table)
+
+HMM, PSIBLAST, seed_table = get_list_hmm(seed_table)
+
 validate(seed_table, schema="../schemas/seeds.schema.yaml")
+
+##########################################################################
 
 if "taxid" in config and os.path.isfile(config["taxid"]):
     # path to taxonomic id to search seeds in (TSV format, columns: TaxId, NCBIGroups)
@@ -332,23 +368,6 @@ elif "perso_database" in config and os.path.isfile(config["perso_database"]):
 else:
     sys.exit("ERROR: Missing input file, no perso_database nor taxid table found")
 
-# Seepup option that create a reduce dataset using a psiblast step with the seed
-if config["speedup"]:
-    speedup = os.path.join(
-        OUTPUT_FOLDER,
-        "databases",
-        "reduce_taxid",
-        f"all_protein--eval_{e_val_psiblast:.0e}.fasta",
-    )
-else:
-    speedup = merge_db
-
-# Definition of the requirements for each seed
-gene_constrains, seed_table = infer_gene_constrains(seed_table)
-
-# Check color of the seeds
-seed_table = check_color_seed(seed_table)
-
 # Compare seed_table and new_seed_table (if exists) to update e_val, cov, pident
 new_seed_file = os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv")
 
@@ -357,3 +376,53 @@ create_folder(os.path.join(OUTPUT_FOLDER, "databases", "seeds"))
 start_seed_file = os.path.join(OUTPUT_FOLDER, "databases", "seeds", "start_seeds.tsv")
 
 compare_seed_table(seed_table, new_seed_file, start_seed_file, seed_dtypes)
+
+# HMM profile folder
+hmm_folder = config['hmm_profiles']
+
+# Check HMMs exist
+HMM = [os.path.join(hmm_folder, hmm) for hmm in HMM]
+
+for hmm_file in HMM:
+    if not os.path.isfile(hmm_file):
+        sys.exit(f"ERROR:: The provided hmm file does not exists: {hmm_file}")
+
+# HMM default e-value threshold
+e_val_HMM = config['default_HMM_options']['e_val']
+
+# HMM type of filtering
+hmm_type = '-E' if config['default_HMM_option']['type'] == 'full' else '--domE'
+
+# Seepup option that create a reduce dataset using a psiblast step with the seed
+if config["speedup"]:
+    speedup = os.path.join(
+        OUTPUT_FOLDER,
+        "databases",
+        "reduce_taxid",
+        f"all_proteins_reduced.fasta",
+    )
+
+    # Once we know that there is a speedup just need to check if HMM or not
+    if HMM and PSIBLAST:
+        tsv_prot=os.path.join(
+            OUTPUT_FOLDER,
+            "processing_files",
+            "reduce_taxid",
+            f"list_all_proteins.tsv",
+        ),
+    elif PSIBLAST:
+        tsv_prot=os.path.join(
+            OUTPUT_FOLDER,
+            "processing_files",
+            "psiblast",
+            f"list_all_proteins_psiblast--eval_{e_val_psiblast:.0e}.tsv",
+        ),
+    else: 
+        tsv_prot=os.path.join(
+            OUTPUT_FOLDER,
+            "processing_files",
+            "hmmsearch",
+            f"list_all_proteins_hmmsearch--eval_{e_val_HMM:.0e}.tsv",
+        ),    
+else:
+    speedup = merge_db

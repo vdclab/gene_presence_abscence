@@ -26,7 +26,15 @@ properties:
   color:
     type: string
     description: color wanted for the gene in the plot at the end
+  hmm:
+    type: string
+    description: name of the hmm profile that need to be used for the analysis instead of the protein psiblast
 
 required:
   - seed
   - protein_id
+  - color
+  - evalue
+  - pident
+  - coverage
+  - hmm

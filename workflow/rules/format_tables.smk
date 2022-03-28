@@ -17,7 +17,7 @@ rule read_psiblast:
             OUTPUT_FOLDER,
             "processing_files",
             "psiblast",
-            f"list_all_protein--eval_{e_val_psiblast:.0e}.tsv",
+            f"list_all_proteins_psiblast--eval_{e_val_psiblast:.0e}.tsv",
         ),
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "format_table", "read_psiblast.log"),
@@ -25,6 +25,71 @@ rule read_psiblast:
         "../envs/pandas_plots.yaml"
     script:
         "../scripts/format_psiblast.py"
+
+
+##########################################################################
+##########################################################################
+
+
+rule read_hmmsearch:
+    input:
+        hmm_out=os.path.join(
+            OUTPUT_FOLDER,
+            "processing_files",
+            "hmmsearch",
+            f"hmmsearch--eval_{e_val_HMM:.0e}.out",
+        ),
+    output:
+        list_all_prot=os.path.join(
+            OUTPUT_FOLDER,
+            "processing_files",
+            "hmmsearch",
+            f"list_all_proteins_hmmsearch--eval_{e_val_HMM:.0e}.tsv",
+        ),
+    log:
+        os.path.join(OUTPUT_FOLDER, "logs", "hmmer", "format_hmmsearch.log",),
+    resources:
+        time=30,
+    conda:
+        "../envs/pandas_plots.yaml"
+    script:
+        "../scripts/format_hmmsearch.py"
+
+
+##########################################################################
+##########################################################################
+
+
+rule merge_hmmsearch_psiblast:
+    input:
+        list_hmmsearch=os.path.join(
+            OUTPUT_FOLDER,
+            "processing_files",
+            "hmmsearch",
+            f"list_all_proteins_hmmsearch--eval_{e_val_HMM:.0e}.tsv",
+        ),        
+        list_psiblast=os.path.join(
+            OUTPUT_FOLDER,
+            "processing_files",
+            "psiblast",
+            f"list_all_proteins_psiblast--eval_{e_val_psiblast:.0e}.tsv",
+        ),
+    output:
+        list_all_prot=os.path.join(
+            OUTPUT_FOLDER,
+            "processing_files",
+            "reduce_taxid",
+            f"list_all_proteins.tsv",
+        ),
+    log:
+        os.path.join(
+            OUTPUT_FOLDER,
+            "logs",
+            "fetch_proteins",
+            "merge_hmmsearch_psiblast.log",
+        ),
+    shell:
+        """cat '{input.list_psiblast}' '{input.list_hmmsearch}' > '{output.list_all_prot}' 2> {log}"""
 
 
 ##########################################################################

@@ -7,18 +7,13 @@
 rule make_fasta:
     input:
         protein_fasta=merge_db,
-        list_all_prot=os.path.join(
-            OUTPUT_FOLDER,
-            "processing_files",
-            "psiblast",
-            f"list_all_protein--eval_{e_val_psiblast:.0e}.tsv",
-        ),
+        list_all_prot=tsv_prot,
     output:
         fasta=os.path.join(
             OUTPUT_FOLDER,
             "databases",
             "reduce_taxid",
-            f"all_protein--eval_{e_val_psiblast:.0e}.fasta",
+            f"all_proteins_reduced.fasta",
         ),
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "format_table", "make_fasta.log"),
@@ -76,7 +71,7 @@ rule merge_fasta:
             "extract_protein.log",
         ),
     shell:
-        """cat '{input.taxid_fasta}' '{input.seed_fasta}' > '{output.fasta_for_blast}'"""
+        """cat '{input.taxid_fasta}' '{input.seed_fasta}' > '{output.fasta_for_blast}' 2> {log}"""
 
 
 ##########################################################################
