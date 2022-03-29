@@ -138,7 +138,7 @@ def get_list_hmm(seed_df):
     """
 
     if "hmm" not in seed_df.columns:
-        seed_df['color'] = ''
+        seed_df['hmm'] = ''
     else:
         seed_df.fillna(value={'hmm':''}, inplace=True)
 
