@@ -29,7 +29,24 @@ properties:
         type: number
         minimum: 1
         maximum: 5
-      
+
+  default_hmmsearch_options:
+    type: object
+    properties:
+      focus: 
+        type: string
+        enum: ["domain","full"]
+      e_val:
+        type: number
+        minimum: 0
+        maximum: 1
+    required:
+      - e_val
+      - focus
+
+  hmm_profiles:
+    type: string
+
   default_blast_options:
     type: object
     properties:
@@ -115,3 +132,5 @@ required:
   - silix_options
   - speedup
   - default_values_plot
+  - default_hmmsearch_options
+  - hmm_profiles

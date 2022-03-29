@@ -388,10 +388,10 @@ for hmm_file in HMM:
         sys.exit(f"ERROR:: The provided hmm file does not exists: {hmm_file}")
 
 # HMM default e-value threshold
-e_val_HMM = config['default_HMM_options']['e_val']
+e_val_HMM = config['default_hmmsearch_options']['e_val']
 
 # HMM type of filtering
-hmm_type = '-E' if config['default_HMM_option']['type'] == 'full' else '--domE'
+hmm_type = '-E' if config['default_hmmsearch_option']['type'] == 'full' else '--domE'
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed
 if config["speedup"]:

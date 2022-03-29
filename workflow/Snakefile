@@ -82,6 +82,7 @@ include: "rules/plots.smk"
 include: "rules/silix.smk"
 include: "rules/make_fasta.smk"
 include: "rules/analysis_threshold.smk"
+include: "rules/hmmer.smk"
 
 
 ##########################################################################

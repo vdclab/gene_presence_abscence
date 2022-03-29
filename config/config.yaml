@@ -23,6 +23,16 @@ default_psiblast_options:
     # Iteration 
     iteration: 3
 
+# path for the hmm profiles folder, if none just put empty string: ''
+hmm_profiles: config/hmm_profiles
+
+# Default values for HMM if not given in seeds file
+default_hmmsearch_options:
+    # E-value threshold
+    e_val: 0.01
+    # Values for type : {domain, full}
+    focus: full
+
 # Blast option if not given in seeds.tsv
 default_blast_options:
     # E-value threshold
