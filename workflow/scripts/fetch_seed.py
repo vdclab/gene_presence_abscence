@@ -2,7 +2,7 @@ from Bio import Entrez
 from Bio import SeqIO
 import sys
 
-Entrez.tool = 'draw presence/abscence v2'
+Entrez.tool = 'sortholog'
 Entrez.email = 'decrecylab@gmail.com'
 
 # Put error and out into the log file
@@ -13,7 +13,7 @@ with open(snakemake.input[0], 'rt') as r_file :
     with open(snakemake.output.new_seed_file, 'wt') as w_file :
         with open(snakemake.output.fasta_seed, 'w') as out_file:
             header = r_file.readline()
-            header_split = header.split() 
+            header_split = header.split('\t') 
             index_proteinId = header_split.index('protein_id') 
             
             # Adding length to header
@@ -21,7 +21,7 @@ with open(snakemake.input[0], 'rt') as r_file :
             w_file.write(new_line)
 
             for line in r_file : 
-                tmp_line = line.split() 
+                tmp_line = line.rstrip().split('\t') 
                 protein_id = tmp_line[index_proteinId]
 
                 handle = Entrez.efetch(db='protein',

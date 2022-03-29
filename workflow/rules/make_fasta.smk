@@ -27,6 +27,25 @@ rule make_fasta:
 ##########################################################################
 
 
+rule make_seed_psiblast:
+    input:
+        fasta_seed=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.fasta"),
+    output:
+        fasta=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.psiblast.fasta"),
+    params:
+        list_proteinId=PSIBLAST,
+    log:
+        os.path.join(OUTPUT_FOLDER, "logs", "fetch_proteins", "make_seed_psiblast.log"),
+    conda:
+        "../envs/biopython_ete3.yaml"
+    script:
+        "../scripts/reduce_seeds.py"
+
+
+##########################################################################
+##########################################################################
+
+
 rule extract_protein:
     input:
         PAtab=os.path.join(OUTPUT_FOLDER, "results", "patab_melt.tsv"),

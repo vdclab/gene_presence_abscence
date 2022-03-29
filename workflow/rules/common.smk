@@ -103,16 +103,20 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
     if os.path.isfile(new_seed_file):
         new_seed_df = pd.read_table(new_seed_file, dtype=seed_dtypes)
         start_seed_df = pd.read_table(start_seed_file, dtype=seed_dtypes)
+        start_seed_df.fillna("", inplace=True)
 
         # If seed is added
         if seed_df.shape[0] != start_seed_df.shape[0]:
-            seed_df.to_csv(start_seed_file, sep="\t", index=False)
+            # seed_df.to_csv(start_seed_file, sep="\t", index=False)
+            sys.exit("WARNING:: Your seed file is different from your last run\nWhy? Because not the same size")
         # If protein name change
         elif not seed_df.protein_id.equals(start_seed_df.protein_id):
-            seed_df.to_csv(start_seed_file, sep="\t", index=False)
-        # If protein name change
+            # seed_df.to_csv(start_seed_file, sep="\t", index=False)
+            sys.exit("WARNING:: Your seed file is different from your last run\nWhy? Because not the same protein ids")
+        # If hmm name change
         elif not seed_df.hmm.equals(start_seed_df.hmm):
-            seed_df.to_csv(start_seed_file, sep="\t", index=False)
+            # seed_df.to_csv(start_seed_file, sep="\t", index=False)
+            sys.exit("WARNING:: Your seed file is different from your last run\nWhy? Because HMM changed (added or deleted)")
         # If something else change
         elif not seed_df[columns2change].equals(new_seed_df[columns2change]):
             # Update new seed with information of seed
@@ -141,8 +145,8 @@ def get_list_hmm(seed_df):
     # Check the index where hmm are
     index_hmm = (seed_df.hmm != '')
 
-    list_psiblast = seed_df[~index_hmm].protein_id
-    list_hmm = seed_df[~index_hmm].hmm
+    list_psiblast = seed_df[~index_hmm].protein_id.tolist()
+    list_hmm = seed_df[index_hmm].hmm.tolist()
 
     return list_hmm, list_psiblast, seed_df
 
@@ -391,7 +395,7 @@ for hmm_file in HMM:
 e_val_HMM = config['default_hmmsearch_options']['e_val']
 
 # HMM type of filtering
-hmm_type = '-E' if config['default_hmmsearch_option']['type'] == 'full' else '--domE'
+hmm_type = '-E' if config['default_hmmsearch_options']['focus'] == 'full' else '--domE'
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed
 if config["speedup"]:
@@ -408,21 +412,21 @@ if config["speedup"]:
             OUTPUT_FOLDER,
             "processing_files",
             "reduce_taxid",
-            f"list_all_proteins.tsv",
-        ),
+            "list_all_proteins.tsv",
+        )
     elif PSIBLAST:
         tsv_prot=os.path.join(
             OUTPUT_FOLDER,
             "processing_files",
             "psiblast",
             f"list_all_proteins_psiblast--eval_{e_val_psiblast:.0e}.tsv",
-        ),
+        )
     else: 
         tsv_prot=os.path.join(
             OUTPUT_FOLDER,
             "processing_files",
             "hmmsearch",
             f"list_all_proteins_hmmsearch--eval_{e_val_HMM:.0e}.tsv",
-        ),    
+        )   
 else:
     speedup = merge_db

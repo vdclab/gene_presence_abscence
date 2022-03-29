@@ -24,7 +24,7 @@ default_psiblast_options:
     iteration: 3
 
 # path for the hmm profiles folder, if none just put empty string: ''
-hmm_profiles: config/hmm_profiles
+hmm_profiles: hmm_profiles
 
 # Default values for HMM if not given in seeds file
 default_hmmsearch_options:

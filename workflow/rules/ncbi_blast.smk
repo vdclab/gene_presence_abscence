@@ -6,7 +6,7 @@
 
 rule psiblast:
     input:
-        seed=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.fasta"),
+        seed=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.psiblast.fasta"),
         taxid_db=merge_db,
     output:
         os.path.join(
