@@ -30,16 +30,16 @@ rule plots:
 ##########################################################################
 
 
-rule quick_plots:
+rule user_plots:
     input:
         final_table=config["PAtab_table"],
     output:
-        png=os.path.join(OUTPUT_FOLDER, "results", "plots", "quick_gene_PA.png"),
-        pdf=os.path.join(OUTPUT_FOLDER, "results", "plots", "quick_gene_PA.pdf"),
+        png=os.path.join(OUTPUT_FOLDER, "results", "plots", "user_gene_PA.png"),
+        pdf=os.path.join(OUTPUT_FOLDER, "results", "plots", "user_gene_PA.pdf"),
     params:
         color=config["default_values_plot"]["color"],
     log:
-        os.path.join(OUTPUT_FOLDER, "logs", "plots", "quick_plots.log"),
+        os.path.join(OUTPUT_FOLDER, "logs", "plots", "user_plots.log"),
     conda:
         "../envs/pandas_plots.yaml"
     script:

@@ -430,3 +430,4 @@ if config["speedup"]:
         )   
 else:
     speedup = merge_db
+    tsv_prot = ''

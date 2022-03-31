@@ -45,9 +45,8 @@ plt.rcParams['font.weight'] = 'light'
 
 # Name in PAtab genome_id, seed, PA, color, genome_name
 patab = pd.read_table(snakemake.input.final_table, 
-                      na_filter=False, index_col=0,
-                      index_col=0)
-patab = patab.replace('.+', '1', regex=True).replace('', '0') 
+                      na_filter=False, index_col=0, sep='\t')
+patab = patab.replace('.+', '1', regex=True).replace('', '0')
 
 # Dict position genomes and gene
 num_genome = patab.shape[0]
@@ -62,7 +61,10 @@ dict_pos_seed = {list_seed[index]:index for index in range(num_seed)}
 
 # Melt the table
 patab = patab.reset_index()
+old_index_col = patab.columns[0]
+patab = patab.rename(columns={old_index_col:'genome_id'})
 patab = patab.melt(id_vars='genome_id', var_name='seed', value_name='PA')
+print(patab[patab.genome_id == "2 genomes"])
 patab['color'] = patab.PA.map({'1':snakemake.params.color, '0':'white'})
 
 # Try to have the magic figure size
@@ -73,8 +75,6 @@ categorysize = 0.25 # inches
 
 figwidth = leftmargin + rightmargin + (num_seed+1)*categorysize
 figheight = topmargin + bottommargin + (num_genome+1)*categorysize
-
-size_rec = 0.8
 
 # To update the size of the square
 size_rec = 0.8
@@ -89,7 +89,7 @@ label_format = {'fontweight': 'bold'}
 for _, row in patab.iterrows():
     # Change the border's shade to a darker color infer from the background color
     if snakemake.config['default_values_plot']['colored_border']:
-        edge_color = "#37474F" if row.color == "#FFFFFF" else adjust_lightness(row.color)
+        edge_color = "#2F3D44" if row.color == "#FFFFFF" else adjust_lightness(row.color)
     else :
         edge_color = '#131516'
 
@@ -99,11 +99,19 @@ for _, row in patab.iterrows():
     else :
         boxstyle = "round,pad=-0.04"
 
-    ax.add_artist(Rectangle(xy=(dict_pos_seed[row.seed]-size_rec/2, 
+    # Change the border's shape to a round version
+    if snakemake.config['default_values_plot']['round_border']:
+        boxstyle = "round,pad=-0.0040,rounding_size=2"
+    else :
+        boxstyle = "round,pad=-0.04"
+
+    ax.add_artist(FancyBboxPatch(xy = (dict_pos_seed[row.seed]-size_rec/2, 
                                 dict_pos_genome[row.genome_id]-size_rec/2),
                             facecolor = row.color,
-                            width=size_rec, height=size_rec,
-                            edgecolor = '#131516',
+                            boxstyle = boxstyle,
+                            mutation_scale = 0.2,
+                            width = size_rec, height = size_rec,
+                            edgecolor = edge_color,
                             lw=1))
 
 plt.yticks(range(num_genome),list_genome[::-1],**label_format)

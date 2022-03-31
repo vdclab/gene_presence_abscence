@@ -24,7 +24,7 @@ default_psiblast_options:
     iteration: 3
 
 # path for the hmm profiles folder, if none just put empty string: ''
-hmm_profiles: hmm_profiles
+hmm_profiles: ''
 
 # Default values for HMM if not given in seeds file
 default_hmmsearch_options:
@@ -80,4 +80,4 @@ default_values_plot:
     round_border: False    
     
 # If you only want the plot need a table (TSV format, columns: gene1, gene2..., index: genome_ids)
-PAtab_table: results/plots/PAtab_table.tsv
+PAtab_table: ''

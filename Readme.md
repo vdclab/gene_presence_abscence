@@ -59,7 +59,7 @@ In all following steps, we will assume that you are inside of that directory.
 Second, run 
 
 ```shell
-snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.4.0
+snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.4.1
 ```
 
 Snakedeploy will create two folders `workflow` and `config`. The former contains the deployment of the chosen workflow as a [Snakemake module](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#using-and-combining-pre-exising-workflows), the latter contains configuration files which will be modified in the next step in order to configure the workflow to your needs. Later, when executing the workflow, Snakemake will automatically find the main `Snakefile` in the `workflow` subfolder.
@@ -623,17 +623,17 @@ snakemake extract_protein --use_conda --cores 1
            description = name of all the fasta output with the format [name of the seed].fasta
 ```
 
-#### Rule A3: quick_plots
+#### Rule A3: user_plots
 
-Rule description: Plot a presence absence table that you may have edited in pdf and png.
+Rule description: Plot a presence absence table that you may have edited in pdf and png. It is important that the genome name are unique else it will not work.
 
 To run the rule do
 
 ```bash
-snakemake quick_plots -C PAtab_table=path/to/pa_table.tsv --use_conda --cores 1
+snakemake user_plots -C PAtab_table=path/to/pa_table.tsv --use_conda --cores 1
 ```
 
-Exemple of the `presence/absence table` in the [doc](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_PAtab.tsv) folder in the GitHub page
+Example of the `presence/absence table` in the [doc](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_PAtab.tsv) folder in the GitHub page
 
 ```
 
