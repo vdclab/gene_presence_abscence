@@ -117,7 +117,7 @@ ndg_option:
 
 ##### Speed up options
 
-- speedup: `True` (default) or `False`. Define if you want to use psi-blast or hmmsearch to filter your proteome before running a blast all vs all. It is recommended on very large amount of genomes. 
+- speedup: `True` or `False`. Define if you want to use psi-blast or hmmsearch to filter your proteome before running a blast all vs all. It is recommended on very large amount of genomes. 
 
 ###### default psiblast options
 
