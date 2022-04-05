@@ -167,7 +167,7 @@ Here a comparison of the two behaviours:
 Here a comparison of the two behaviours:
 
 <p align="center">
-  <img src="doc/colored_border_option.png?raw=true">
+  <img src="doc/round_border_option.png?raw=true">
 </p>
 
 ##### Only plot table options
