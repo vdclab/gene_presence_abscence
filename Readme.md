@@ -92,7 +92,7 @@ Example provided in the file [doc/dummy_seeds.tsv](https://github.com/vdclab/sOR
 #### Config file
 This file is in the `config` folder, and is named `config.yaml`. You can edit this file following these instructions (also in comments in the `config.yaml` file)
 
-*General settings*
+##### General settings
 
 - seed : path and name of your seed file.
 - taxid: path and name of your taxid file.
@@ -100,7 +100,7 @@ This file is in the `config` folder, and is named `config.yaml`. You can edit th
 - output_folder: Name of the folder you want the generated file to be directed to. By default, it is set to `../sORTholog_deployed/results`.
 
 
-*Options to download proteomes*
+##### Options to download proteomes
 
 ndg_option:
 - section: `refseq` (default) or `genbank`. Database from which you are pulling the proteomes. 
@@ -110,12 +110,12 @@ ndg_option:
 
 -update_db: `True` or `False` (default). Update the Taxonomy dump, will increase run time.
 
-*Options to add your personal proteome*
+##### Options to add your personal proteome
 
 - perso_database: Path to personal proteome database. It should consist of a multifasta file with all the proteins you want to add to the search. 
 - perso_annotation: table in tabulated text format that contains the information of the annotation of the fasta file in perso_database, columns: protein_id, genome_id[, genome_name]
 
-*Speed up Options*
+##### Speed up options
 
 - speedup: `True` (default) or `False`. Define if you want to use psi-blast or hmmsearch to filter your proteome before running a blast all vs all. It is recommended on very large amount of genomes. 
 
@@ -130,7 +130,7 @@ default HMM options:
 - focus: `domain` or `full` (default: full). Analyse the results over the full size of the query or based on domain detection.
 
 
-*Analysis Options* 
+##### Analysis options 
 
 default blast options:
   - filter: `e_value`, `score` or `both` (default: e_value). Se up if you want to filter your blast results by e-value, bit score or both. 
@@ -144,7 +144,7 @@ silix options:
   - length_min: positive number, default 100. Mininimum length to accept partial sequences in families
   
 
-*Plot settings*
+##### Plot settings
 
 default_values_plot:
 - color: hexadecimal color, (default: `#131516`)
@@ -166,7 +166,7 @@ Here a comparison of the two behaviours:
   <img src="doc/colored_border_option.png?raw=true">
 </p>
 
-*Only plot table options*
+##### Only plot table options
 
 - PAtab_table: Path of the table you want to use to transform it into the plot figure. The table has to be a tabulated text file of a table that has the seeds in columns, the genomes in lines.
 
