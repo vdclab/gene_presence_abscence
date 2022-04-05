@@ -124,7 +124,7 @@ ndg_option:
   - psiblast_e_val: Number between 0 and 1, default `0.01`. E-value used to accept a result in psi-blast. It is recommended to use a high e-value to gather super family related protein rather than being too stringent in this step. 
   - iteration: Number between 0 and 5, default `5`. Number of iteration of the psi-blast. The more iterations, the more you gather phylogenetically distant proteins.
 
-###### default HMM options:
+###### default HMM options
 
 - hmm_profiles: path and name of your folder containing all the hmm profiles mentioned in your seed file.
 
@@ -135,12 +135,14 @@ ndg_option:
 ##### Analysis options 
 
 ###### default blast options
+
   - filter: `e_value`, `score` or `both` (default: e_value). Se up if you want to filter your blast results by e-value, bit score or both. 
   - e_val: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
   - pid: Number between 0 and 1, default `0.35`. Percentage of identity (expressed in frequency) default threshold if left empty in the seed file. 
   - cov: Number between 0 and 1, default `0.8`. Coverage of the query (expressed in frequency) default threshold if left empty in the seed file.
   
 ###### silix options
+
   - cov_min: `mean`, `subject`, `query`, `shortest` or `longest` (default: mean). Source or the length divider to calculate the coverage (from query, subject or an average of both)
   - pid_min: `mean`, `subject`, `query`, `shortest`, `longest` or `HSP` (default: mean). Source or the length divider to calculate the percentage of identity (from query, subject or an average of both)
   - length_min: positive number, default 100. Mininimum length to accept partial sequences in families
