@@ -48,7 +48,7 @@ rule fetch_proteins_database:
 
 rule fetch_fasta_from_seed:
     input:
-        start_seed_file,
+        seed_file=start_seed_file,
     output:
         fasta_seed=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "seeds.fasta"),
         new_seed_file=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv"),
