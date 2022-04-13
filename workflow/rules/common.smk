@@ -109,6 +109,7 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
         seed_df.fillna("", inplace=True)
         new_seed_df.fillna("", inplace=True)
 
+
         # If seed is added
         if seed_df.shape[0] != start_seed_df.shape[0]:
             # seed_df.to_csv(start_seed_file, sep="\t", index=False)
