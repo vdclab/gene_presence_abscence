@@ -103,7 +103,11 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
     if os.path.isfile(new_seed_file):
         new_seed_df = pd.read_table(new_seed_file, dtype=seed_dtypes)
         start_seed_df = pd.read_table(start_seed_file, dtype=seed_dtypes)
+        
+        # Because bug it might happen that the empty slot are NA
         start_seed_df.fillna("", inplace=True)
+        seed_df.fillna("", inplace=True)
+        new_seed_df.fillna("", inplace=True)
 
         # If seed is added
         if seed_df.shape[0] != start_seed_df.shape[0]:
