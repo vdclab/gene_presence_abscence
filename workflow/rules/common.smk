@@ -103,12 +103,15 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
     if os.path.isfile(new_seed_file):
         new_seed_df = pd.read_table(new_seed_file, dtype=seed_dtypes)
         start_seed_df = pd.read_table(start_seed_file, dtype=seed_dtypes)
-        
+
         # Because bug it might happen that the empty slot are NA
         start_seed_df.fillna("", inplace=True)
         seed_df.fillna("", inplace=True)
         new_seed_df.fillna("", inplace=True)
 
+        print(f"Equals HMM?: {seed_df.hmm.equals(start_seed_df.hmm)}")
+        print(f"seed_df.hmm : {seed_df.hmm.tolist()}")
+        print(f"start_seed_df.hmm : {start_seed_df.hmm.tolist()}")
 
         # If seed is added
         if seed_df.shape[0] != start_seed_df.shape[0]:
@@ -121,7 +124,7 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
         # If hmm name change
         elif not seed_df.hmm.equals(start_seed_df.hmm):
             # seed_df.to_csv(start_seed_file, sep="\t", index=False)
-            sys.exit("WARNING:: Your seed file is different from your last run\nWhy? Because HMM changed (added or deleted)")
+            sys.exit("WARNING:: Your seed file is different from your last run\nWhy? Because HMM column changed (added or deleted hmm)")
         # If something else change
         elif not seed_df[columns2change].equals(new_seed_df[columns2change]):
             # Update new seed with information of seed
