@@ -110,8 +110,8 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
         new_seed_df.fillna("", inplace=True)
 
         print(f"Equals HMM?: {seed_df.hmm.equals(start_seed_df.hmm)}")
-        print(f"seed_df.hmm : {seed_df.hmm.tolist()}")
-        print(f"start_seed_df.hmm : {start_seed_df.hmm.tolist()}")
+        print(f"seed_df.hmm : {seed_df.hmm}")
+        print(f"start_seed_df.hmm : {start_seed_df.hmm}")
 
         # If seed is added
         if seed_df.shape[0] != start_seed_df.shape[0]:
