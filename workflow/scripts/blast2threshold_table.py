@@ -676,13 +676,21 @@ with open(snakemake.output[0], 'wt') as w_file:
         # Look if both proteins are in the family
         if qseqid in fam_protein_name and sseqid in fam_protein_name:
             # If exist put in the table because both are in the family
-            line2write = f'{qseqid}\t{sseqid}\t{pident_blast}\t{evalue_blast}\t{coverage_blast}\tin_family_{seed_name}\n'
-            w_file.write(line2write)
+            fam = f"in_family_{seed_name}"
+
 
         # Look if one protein is in the family
         elif qseqid in fam_protein_name or sseqid in fam_protein_name:
             # If exist put in the table because one of them is in the family
-            line2write = f'{qseqid}\t{sseqid}\t{pident_blast}\t{evalue_blast}\t{coverage_blast}\tout_family_{seed_name}\n'
-            w_file.write(line2write)
-                
+            fam = f"out_family_{seed_name}"
+
+        # Not in family at all
+        else:
+            continue
+
+        pident_blast = round(pident_blast * 100, 1)
+        coverage_blast = round(coverage_blast * 100, 1)
+        line2write = f'{qseqid}\t{sseqid}\t{pident_blast}\t{evalue_blast}\t{coverage_blast}\t{fam}\n'
+        w_file.write(line2write)    
+
 ##########################################################################

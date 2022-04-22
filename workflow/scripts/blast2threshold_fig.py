@@ -87,22 +87,22 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
                 data['hovertemplate'] = "<br>".join([
                         "Protein 1 id: %{customdata[0]}",
                         "Protein 2 id: %{customdata[1]}",
-                        "Percentage of identity: %{x}",
-                        "Coverage: %{y}",
+                        "Percentage of identity: %{x}%",
+                        "Coverage: %{y}%",
                         "E-value: %{customdata[2]}",
                     ])
             # Here only the value x (percentage id) and y (count)
             # are to change
             elif i == 1 or i == 4 :
                 data['hovertemplate'] = "<br>".join([
-                        "Percentage of identity: %{x}",
+                        "Percentage of identity: %{x}%",
                         "Number: %{y}",
                     ])  
-             # Here only the value y (coverage) and x (count)
+            # Here only the value y (coverage) and x (count)
             # are to change
             else :
                 data['hovertemplate'] = "<br>".join([
-                        "Coverage: %{y}",
+                        "Coverage: %{y}%",
                         "Number: %{x}",
                     ])              
             i+=1        
@@ -225,8 +225,8 @@ def scatter3D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter3D.html"):
             hovertemplate="<br>".join([
                 "Protein 1 id: %{customdata[0]}",
                 "Protein 2 id: %{customdata[1]}",
-                "Percentage of identity: %{x}",
-                "Coverage: %{y}",
+                "Percentage of identity: %{x}%",
+                "Coverage: %{y}%",
                 "E-value: %{z}",
             ])
         )   
