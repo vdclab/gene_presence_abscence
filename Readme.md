@@ -10,8 +10,76 @@ This software will produce a table visualization of the presence or absence of e
 
 The primary output will be the table of sORTholog protein data filled using the NCBI Protein Database, as well as PDF and PNG files of the table visualization.
 
-## Installation
+<br />
+---
+---
 
+## Table of content
+
+1. [Installation and Running](#installation-and-running)
+   1. [Step 1: install Snakemake and Snakedeploy](#step-1-install-snakemake-and-snakedeploy)
+   2. [Step 2: deploy workflow](#step-2-deploy-workflow)
+   3. [Step 3: configure workflow](#step-3-configure-workflow)
+      1. [Taxid file](#taxid-file)
+      2. [Seed file](#seed-file)
+      3. [Config file](#config-file)
+         1. [General settings](#general-settings)
+         2. [Options to download proteomes](#options-to-download-proteomes)
+         3. [Options to add your personal proteome](#options-to-add-your-personal-proteome)
+         4. [Speed up options](#speed-up-options)
+            1. [default psiblast options](#default-psiblast-options)
+            2. [default HMM options](#default-hmm-options)
+         5. [Analysis options](#analysis-options)
+            1. [default blast options](#default-psiblast-options)
+            2. [silix options](#silix-options)
+         6. [Plot settings](#plot-settings)
+         7. [Only plot table options](#only-plot-table-options)
+   4. [Step 4: run the workflow](#step-4-run-the-workflow)
+   5. [Step 5: generate report](#step-5-generate-report)
+2. [Important Notes for running on the UFL cluster](#important-notes-for-running-on-the-ufl-cluster)
+   1. [Step C1: log on the cluster](#step-c1-log-on-the-cluster-ufl-users)
+   2. [Step C2: load conda](#step-c2-load-conda)
+   3. [Step C3: configure slurm](#step-c3-configure-slurm)
+   4. [Step C4: run the workflow](#step-c4-run-the-workflow)
+   5. [Additional information](#additional-information)
+3. [Walk-Through and File Production](#walk-through-and-file-production)
+   1. [Pipeline in image](#pipeline-in-image)
+      1. [Only blast and silix behavior](#only-blast-and-silix-behavior)
+      2. [Speedup behavior](#speedup-behavior)
+   2. [Rule descriptions](#rule-descriptions)
+      1. [Rule 1: fetch_fasta_from_seed](#rule-1-fetch_fasta_from_seed)
+      2. [Rule 2: fetch_proteins_database](#rule-2-fetch_proteins_database)
+      3. [Rule 2.1.1: make_seed_psiblast (optional)](#rule-211-make_seed_psiblast-optional)
+      4. [Rule 2.1.2: psiblast (optional)](#rule-212-psiblast-optional)
+      5. [Rule 2.1.3: read_psiblast (optional)](#rule-213-read_psiblast-optional)
+      6. [Rule 2.2.1: hmmsearch (optional)](#rule-221-hmmsearch-optional)
+      7. [Rule 2.2.2: read_hmmsearch (optional)](#rule-222-read_hmmsearch-optional)
+      8. [Rule 2.3: merge_hmmsearch_psiblast (optional)](#rule-23-merge_hmmsearch_psiblast-optional)
+      9. [Rule 2.4: make_fasta (optional)](#rule-24-make_fasta-optional)
+      10. [Rule 3: merge_fasta](#rule-3-merge_fasta)
+      11. [Rule 4: blast](#rule-4-blast)
+      12. [Rule 5: prepare_for_silix](#rule-5-prepare_for_silix)
+      13. [Rule 6: silix](#rule-6-silix)
+      14. [Rule 7: find_family](#rule-7-find_family)
+      15. [Rule 8: make_PA_table](#rule-8-make_pa_table)
+      16. [Rule 9: plots](#rule-9-plots)
+   3. [Additional rules](#additional-rules)
+      1. [Rule A1: report_threshold](#rule-a1-report_threshold)
+         1. [Sub rule A1a: blast2threshold_table](#sub-rule-a1a-blast2threshold_table)
+         2. [Sub rule A1b: report_threshold](#sub-rule-a1b-report_threshold)
+      2. [Rule A2: extract_protein](#rule-a2-extract_protein)
+      3. [Rule A3: quick_plots](#rule-a3-quick_plots)
+      4. [Rule A4: clean](#rule-a4-clean)
+
+
+<br />
+---
+---
+
+<a id="installation-and-running"></a>
+## Installation and Running
+
+<a id="step-1-install-snakemake-and-snakedeploy"></a>
 ### Step 1: install Snakemake and Snakedeploy
 
 Snakemake and Snakedeploy are best installed via the [Mamba package manager](https://github.com/mamba-org/mamba) (a drop-in replacement for conda). If you have neither Conda nor Mamba, it can be installed via [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge). For other options see [here](https://github.com/mamba-org/mamba).
@@ -37,8 +105,12 @@ For all following commands (step 2 to 5) ensure that this environment is activat
 ```shell
 conda activate snakemake
 ```
-/!\ This command has to be used every single time you want to use sORTholog to be able to activate the conda environment that contains snakemake.
+:warning: ** This command has to be used every single time you want to use sORTholog to be able to activate the conda environment that contains snakemake. **
 
+<br />
+---
+
+<a id="step-2-deploy-workflow"></a>
 ### Step 2: deploy workflow
 
  Given that Snakemake and Snakedeploy are installed and available (see Step 1), the workflow can be deployed as follows.
@@ -55,8 +127,8 @@ Then go to your project working directory as follow:
 ```shell
 cd path/to/project-workdir
 ```
-/!\ You will need to be in this directory every single time you want to run sORTholog.
-In all following steps, we will assume that you are inside of that directory.
+:warning: ** You will need to be in this directory every single time you want to run sORTholog.
+In all following steps, we will assume that you are inside of that directory. ** 
 
 NB: [More on the cd command.](https://en.wikipedia.org/wiki/Cd_(command))
 
@@ -68,8 +140,15 @@ snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.4.6
 
 Snakedeploy will create two folders `workflow` and `config`. The former contains the deployment of the chosen workflow as a [Snakemake module](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#using-and-combining-pre-exising-workflows), the latter contains configuration files which will be modified in the next step in order to configure the workflow to your needs. Later, when executing the workflow, Snakemake will automatically find the main `Snakefile` in the `workflow` subfolder.
 
+<br />
+---
+
+<a id="step-3-configure-workflow"></a>
 ### Step 3: configure workflow
 
+<br />
+
+<a id="taxid-file"></a>
 #### Taxid file
 The taxid file is a table, in the format of a tabulated text file (e.g. .txt, .tsv). This table should contain 2 columns: `TaxId` and `NCBIGroups`. 
 The `TaxId` columns should be filled with the TaxId of the genome you want to analyze. You can use any clade TaxId, sORTholog will take care of downloading all the genome of this clade.
@@ -77,6 +156,9 @@ The `NCBIGroups` can be left blanked, but knowing this group would make the down
 Ideally your taxid file should be in your `workdir` folder or in the `config` folder. 
 Example provided in the file [doc/dummy_taxids.tsv](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_taxids.tsv) folder in the GitHub page.
 
+<br />
+
+<a id="seed-file"></a>
 #### Seed file
 The seed file contains the list of proteins you want to identify in your genomes. It is a table, in the format of a  tabulated text file (e.g. .txt, .tsv). Ideally your seed file should be in your `workdir` folder or in the `config` folder. 
 Here is a list of collumns for this file:
@@ -89,9 +171,15 @@ Here is a list of collumns for this file:
 - color: hexadecimal code of the color you want the positive results to be in the final figure for this seed.
 Example provided in the file [doc/dummy_seeds.tsv](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_seeds.tsv) folder in the GitHub page.
 
+<br />
+
+<a id="config-file"></a>
 #### Config file
 This file is in the `config` folder, and is named `config.yaml`. You can edit this file following these instructions (also in comments in the `config.yaml` file)
 
+<br />
+
+<a id="general-settings"></a>
 ##### General settings
 
 - seed : path and name of your seed file.
@@ -99,7 +187,9 @@ This file is in the `config` folder, and is named `config.yaml`. You can edit th
 - project_name: Name of your project. This will create a new folder in the folder `results` that will contains all the files generated during the run, including your final results.
 - output_folder: Name of the folder you want the generated file to be directed to. By default, it is set to `../sORTholog_deployed/results`.
 
+<br />
 
+<a id="options-to-download-proteomes"></a>
 ##### Options to download proteomes
 
 ndg_option:
@@ -110,20 +200,28 @@ ndg_option:
 
 -update_db: `True` or `False` (default). Update the Taxonomy dump, will increase run time.
 
+<br />
+
+<a id="options-to-add-your-personal-proteome"></a>
 ##### Options to add your personal proteome
 
 - perso_database: Path to personal proteome database. It should consist of a multifasta file with all the proteins you want to add to the search. 
 - perso_annotation: table in tabulated text format that contains the information of the annotation of the fasta file in perso_database, columns: protein_id, genome_id[, genome_name]
 
+<br />
+
+<a id="speed-up-options"></a>
 ##### Speed up options
 
-- speedup: `True` or `False`. Define if you want to use psi-blast or hmmsearch to filter your proteome before running a blast all vs all. It is recommended on very large amount of genomes. 
+- speedup: `True` or `False`. Define if you want to use psi-blast or hmmsearch to filter your proteome before running a blast all vs all. It is recommended on very large amount of genomes.
 
+<a id="default-psiblast-options"></a>
 ###### default psiblast options
 
   - psiblast_e_val: Number between 0 and 1, default `0.01`. E-value used to accept a result in psi-blast. It is recommended to use a high e-value to gather super family related protein rather than being too stringent in this step. 
   - iteration: Number between 0 and 5, default `5`. Number of iteration of the psi-blast. The more iterations, the more you gather phylogenetically distant proteins.
 
+<a id="default-hmm-options"></a>
 ###### default HMM options
 
 - hmm_profiles: path and name of your folder containing all the hmm profiles mentioned in your seed file.
@@ -131,23 +229,29 @@ ndg_option:
 - e_val: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
 - focus: `domain` or `full` (default: full). Analyse the results over the full size of the query or based on domain detection.
 
+<br />
 
-##### Analysis options 
+<a id="analysis-options"></a>
+##### Analysis options
 
+<a id="default-psiblast-options"></a>
 ###### default blast options
 
   - filter: `e_value`, `score` or `both` (default: e_value). Se up if you want to filter your blast results by e-value, bit score or both. 
   - e_val: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
   - pid: Number between 0 and 1, default `0.35`. Percentage of identity (expressed in frequency) default threshold if left empty in the seed file. 
   - cov: Number between 0 and 1, default `0.8`. Coverage of the query (expressed in frequency) default threshold if left empty in the seed file.
-  
+
+<a id="silix-options"></a> 
 ###### silix options
 
   - cov_min: `mean`, `subject`, `query`, `shortest` or `longest` (default: mean). Source or the length divider to calculate the coverage (from query, subject or an average of both)
   - pid_min: `mean`, `subject`, `query`, `shortest`, `longest` or `HSP` (default: mean). Source or the length divider to calculate the percentage of identity (from query, subject or an average of both)
   - length_min: positive number, default 100. Mininimum length to accept partial sequences in families
   
+<br />
 
+<a id="plot-settings"></a>
 ##### Plot settings
 
 default_values_plot:
@@ -170,10 +274,17 @@ Here a comparison of the two behaviours:
   <img src="doc/round_border_option.png?raw=true">
 </p>
 
+<br />
+
+<a id="only-plot-table-options"></a>
 ##### Only plot table options
 
 - PAtab_table: Path of the table you want to use to transform it into the plot figure. The table has to be a tabulated text file of a table that has the seeds in columns, the genomes in lines.
 
+<br />
+---
+
+<a id="step-4-run-the-workflow"></a>
 ### Step 4: run the workflow
 
 Given that the workflow has been properly deployed and configured, it can be executed as follows.
@@ -192,6 +303,10 @@ If you want to run the workflow with the additional step to speedup the analysis
 snakemake --cores 1 --use-conda -C speedup=True
 ```
 
+<br />
+---
+
+<a id="step-5-generate-report"></a>
 ### Step 5: generate report
 
 After finalizing your data analysis, you can automatically generate an interactive visual HTML report for inspection of results together with parameters and code inside of the browser via 
@@ -201,8 +316,16 @@ snakemake --report report.zip --report-stylesheet config/report.css
 ```
 The resulting report.zip file can be passed on to collaborators, provided as a supplementary file in publications.
 
+<br />
+---
+---
+
+<a id="important-notes-for-running-on-the-ufl-cluster"></a>
 ## Important Notes for running on the UFL cluster
 
+<br />
+
+<a id="step-c1-log-on-the-cluster-ufl-users"></a>
 ### Step C1: log on the cluster [UFL users]
 
 1) To work on the HiPerGator server, user must first open a terminal (for unix) or command prompt (for windows).  
@@ -220,16 +343,24 @@ cd /blue/(your group)/(GatorLink ID)
 You can access to the files of this folder on your computer by adding a server. The address for Windows is as follow: `\\exasmb.rc.ufl.edu`, for Unix (Linux or MacOS) the address: `smb://exasmb.rc.ufl.edu`.  
 More info [here](https://help.rc.ufl.edu/doc/Samba_Access).
 
+<br />
+---
+
+<a id="step-c2-load-conda"></a>
 ### Step C2: load conda
 
-Before starting the installion of the program, you will need to load `conda`; this required software is listed as follows:
+Before starting the installation of the program, you will need to load `conda`; this required software is listed as follows:
 
 ```
 module load conda
 ```
-/!\ This step will be necessary each time you want to use sORTholog on HiPergator.
-After that the step are the same as in `Step 1: install Snakemake and Snakedeploy`, `Step 2: deploy workflow`, `Step 3: configure workflow`.
+:warning: ** This step will be necessary each time you want to use sORTholog on HiPergator. **
+After that the step are the same as in [Step 1: install Snakemake and Snakedeploy](#step-1-install-snakemake-and-snakedeploy), [Step 2: deploy workflow](#step-2-deploy-workflow), and [Step 3: configure workflow](#step-3-configure-workflow).
 
+<br />
+---
+
+<a id="step-c3-configure-slurm"></a>
 ### Step C3: configure slurm
 
 Before running the workflow, another config file need to be assessed to configure the slurm on HiPerGator. This file is `config/slurm/cluster-config.yaml`
@@ -245,6 +376,10 @@ Here are the options:
 - error: destination of the error log.
 - job-name: name of the job on HiPerGator.
 
+<br />
+---
+
+<a id="step-c4-run-the-workflow"></a>
 ### Step C4: run the workflow
 
 Given that the workflow has been properly deployed and configured, it can be executed as follows.
@@ -257,20 +392,24 @@ snakemake -j 5 --use-conda --profile config/slurm
 
 As previously, if you want to run the workflow with the additional step to speedup the analysis that contains a big dataset you can either:
 - Change in the `config.yaml` the parameter `speedup` and change the value to `True`
-- Run the workflow adding `-C speedup=True` to the command line as follow
+- Run the workflow adding `-C speedup=True` to the command line as follow:
 
 ```shell
 snakemake -j 5 --use-conda --profile config/slurm -C speedup=True 
 ```
 
-As previously you can also generate a report following `Step 5: Generate report`.
+As previously you can also generate a report following [Step 5: Generate report](#step-5-generate-report).
 
-### Additionnal information
+<br />
+---
+
+<a id="additional-information"></a>
+### Additional information
 
 If you want to run it as a job,
 
 1. make sure that the pipeline is deploy where you are and that you change the `config/config.yaml` accordingly to your needs
-2. create a file name for exemple `my_project.sh` and copy paste the following
+2. create a file name for exemple `my_project.sh` and copy and paste the following:
 
 ```bash
 #!/bin/bash -login
@@ -302,6 +441,11 @@ snakemake --report report.zip --report-stylesheet config/report.css
 sbatch my_project.sh
 ```
 
+<br />
+---
+---
+
+<a id="walk-through-and-file-production"></a>
 ## Walk-Through and File Production
 
 This pipeline consists of 9/12 steps called rules that take input files and create output files. Here is a description of the pipeline.
@@ -350,22 +494,39 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 
 4. When restarting the pipeline, the software will check if you made any changes in the seed file before running. If changes have been made, it will run what is necessary, else nothing will happen.
 
+<br />
+---
+
+<a id="pipeline-in-image"></a>
 ### Pipeline in image 
 
+<br />
+
+<a id="only-blast-and-silix-behavior"></a>
 #### only blasta and silix behavior
 
 <p align="center">
   <img src="doc/dummy_dag.png?raw=true" height="400">
 </p>
 
+<br />
+
+<a id="speedup-behavior"></a>
 #### Speedup behavior
 
 <p align="center">
   <img src="doc/dummy_dag_speedup.png?raw=true" height="500">
 </p>
 
+<br />
+---
+
+<a id="rule-descriptions"></a>
 ### Rule desciptions 
 
+<br />
+
+<a id="rule-1-fetch_fasta_from_seed"></a>
 #### Rule 1: fetch_fasta_from_seed
 
 Rule description: Fetch the fasta protein sequence of the seed from the seed table. Then they are writen in the output file.
@@ -383,7 +544,10 @@ Rule description: Fetch the fasta protein sequence of the seed from the seed tab
                      columns = seed name | protein id | hmm | e-value | percentage of identity | coverage | color      
                      description = Same file as input but the 'protein id' of each file is changed to match the fasta file                
 ```
-        
+  
+<br />
+
+<a id="rule-2-fetch_proteins_database"></a>      
 #### Rule 2: fetch_proteins_database
 
 Rule description: Fetch the information for each protein of each genome in the taxid list. That includes: the protein ncbi id, sequence, length and annotation, as well as in which genome it is found. Information for the genome include genome ncbi id, name, taxid and if complete or partial.
@@ -408,6 +572,9 @@ Rule description: Fetch the information for each protein of each genome in the t
                       
 ```
 
+<br />
+
+<a id="rule-211-make_seed_psiblast-optional"></a>
 #### Rule 2.1.1: make_seed_psiblast (optional)
 
 Rule description: filter the seed fasta to keep only the seed that do not have a hmm profile associated with them in the seed initial seed file
@@ -422,6 +589,10 @@ Rule description: filter the seed fasta to keep only the seed that do not have a
              description = multifasta of the seed sequences that do not have a hmm profile associated with 
              
 ```
+
+<br />
+
+<a id="rule-212-psiblast-optional"></a>
 #### Rule 2.1.2: psiblast (optional)
 
 Rule description: Use the seed protein sequences to make a psi-BLAST against all the taxid proteome. 
@@ -439,6 +610,9 @@ Rule description: Use the seed protein sequences to make a psi-BLAST against all
                  description = blast out format 6 in tabulation, no header
 ```
 
+<br />
+
+<a id="rule-213-read_psiblast-optional"></a>
 #### Rule 2.1.3: read_psiblast (optional)
 
 Rule description: Read the psiBLAST output, remove unwanted lines and extract the list of protein matches. 
@@ -454,6 +628,9 @@ Rule description: Read the psiBLAST output, remove unwanted lines and extract th
                      description = list of all potein identifications gathered in the psiBLAST in column
 ```
 
+<br />
+
+<a id="rule-221-hmmsearch-optional"></a>
 #### Rule 2.2.1: hmmsearch (optional)
 
 Rule description: Use hmm profile(s) provided to fetch similar proteins in the taxid proteome using hmmsearch from hmmer 
@@ -474,6 +651,9 @@ Rule description: Use hmm profile(s) provided to fetch similar proteins in the t
 
 ```
 
+<br />
+
+<a id="rule-222-read_hmmsearch-optional"></a>
 #### Rule 2.2.2: read_hmmsearch (optional)
 
 Rule description: Read the hmmsearch output and extract the list of protein matches. 
@@ -489,6 +669,9 @@ Rule description: Read the hmmsearch output and extract the list of protein matc
                      description = list of all potein identifications gathered in the hmmsearch in column
 ```
 
+<br />
+
+<a id="rule-23-merge_hmmsearch_psiblast-optional"></a>
 #### Rule 2.3: merge_hmmsearch_psiblast (optional)
 
 Rule description: merge the list of proteines from both the psiBLAT and hmmsearch results. 
@@ -505,6 +688,9 @@ Rule description: merge the list of proteines from both the psiBLAT and hmmsearc
                      description = list of all potein identifications gathered in both the psiblast and the hmmsearch in column
 ```
 
+<br />
+
+<a id="rule-24-make_fasta-optional"></a>
 #### Rule 2.4: make_fasta (optional)
 
 Rule description: Create a fasta file from the psiblast results and the result of the protein information in the rule cat_proteins_info. 
@@ -522,6 +708,9 @@ Rule description: Create a fasta file from the psiblast results and the result o
                   description = multifasta file of all the unique protein ids.
 ```
 
+<br />
+
+<a id="rule-3-merge_fasta"></a>
 #### Rule 3: merge_fasta
 
 Rule description: Merge the proteome of interest with the seeds 
@@ -538,6 +727,9 @@ Rule description: Merge the proteome of interest with the seeds
                        description = concatenation of the 2 input multifasta files
 ```
 
+<br />
+
+<a id="rule-4-blast"></a>
 #### Rule 4: blast
 
 Rule description: Blast all versus all of the fasta of all proteins. 
@@ -553,6 +745,9 @@ Rule description: Blast all versus all of the fasta of all proteins.
                  description = output format 6 of blast, no header
 ```
 
+<br />
+
+<a id="rule-5-prepare_for_silix"></a>
 #### Rule 5: prepare_for_silix
 
 Rule description: Filter the blast results from the rule blast with the threshold specified for each seed in the seed file. Filters include the identity score, coverage and e-value, decided by the user. Create one new filtered blast result for each seed.
@@ -573,6 +768,9 @@ Rule description: Filter the blast results from the rule blast with the threshol
                                    
 ```
 
+<br />
+
+<a id="rule-6-silix"></a>
 #### Rule 6: silix
 
 Rule description: Uses Silix to create a network of protein and give a file of the protein segregated in groups.  If the blast output file is empty, just create an empty file. 
@@ -591,6 +789,9 @@ Rule description: Uses Silix to create a network of protein and give a file of t
               description = fnodes file, table of protein id and family number, without headers.        
 ```
 
+<br />
+
+<a id="rule-7-find_family"></a>
 #### Rule 7: find_family
  
 Rule description: Find the group of each seed in each individual seed and record it. 
@@ -610,6 +811,9 @@ Rule description: Find the group of each seed in each individual seed and record
                        description = updated fnodes with only the family of the seed.
 ```
 
+<br />
+
+<a id="rule-8-make_pa_table"></a>
 #### Rule 8: make_PA_table
 
 Rule description: Check the presence of protein similar to the seed in each taxid and create a table of presence abscence. This table will be plotted in a colored table.
@@ -635,6 +839,9 @@ Rule description: Check the presence of protein similar to the seed in each taxi
                             description = presence/abscence table, with header. Each line is a genome, each column is a seed.                   
 ```
 
+<br />
+
+<a id="rule-9-plots"></a>
 ### Rule 9: plots
 
 Rule description: Plot the table from `make_PA_table` in a colored table.
@@ -652,8 +859,15 @@ Rule description: Plot the table from `make_PA_table` in a colored table.
            description = plots in png of the final table centered on one seed
 ```
 
-### Additionnal rules
+<br />
+---
 
+<a id="additional-rules"></a>
+### Additional rules
+
+<br />
+
+<a id="rule-a1-report_threshold"></a>
 #### Rule A1: report_threshold
 
 Rule description: Pair of rules that works together. From the blast output, create a report containing 2 scatter plots: one comparing the coverage and percentage identity of the hits and the other adding the evalue to the comparaison.
@@ -664,6 +878,7 @@ To run the rules do
 snakemake report_threshold --cores 1 --use-conda
 ```
 
+<a id="sub-rule-a1a-blast2threshold_table"></a>
 ##### Sub rule A1a: blast2threshold_table
 
 ```
@@ -687,6 +902,7 @@ snakemake report_threshold --cores 1 --use-conda
                          description = table with the columns from the blast output of only the pairs containing at least one member of the seed family.
 ```
 
+<a id="sub-rule-a1b-report_threshold"></a>
 ##### Sub rule A1a: report_threshold
 
 ```
@@ -701,6 +917,9 @@ snakemake report_threshold --cores 1 --use-conda
 
 ```
 
+<br />
+
+<a id="rule-a2-extract_protein"></a>
 #### Rule A2: extract_protein
 
 Rule description: Create a fasta for each orthologs found (one fasta file per seed)
@@ -730,6 +949,9 @@ snakemake extract_protein --use_conda --cores 1 --profile config/slurm
                     description = name of all the fasta output with the format [name of the seed].fasta
 ```
 
+<br />
+
+<a id="rule-a3-quick_plots"></a>
 #### Rule A3: quick_plots
 
 Rule description: Plot a presence absence table that you may have edited in pdf and png.
@@ -760,6 +982,9 @@ Example of the `presence/absence table` in the [doc](https://github.com/vdclab/s
            description = plots in png of the final table centered on one seed
 ```
 
+<br />
+
+<a id="rule-a4-clean"></a>
 #### Rule A4: clean
 
 Rule description: Remove the folder database, logs and processing_files to only keep results
