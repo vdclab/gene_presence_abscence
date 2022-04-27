@@ -78,7 +78,11 @@ The primary output will be the table of sORTholog protein data filled using the 
 <a id="step-1-install-snakemake-and-snakedeploy"></a>
 ### Step 1: install Snakemake and Snakedeploy
 
+This pipeline uses the Snakemake workflow, that is only available on unix environment. Any linuxOS or MacOS should be able to run sORTholog. Windows users may have access to unix either using a cluster working on unix or using the [ubuntu virtual environment](https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-10#1-overview).
+
 Snakemake and Snakedeploy are best installed via the [Mamba package manager](https://github.com/mamba-org/mamba) (a drop-in replacement for conda). If you have neither Conda nor Mamba, it can be installed via [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge). For other options see [here](https://github.com/mamba-org/mamba).
+
+:warning: **Make sure that these instalations are made on your entire system and not a subfolder**
 
 To install Mamba by conda, run
 
@@ -108,22 +112,22 @@ conda activate snakemake
 <a id="step-2-deploy-workflow"></a>
 ### Step 2: deploy workflow
 
- Given that Snakemake and Snakedeploy are installed and available (see Step 1), the workflow can be deployed as follows.
+Given that Snakemake and Snakedeploy are installed and available (see [Step 1: install Snakemake and Snakedeploy](#step-1-install-snakemake-and-snakedeploy)), the workflow can be deployed as follows.
 
-First, create an appropriate project working directory on your system in the place of your choice as follow (note to change the path and file name to the one you want to create): : 
+First, create an appropriate working directory, in which sORTholog will be deployed, on your system in the place of your choice as follow (note to change the path and file name to the one you want to create):
 
 ```shell
 mkdir path/to/project-workdir
 ```
-NB: [More on the mkdir command.](https://en.wikipedia.org/wiki/Mkdir)
+*NB: [More on the mkdir command.](https://en.wikipedia.org/wiki/Mkdir)*
 
-Then go to your project working directory as follow:
+Then go to your sORTholog working directory as follow:
 
 ```shell
 cd path/to/project-workdir
 ```
 :warning: **You will need to be in this directory every single time you want to run sORTholog.
-In all following steps, we will assume that you are inside of that directory.** 
+In all following steps, we will assume that you are in that directory.** 
 
 NB: [More on the cd command.](https://en.wikipedia.org/wiki/Cd_(command))
 
@@ -139,6 +143,7 @@ Snakedeploy will create two folders `workflow` and `config`. The former contains
 
 <a id="step-3-configure-workflow"></a>
 ### Step 3: configure workflow
+The three files described in this section ([Taxid file](#taxid-file), [Seed file](#seed-file), and [Config file](#config-file)) can be edited with a text editor. We recommend [notepad++](https://notepad-plus-plus.org/) if you do not have already a favorite text editor.
 
 <br />
 
@@ -146,8 +151,8 @@ Snakedeploy will create two folders `workflow` and `config`. The former contains
 #### Taxid file
 The taxid file is a table, in the format of a tabulated text file (e.g. .txt, .tsv). This table should contain 2 columns: `TaxId` and `NCBIGroups`. 
 The `TaxId` columns should be filled with the TaxId of the genome you want to analyze. You can use any clade TaxId, sORTholog will take care of downloading all the genome of this clade.
-The `NCBIGroups` can be left blanked, but knowing this group would make the download of genomes faster. here a list of accepted terms: `all`, `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other`, `viral`. This will allow to look in the right folder in the FTP of NCBI to download the proteome. By choosing `all`, it will look in all folders and slow down the process.
-Ideally your taxid file should be in your `workdir` folder or in the `config` folder. 
+The `NCBIGroups` can be left blanked, but knowing this group would make the download of genomes faster. Here a list of accepted terms: `all`, `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other`, `viral`. This will allow to look in the right folder in the FTP of NCBI to download the proteome. By choosing `all`, it will look in all folders and slow down the process.
+Ideally your taxid file should be in your sORTholog working directory or in the `config` folder. 
 Example provided in the file [doc/dummy_taxids.tsv](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_taxids.tsv) folder in the GitHub page.
 
 <br />
@@ -158,12 +163,17 @@ The seed file contains the list of proteins you want to identify in your genomes
 Here is a list of collumns for this file:
 - seed : **Mandatory**, name of the protein as you want it to appear in the final figure.
 - protein_id: **Mandatory**, either the NCBI protein id of a protein you are sure have the function you are searching for.
-- hmm: name of the hmm profile file associated with the protein family. (no default, if not mentioned, psiBLAST will be triggered instead)
-- evalue: Number between 0 and 1. e-value threshold of blast.
+- hmm: name of the hmm profile file associated with the protein family, including the extension, often `.hmm`. (no default, if not mentioned, psiBLAST will be triggered instead)
+- evalue: Number between 0 and 1, e-value threshold of blast.
 - pident: Number between 0 and 1, percentage of identity (expressed in frequency) threshold of blast.
 - cov: Number between 0 and 1, coverage threshold (expressed in frequency) for blast results. The coverage is based on the coverage of the query.
 - color: hexadecimal code of the color you want the positive results to be in the final figure for this seed.
 Example provided in the file [doc/dummy_seeds.tsv](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_seeds.tsv) folder in the GitHub page.
+
+:warning: **Common mistakes**:
+- Columns in the seed files should be separated by tabulation, introduction of spaces or other hidden characters might disrupt the reading of the file.
+- Do not introduce empty lines in the seed file.
+- Make sure to have the correct extension for your hmm profile.
 
 <br />
 
@@ -181,18 +191,19 @@ This file is in the `config` folder, and is named `config.yaml`. You can edit th
 - project_name: Name of your project. This will create a new folder in the folder `results` that will contains all the files generated during the run, including your final results.
 - output_folder: Name of the folder you want the generated file to be directed to. By default, it is set to `../sORTholog_deployed/results`.
 
+:warning: **Common mistake**: path in windows uses the backward slash `\`, but unix uses foreward slash `/`. Make sure to use the latter. 
+
 <br />
 
 <a id="options-to-download-proteomes"></a>
 ##### Options to download proteomes
 
-ndg_option:
-- section: `refseq` (default) or `genbank`. Database from which you are pulling the proteomes. 
-- assembly_levels: `all` (default), `complete`, `chromosome`, `scaffold` or `contig`. Type of assembly you want.
-- refseq_categories: `reference`, `all` (default). Only refseq reference genomes or all of refseq.
-- groups: `all` (default), `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other`, `viral`. Set this group if unspecified in the `NCBITaxId` columns of the taxid file.
-
--update_db: `True` or `False` (default). Update the Taxonomy dump, will increase run time.
+- ndg_option:
+  - section: `refseq` (default) or `genbank`. Database from which you are pulling the proteomes. 
+  - assembly_levels: `all` (default), `complete`, `chromosome`, `scaffold` or `contig`. Type of assembly you want.
+  - refseq_categories: `reference`, `all` (default). Only refseq reference genomes or all of refseq.
+  - groups: `all` (default), `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other`, `viral`. Set this group if unspecified in the `NCBITaxId` columns of the [Taxid file](#taxid-file).
+- update_db: `True` or `False` (default). Update the Taxonomy dump, will increase run time.
 
 <br />
 
@@ -201,6 +212,8 @@ ndg_option:
 
 - perso_database: Path to personal proteome database. It should consist of a multifasta file with all the proteins you want to add to the search. 
 - perso_annotation: table in tabulated text format that contains the information of the annotation of the fasta file in perso_database, columns: protein_id, genome_id[, genome_name]
+
+:warning: **Common mistake**: path in windows uses the backward slash `\`, but unix uses foreward slash `/`. Make ure to use the latter. 
 
 <br />
 
@@ -219,7 +232,6 @@ ndg_option:
 ###### default HMM options
 
 - hmm_profiles: path and name of your folder containing all the hmm profiles mentioned in your seed file.
-
 - e_val: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
 - focus: `domain` or `full` (default: full). Analyse the results over the full size of the query or based on domain detection.
 
@@ -250,7 +262,7 @@ ndg_option:
 
 default_values_plot:
 - color: hexadecimal color, (default: `#131516`)
-- colored_border: `True` or `False`. Turn the color of the border a darker shade infered from the background.
+- colored_border: `True` or `False` (default). Turn the color of the border a darker shade inferred from the background.
 
 
 Here a comparison of the two behaviours:
@@ -259,7 +271,7 @@ Here a comparison of the two behaviours:
   <img src="doc/colored_border_option.png?raw=true">
 </p>    
 
-- round_border: `True` or `False`. Turn border to roundish shape.
+- round_border: `True` or `False` (default). Turn border to roundish shape.
 
 
 Here a comparison of the two behaviours:
@@ -295,6 +307,16 @@ If you want to run the workflow with the additional step to speedup the analysis
 ```shell
 snakemake --cores 1 --use-conda -C speedup=True
 ```
+
+:warning: **Snakemake require that your computer and terminal stays open while the pipeline is running to start the subsequent rules. [More info on Snakemake](https://snakemake.readthedocs.io/en/stable/). 
+
+You can have access to your result following the path:
+
+```shell
+[path/to/sORTholog-workdir]/results/[project-name]/results
+```
+
+You will find the table of presence of absence `patab_table.tsv`, the melt version of this table `patab_melt.tsv` and a folder `plots` containing the figure representing the table.
 
 <br />
 
@@ -353,7 +375,9 @@ After that the step are the same as in [Step 1: install Snakemake and Snakedeplo
 
 Before running the workflow, another config file need to be assessed to configure the slurm on HiPerGator. This file is `config/slurm/cluster-config.yaml`
 Here are the options:
-- account: account linked to your HiPerGator.
+- account: account linked to your HiPerGator. (insert your account here)
+
+the subsequent options can be left by default:
 - qos: qos account name for HiPerGator.
 - time: time per rule in minutes.
 - nodes: number of nodes to use per rules.
@@ -395,20 +419,24 @@ As previously you can also generate a report following [Step 5: Generate report]
 If you want to run it as a job,
 
 1. make sure that the pipeline is deploy where you are and that you change the `config/config.yaml` accordingly to your needs
-2. create a file name for exemple `my_project.sh` and copy and paste the following:
+2. create a file name, for exemple `my_project.sh`, and copy and paste the following, changing your e-mail address and other relevant parameters:
 
 ```bash
-#!/bin/bash -login
-#SBATCH -J sbatch_snakemake 
-#SBATCH -t 7-0:00:00
-#SBATCH -N 1
-#SBATCH --output $PWD/sbatch_snakemake-%j.out
-#SBATCH --error $PWD/sbatch-snakemake-%j.err
+#!/bin/sh
+#SBATCH --mail-user=ufid@ufl.edu              # Where to send mail
+#SBATCH --mail-type=ALL                       # Mail events (NONE, BEGIN, END, FAIL, ALL)
+#SBATCH --job-name=sbatch_snakemake           # Name of the job in slurm 
+#SBATCH --cpus-per-task=1                     # Use 1 core
+#SBATCH --mem=4G                              # Memory allocated to run the workflow
+#SBATCH --time=7-0:00:00                      # Time for the workflow to run, format DD-HH:MM:SS
+#SBATCH --nodes=1                             # Number of node to start the workflow
+#SBATCH --output=logs/sbatch_snakemake-%j.out # Output of the sbatch job
+#SBATCH --error=logs/sbatch-snakemake-%j.err  # Error log of the sbatch job, including the snakemake workflow notifications
 
-# activate conda in general
-source /home/$(whoami)/.bashrc # if you have the conda init setting
+echo "Date start $(date)"
 
 # activate a specific conda environment, if you so choose
+module load conda
 conda activate snakemake 
 
 # make things fail on errors
@@ -417,8 +445,10 @@ set -o errexit
 set -x
 
 ### run your commands here!
-snakemake --cores 5 --use-conda --profile config/slurm
+snakemake --cores 1 --use-conda --profile config/slurm
 snakemake --report report.zip --report-stylesheet config/report.css
+
+echo "Date end $(date)"
 ```
 
 3. run the following command

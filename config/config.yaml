@@ -30,7 +30,7 @@ ndg_options:
     refseq_categories: all
     # Values for groups : ['all', 'archaea', 'bacteria', 'fungi', 'invertebrate', 'metagenomes', 'plant', 'protozoa', 'vertebrate_mammalian', 'vertebrate_other', 'viral']
     # Will be used if none is give in base_set_taxid.tsv
-    groups: bacteria
+    groups: all
 
 # Option for the Taxonomy DB parser
 # If you want to update the Taxonomy dump, :warning: it increase the running time of the workflow
@@ -109,7 +109,7 @@ default_values_plot:
     # Color
     color: '#131516' # This color is a dark grey similar to black
     # Turn color of the border a darker shade infer from the background if True else set the color to black
-    colored_border: True
+    colored_border: False
     # Turn border to roundish shape
     round_border: False
 
