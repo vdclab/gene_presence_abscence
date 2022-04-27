@@ -34,7 +34,7 @@ rule fetch_proteins_database:
         update_db=config["update_db"],
     resources:
         cpus=5,
-        time=1440,
+        time=3000,
     threads: 5
     conda:
         "../envs/biopython_ete3.yaml"
