@@ -117,14 +117,14 @@ Given that Snakemake and Snakedeploy are installed and available (see [Step 1: i
 First, create an appropriate working directory, in which sORTholog will be deployed, on your system in the place of your choice as follow (note to change the path and file name to the one you want to create):
 
 ```shell
-mkdir path/to/project-workdir
+mkdir path/to/sORTholog-workdir
 ```
 *NB: [More on the mkdir command.](https://en.wikipedia.org/wiki/Mkdir)*
 
 Then go to your sORTholog working directory as follow:
 
 ```shell
-cd path/to/project-workdir
+cd path/to/sORTholog-workdir
 ```
 :warning: **You will need to be in this directory every single time you want to run sORTholog.
 In all following steps, we will assume that you are in that directory.** 
