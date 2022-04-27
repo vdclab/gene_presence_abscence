@@ -11,8 +11,6 @@ This software will produce a table visualization of the presence or absence of e
 The primary output will be the table of sORTholog protein data filled using the NCBI Protein Database, as well as PDF and PNG files of the table visualization.
 
 <br />
----
----
 
 ## Table of content
 
@@ -73,8 +71,6 @@ The primary output will be the table of sORTholog protein data filled using the 
 
 
 <br />
----
----
 
 <a id="installation-and-running"></a>
 ## Installation and Running
@@ -105,10 +101,9 @@ For all following commands (step 2 to 5) ensure that this environment is activat
 ```shell
 conda activate snakemake
 ```
-:warning: ** This command has to be used every single time you want to use sORTholog to be able to activate the conda environment that contains snakemake. **
+:warning: **This command has to be used every single time you want to use sORTholog to be able to activate the conda environment that contains snakemake.**
 
 <br />
----
 
 <a id="step-2-deploy-workflow"></a>
 ### Step 2: deploy workflow
@@ -127,8 +122,8 @@ Then go to your project working directory as follow:
 ```shell
 cd path/to/project-workdir
 ```
-:warning: ** You will need to be in this directory every single time you want to run sORTholog.
-In all following steps, we will assume that you are inside of that directory. ** 
+:warning: **You will need to be in this directory every single time you want to run sORTholog.
+In all following steps, we will assume that you are inside of that directory.** 
 
 NB: [More on the cd command.](https://en.wikipedia.org/wiki/Cd_(command))
 
@@ -141,7 +136,6 @@ snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.4.7
 Snakedeploy will create two folders `workflow` and `config`. The former contains the deployment of the chosen workflow as a [Snakemake module](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#using-and-combining-pre-exising-workflows), the latter contains configuration files which will be modified in the next step in order to configure the workflow to your needs. Later, when executing the workflow, Snakemake will automatically find the main `Snakefile` in the `workflow` subfolder.
 
 <br />
----
 
 <a id="step-3-configure-workflow"></a>
 ### Step 3: configure workflow
@@ -282,7 +276,6 @@ Here a comparison of the two behaviours:
 - PAtab_table: Path of the table you want to use to transform it into the plot figure. The table has to be a tabulated text file of a table that has the seeds in columns, the genomes in lines.
 
 <br />
----
 
 <a id="step-4-run-the-workflow"></a>
 ### Step 4: run the workflow
@@ -304,7 +297,6 @@ snakemake --cores 1 --use-conda -C speedup=True
 ```
 
 <br />
----
 
 <a id="step-5-generate-report"></a>
 ### Step 5: generate report
@@ -317,8 +309,6 @@ snakemake --report report.zip --report-stylesheet config/report.css
 The resulting report.zip file can be passed on to collaborators, provided as a supplementary file in publications.
 
 <br />
----
----
 
 <a id="important-notes-for-running-on-the-ufl-cluster"></a>
 ## Important Notes for running on the UFL cluster
@@ -344,7 +334,6 @@ You can access to the files of this folder on your computer by adding a server. 
 More info [here](https://help.rc.ufl.edu/doc/Samba_Access).
 
 <br />
----
 
 <a id="step-c2-load-conda"></a>
 ### Step C2: load conda
@@ -354,11 +343,10 @@ Before starting the installation of the program, you will need to load `conda`; 
 ```
 module load conda
 ```
-:warning: ** This step will be necessary each time you want to use sORTholog on HiPergator. **
+:warning: **This step will be necessary each time you want to use sORTholog on HiPergator.**
 After that the step are the same as in [Step 1: install Snakemake and Snakedeploy](#step-1-install-snakemake-and-snakedeploy), [Step 2: deploy workflow](#step-2-deploy-workflow), and [Step 3: configure workflow](#step-3-configure-workflow).
 
 <br />
----
 
 <a id="step-c3-configure-slurm"></a>
 ### Step C3: configure slurm
@@ -377,7 +365,6 @@ Here are the options:
 - job-name: name of the job on HiPerGator.
 
 <br />
----
 
 <a id="step-c4-run-the-workflow"></a>
 ### Step C4: run the workflow
@@ -401,7 +388,6 @@ snakemake -j 5 --use-conda --profile config/slurm -C speedup=True
 As previously you can also generate a report following [Step 5: Generate report](#step-5-generate-report).
 
 <br />
----
 
 <a id="additional-information"></a>
 ### Additional information
@@ -442,8 +428,6 @@ sbatch my_project.sh
 ```
 
 <br />
----
----
 
 <a id="walk-through-and-file-production"></a>
 ## Walk-Through and File Production
@@ -495,7 +479,6 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 4. When restarting the pipeline, the software will check if you made any changes in the seed file before running. If changes have been made, it will run what is necessary, else nothing will happen.
 
 <br />
----
 
 <a id="pipeline-in-image"></a>
 ### Pipeline in image 
@@ -519,7 +502,6 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 </p>
 
 <br />
----
 
 <a id="rule-descriptions"></a>
 ### Rule desciptions 
@@ -860,7 +842,6 @@ Rule description: Plot the table from `make_PA_table` in a colored table.
 ```
 
 <br />
----
 
 <a id="additional-rules"></a>
 ### Additional rules
