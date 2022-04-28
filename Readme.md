@@ -22,17 +22,6 @@ The primary output will be the table of sORTholog protein data filled using the 
       1. [Taxid file](#taxid-file)
       2. [Seed file](#seed-file)
       3. [Config file](#config-file)
-         1. [General settings](#general-settings)
-         2. [Options to download proteomes](#options-to-download-proteomes)
-         3. [Options to add your personal proteome](#options-to-add-your-personal-proteome)
-         4. [Speed up options](#speed-up-options)
-            1. [default psiblast options](#default-psiblast-options)
-            2. [default HMM options](#default-hmm-options)
-         5. [Analysis options](#analysis-options)
-            1. [default blast options](#default-psiblast-options)
-            2. [silix options](#silix-options)
-         6. [Plot settings](#plot-settings)
-         7. [Only plot table options](#only-plot-table-options)
    4. [Step 4: run the workflow](#step-4-run-the-workflow)
    5. [Step 5: generate report](#step-5-generate-report)
 2. [Important Notes for running on the UFL cluster](#important-notes-for-running-on-the-ufl-cluster)
@@ -43,8 +32,6 @@ The primary output will be the table of sORTholog protein data filled using the 
    5. [Additional information](#additional-information)
 3. [Walk-Through and File Production](#walk-through-and-file-production)
    1. [Pipeline in image](#pipeline-in-image)
-      1. [Only blast and silix behavior](#only-blast-and-silix-behavior)
-      2. [Speedup behavior](#speedup-behavior)
    2. [Rule descriptions](#rule-descriptions)
       1. [Rule 1: fetch_fasta_from_seed](#rule-1-fetch_fasta_from_seed)
       2. [Rule 2: fetch_proteins_database](#rule-2-fetch_proteins_database)
@@ -64,8 +51,6 @@ The primary output will be the table of sORTholog protein data filled using the 
       16. [Rule 9: plots](#rule-9-plots)
    3. [Additional rules](#additional-rules)
       1. [Rule A1: report_threshold](#rule-a1-report_threshold)
-         1. [Sub rule A1a: blast2threshold_table](#sub-rule-a1a-blast2threshold_table)
-         2. [Sub rule A1b: report_threshold](#sub-rule-a1b-report_threshold)
       2. [Rule A2: extract_protein](#rule-a2-extract_protein)
       3. [Rule A3: quick_plots](#rule-a3-quick_plots)
       4. [Rule A4: clean](#rule-a4-clean)
@@ -186,9 +171,6 @@ Example provided in the file [doc/dummy_seeds.tsv](https://github.com/vdclab/sOR
 #### Config file
 This file is in the `config` folder, and is named `config.yaml`. You can edit this file following these instructions (also in comments in the `config.yaml` file)
 
-<br />
-
-<a id="general-settings"></a>
 ##### General settings
 
 - *seed*: path and name of your seed file.
@@ -198,9 +180,6 @@ This file is in the `config` folder, and is named `config.yaml`. You can edit th
 
 :warning: **Common mistake**: path in windows uses backward slashes `\`, but unix uses forward slashes `/`. Make sure to use the latter. 
 
-<br />
-
-<a id="options-to-download-proteomes"></a>
 ##### Options to download proteomes
 
 - *ndg_option*:
@@ -210,9 +189,6 @@ This file is in the `config` folder, and is named `config.yaml`. You can edit th
   - *groups*: `all` (default), `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other`, `viral`. Set this group if unspecified in the `NCBITaxId` columns of the [Taxid file](#taxid-file).
 - *update_db*: `True` or `False` (default). Update the Taxonomy dump, will increase run time.
 
-<br />
-
-<a id="options-to-add-your-personal-proteome"></a>
 ##### Options to add your personal proteome
 
 - *perso_database*: Path to personal proteome database. It should consist of a multifasta file with all the proteins you want to add to the search. 
@@ -220,55 +196,42 @@ This file is in the `config` folder, and is named `config.yaml`. You can edit th
 
 :warning: **Common mistake**: path in windows uses backward slashes `\`, but unix uses forward slashes `/`. Make ure to use the latter. 
 
-<br />
-
-<a id="speed-up-options"></a>
 ##### Speed up options
 
 - *speedup*: `True` or `False`. Define if you want to use psi-blast or hmmsearch to filter your proteome before running a blast all vs all. It is recommended on very large amount of genomes.
 
-<a id="default-psiblast-options"></a>
 ###### default psiblast options
 
   - *psiblast_e_val*: Number between 0 and 1, default `0.01`. E-value used to accept a result in psi-blast. It is recommended to use a high e-value to gather super family related protein rather than being too stringent in this step. 
   - *iteration*: Number between 0 and 5, default `5`. Number of iteration of the psi-blast. The more iterations, the more you gather phylogenetically distant proteins.
 
-<a id="default-hmm-options"></a>
 ###### default HMM options
 
 - *hmm_profiles*: path and name of your folder containing all the hmm profiles mentioned in your seed file.
 - *e_val*: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
 - *focus**: `domain` or `full` (default: full). Analyse the results over the full size of the query or based on domain detection.
 
-<br />
 
-<a id="analysis-options"></a>
 ##### Analysis options
 
-<a id="default-psiblast-options"></a>
 ###### default blast options
 
   - *filter*: `e_value`, `score` or `both` (default: e_value). Se up if you want to filter your blast results by e-value, bit score or both. 
   - *e_val*: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
   - *pid*: Number between 0 and 1, default `0.35`. Percentage of identity (expressed in frequency) default threshold if left empty in the seed file. 
   - *cov*: Number between 0 and 1, default `0.8`. Coverage of the query (expressed in frequency) default threshold if left empty in the seed file.
-
-<a id="silix-options"></a> 
+  
 ###### silix options
 
   - *cov_min*: `mean`, `subject`, `query`, `shortest` or `longest` (default: mean). Source or the length divider to calculate the coverage (from query, subject or an average of both)
   - *pid_min*: `mean`, `subject`, `query`, `shortest`, `longest` or `HSP` (default: mean). Source or the length divider to calculate the percentage of identity (from query, subject or an average of both)
   - *length_min*: positive number, default 100. Mininimum length to accept partial sequences in families
   
-<br />
-
-<a id="plot-settings"></a>
 ##### Plot settings
 
 *default_values_plot*:
 - *color*: hexadecimal color, (default: `#131516`)
 - *colored_border*: `True` or `False` (default). Turn the color of the border a darker shade inferred from the background.
-
 
 Here a comparison of the two behaviours:
 
@@ -284,9 +247,6 @@ Here a comparison of the two behaviours:
   <img src="doc/round_border_option.png?raw=true">
 </p>
 
-<br />
-
-<a id="only-plot-table-options"></a>
 ##### Only plot table options
 
 - *PAtab_table*: Path of the table you want to use to transform it into the plot figure. The table has to be a tabulated text file of a table that has the seeds in columns, the genomes in lines.
@@ -533,18 +493,12 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 <a id="pipeline-in-image"></a>
 ### Pipeline in image 
 
-<br />
-
-<a id="only-blast-and-silix-behavior"></a>
 #### only blasta and silix behavior
 
 <p align="center">
   <img src="doc/dummy_dag.png?raw=true" height="400">
 </p>
 
-<br />
-
-<a id="speedup-behavior"></a>
 #### Speedup behavior
 
 <p align="center">
@@ -556,9 +510,7 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 <br />
 
 <a id="rule-descriptions"></a>
-### Rule desciptions 
-
-<br />
+### Rule desciptions
 
 <a id="rule-1-fetch_fasta_from_seed"></a>
 #### Rule 1: fetch_fasta_from_seed
@@ -941,7 +893,6 @@ To run the rules do
 snakemake report_threshold --cores 1 --use-conda
 ```
 
-<a id="sub-rule-a1a-blast2threshold_table"></a>
 ##### Sub rule A1a: blast2threshold_table
 
 ```
@@ -965,7 +916,6 @@ snakemake report_threshold --cores 1 --use-conda
                          description = table with the columns from the blast output of only the pairs containing at least one member of the seed family.
 ```
 
-<a id="sub-rule-a1b-report_threshold"></a>
 ##### Sub rule A1a: report_threshold
 
 ```
