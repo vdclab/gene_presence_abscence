@@ -12,6 +12,7 @@ The primary output will be the table of sORTholog protein data filled using the 
 
 <br />
 
+<a id="table-of-content"></a>
 ## Table of content
 
 1. [Installation and Running](#installation-and-running)
@@ -106,6 +107,7 @@ For all following commands (step 2 to 5) ensure that this environment is activat
 conda activate snakemake
 ```
 :warning: **This command has to be used every single time you want to use sORTholog to be able to activate the conda environment that contains snakemake.**
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -138,6 +140,8 @@ snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.4.7
 ```
 
 Snakedeploy will create two folders `workflow` and `config`. The former contains the deployment of the chosen workflow as a [Snakemake module](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#using-and-combining-pre-exising-workflows), the latter contains configuration files which will be modified in the next step in order to configure the workflow to your needs. Later, when executing the workflow, Snakemake will automatically find the main `Snakefile` in the `workflow` subfolder.
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -287,6 +291,8 @@ Here a comparison of the two behaviours:
 
 - PAtab_table: Path of the table you want to use to transform it into the plot figure. The table has to be a tabulated text file of a table that has the seeds in columns, the genomes in lines.
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="step-4-run-the-workflow"></a>
@@ -308,7 +314,7 @@ If you want to run the workflow with the additional step to speedup the analysis
 snakemake --cores 1 --use-conda -C speedup=True
 ```
 
-:warning: **Snakemake require that your computer and terminal stays open while the pipeline is running to start the subsequent rules. [More info on Snakemake](https://snakemake.readthedocs.io/en/stable/). 
+:warning: **Snakemake require that your computer and terminal stays open while the pipeline is running to start the subsequent rules.** [More info on Snakemake](https://snakemake.readthedocs.io/en/stable/). 
 
 You can have access to your result following the path:
 
@@ -317,6 +323,8 @@ You can have access to your result following the path:
 ```
 
 You will find the table of presence of absence `patab_table.tsv`, the melt version of this table `patab_melt.tsv` and a folder `plots` containing the figure representing the table.
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -329,6 +337,8 @@ After finalizing your data analysis, you can automatically generate an interacti
 snakemake --report report.zip --report-stylesheet config/report.css
 ```
 The resulting report.zip file can be passed on to collaborators, provided as a supplementary file in publications.
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -355,6 +365,8 @@ cd /blue/(your group)/(GatorLink ID)
 You can access to the files of this folder on your computer by adding a server. The address for Windows is as follow: `\\exasmb.rc.ufl.edu`, for Unix (Linux or MacOS) the address: `smb://exasmb.rc.ufl.edu`.  
 More info [here](https://help.rc.ufl.edu/doc/Samba_Access).
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="step-c2-load-conda"></a>
@@ -367,6 +379,8 @@ module load conda
 ```
 :warning: **This step will be necessary each time you want to use sORTholog on HiPergator.**
 After that the step are the same as in [Step 1: install Snakemake and Snakedeploy](#step-1-install-snakemake-and-snakedeploy), [Step 2: deploy workflow](#step-2-deploy-workflow), and [Step 3: configure workflow](#step-3-configure-workflow).
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -387,6 +401,8 @@ the subsequent options can be left by default:
 - output: destination of the output log.
 - error: destination of the error log.
 - job-name: name of the job on HiPerGator.
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -410,6 +426,8 @@ snakemake -j 5 --use-conda --profile config/slurm -C speedup=True
 ```
 
 As previously you can also generate a report following [Step 5: Generate report](#step-5-generate-report).
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -456,6 +474,8 @@ echo "Date end $(date)"
 ```bash
 sbatch my_project.sh
 ```
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -508,6 +528,8 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 
 4. When restarting the pipeline, the software will check if you made any changes in the seed file before running. If changes have been made, it will run what is necessary, else nothing will happen.
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="pipeline-in-image"></a>
@@ -530,6 +552,8 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 <p align="center">
   <img src="doc/dummy_dag_speedup.png?raw=true" height="500">
 </p>
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -556,7 +580,9 @@ Rule description: Fetch the fasta protein sequence of the seed from the seed tab
                      columns = seed name | protein id | hmm | e-value | percentage of identity | coverage | color      
                      description = Same file as input but the 'protein id' of each file is changed to match the fasta file                
 ```
-  
+
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="rule-2-fetch_proteins_database"></a>      
@@ -584,6 +610,8 @@ Rule description: Fetch the information for each protein of each genome in the t
                       
 ```
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="rule-211-make_seed_psiblast-optional"></a>
@@ -601,6 +629,8 @@ Rule description: filter the seed fasta to keep only the seed that do not have a
              description = multifasta of the seed sequences that do not have a hmm profile associated with 
              
 ```
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -622,6 +652,8 @@ Rule description: Use the seed protein sequences to make a psi-BLAST against all
                  description = blast out format 6 in tabulation, no header
 ```
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="rule-213-read_psiblast-optional"></a>
@@ -639,6 +671,8 @@ Rule description: Read the psiBLAST output, remove unwanted lines and extract th
     - list all prot: type = str
                      description = list of all potein identifications gathered in the psiBLAST in column
 ```
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -663,6 +697,8 @@ Rule description: Use hmm profile(s) provided to fetch similar proteins in the t
 
 ```
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="rule-222-read_hmmsearch-optional"></a>
@@ -680,6 +716,8 @@ Rule description: Read the hmmsearch output and extract the list of protein matc
     - list all prot: type = str
                      description = list of all potein identifications gathered in the hmmsearch in column
 ```
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -699,6 +737,8 @@ Rule description: merge the list of proteines from both the psiBLAT and hmmsearc
     - list all prot: type = str
                      description = list of all potein identifications gathered in both the psiblast and the hmmsearch in column
 ```
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -720,6 +760,8 @@ Rule description: Create a fasta file from the psiblast results and the result o
                   description = multifasta file of all the unique protein ids.
 ```
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="rule-3-merge_fasta"></a>
@@ -739,6 +781,8 @@ Rule description: Merge the proteome of interest with the seeds
                        description = concatenation of the 2 input multifasta files
 ```
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="rule-4-blast"></a>
@@ -756,6 +800,8 @@ Rule description: Blast all versus all of the fasta of all proteins.
                  format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen | query start position | query end position | subject start position | subject end position | e-value | bitscore
                  description = output format 6 of blast, no header
 ```
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -780,6 +826,8 @@ Rule description: Filter the blast results from the rule blast with the threshol
                                    
 ```
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="rule-6-silix"></a>
@@ -800,6 +848,8 @@ Rule description: Uses Silix to create a network of protein and give a file of t
               format = family | protein id
               description = fnodes file, table of protein id and family number, without headers.        
 ```
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -822,6 +872,8 @@ Rule description: Find the group of each seed in each individual seed and record
                        format = family | protein id | seed
                        description = updated fnodes with only the family of the seed.
 ```
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -851,6 +903,8 @@ Rule description: Check the presence of protein similar to the seed in each taxi
                             description = presence/abscence table, with header. Each line is a genome, each column is a seed.                   
 ```
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="rule-9-plots"></a>
@@ -870,6 +924,8 @@ Rule description: Plot the table from `make_PA_table` in a colored table.
     - png: type = list of str
            description = plots in png of the final table centered on one seed
 ```
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -928,6 +984,8 @@ snakemake report_threshold --cores 1 --use-conda
 
 ```
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="rule-a2-extract_protein"></a>
@@ -959,6 +1017,8 @@ snakemake extract_protein --use_conda --cores 1 --profile config/slurm
     - fasta files : type = list of str
                     description = name of all the fasta output with the format [name of the seed].fasta
 ```
+
+[▲ Back to table of content ▲](#table-of-content)
 
 <br />
 
@@ -993,6 +1053,8 @@ Example of the `presence/absence table` in the [doc](https://github.com/vdclab/s
            description = plots in png of the final table centered on one seed
 ```
 
+[▲ Back to table of content ▲](#table-of-content)
+
 <br />
 
 <a id="rule-a4-clean"></a>
@@ -1010,3 +1072,5 @@ snakemake clean --cores 1
 · input files:
     - database, logs and processing_files directory
 ```
+
+[▲ Back to table of content ▲](#table-of-content)
