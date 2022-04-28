@@ -49,7 +49,7 @@ rule read_hmmsearch:
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "hmmer", "format_hmmsearch.log",),
     resources:
-        time=30,
+        time=120,
     conda:
         "../envs/pandas_plots.yaml"
     script:
