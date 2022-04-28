@@ -148,7 +148,7 @@ Snakedeploy will create two folders `workflow` and `config`. The former contains
 
 <a id="step-3-configure-workflow"></a>
 ### Step 3: configure workflow
-The three files described in this section ([Taxid file](#taxid-file), [Seed file](#seed-file), and [Config file](#config-file)) can be edited with a text editor. We recommend [notepad++](https://notepad-plus-plus.org/) if you do not have already a favorite text editor.
+The three files described in this section ([Taxid file](#taxid-file), [Seed file](#seed-file), and [Config file](#config-file)) can be edited with a text editor. We recommend [VScode](https://code.visualstudio.com/) or [SublimeText](https://www.sublimetext.com/) if you do not have already a favorite text editor.
 
 <br />
 
@@ -166,13 +166,13 @@ Example provided in the file [doc/dummy_taxids.tsv](https://github.com/vdclab/sO
 #### Seed file
 The seed file contains the list of proteins you want to identify in your genomes. It is a table, in the format of a  tabulated text file (e.g. .txt, .tsv). Ideally your seed file should be in your `workdir` folder or in the `config` folder. 
 Here is a list of collumns for this file:
-- seed : **Mandatory**, name of the protein as you want it to appear in the final figure.
-- protein_id: **Mandatory**, either the NCBI protein id of a protein you are sure have the function you are searching for.
-- hmm: name of the hmm profile file associated with the protein family, including the extension, often `.hmm`. (no default, if not mentioned, psiBLAST will be triggered instead)
-- evalue: Number between 0 and 1, e-value threshold of blast.
-- pident: Number between 0 and 1, percentage of identity (expressed in frequency) threshold of blast.
-- cov: Number between 0 and 1, coverage threshold (expressed in frequency) for blast results. The coverage is based on the coverage of the query.
-- color: hexadecimal code of the color you want the positive results to be in the final figure for this seed.
+- *seed*: **Mandatory**, name of the protein as you want it to appear in the final figure.
+- *protein_id*: **Mandatory**, either the NCBI protein id of a protein you are sure have the function you are searching for.
+- *hmm*: name of the hmm profile file associated with the protein family, including the extension, often `.hmm`. (no default, if not mentioned, psiBLAST will be triggered instead)
+- *evalue*: Number between 0 and 1, e-value threshold of blast.
+- *pident*: Number between 0 and 1, percentage of identity (expressed in frequency) threshold of blast.
+- *cov*: Number between 0 and 1, coverage threshold (expressed in frequency) for blast results. The coverage is based on the coverage of the query.
+- *color*: hexadecimal code of the color you want the positive results to be in the final figure for this seed.
 Example provided in the file [doc/dummy_seeds.tsv](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_seeds.tsv) folder in the GitHub page.
 
 :warning: **Common mistakes**:
@@ -191,54 +191,54 @@ This file is in the `config` folder, and is named `config.yaml`. You can edit th
 <a id="general-settings"></a>
 ##### General settings
 
-- seed : path and name of your seed file.
-- taxid: path and name of your taxid file.
-- project_name: Name of your project. This will create a new folder in the folder `results` that will contains all the files generated during the run, including your final results.
-- output_folder: Name of the folder you want the generated file to be directed to. By default, it is set to `../sORTholog_deployed/results`.
+- *seed*: path and name of your seed file.
+- *taxid*: path and name of your taxid file.
+- *project_name*: Name of your project. This will create a new folder in the folder `results` that will contains all the files generated during the run, including your final results.
+- *output_folder*: Name of the folder you want the generated file to be directed to. By default, it is set to `../sORTholog_deployed/results`.
 
-:warning: **Common mistake**: path in windows uses the backward slash `\`, but unix uses foreward slash `/`. Make sure to use the latter. 
+:warning: **Common mistake**: path in windows uses backward slashes `\`, but unix uses forward slashes `/`. Make sure to use the latter. 
 
 <br />
 
 <a id="options-to-download-proteomes"></a>
 ##### Options to download proteomes
 
-- ndg_option:
-  - section: `refseq` (default) or `genbank`. Database from which you are pulling the proteomes. 
-  - assembly_levels: `all` (default), `complete`, `chromosome`, `scaffold` or `contig`. Type of assembly you want.
-  - refseq_categories: `reference`, `all` (default). Only refseq reference genomes or all of refseq.
-  - groups: `all` (default), `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other`, `viral`. Set this group if unspecified in the `NCBITaxId` columns of the [Taxid file](#taxid-file).
-- update_db: `True` or `False` (default). Update the Taxonomy dump, will increase run time.
+- *ndg_option*:
+  - *section*: `refseq` (default) or `genbank`. Database from which you are pulling the proteomes. 
+  - *assembly_levels*: `all` (default), `complete`, `chromosome`, `scaffold` or `contig`. Type of assembly you want.
+  - *refseq_categories*: `reference`, `all` (default). Only refseq reference genomes or all of refseq.
+  - *groups*: `all` (default), `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other`, `viral`. Set this group if unspecified in the `NCBITaxId` columns of the [Taxid file](#taxid-file).
+- *update_db*: `True` or `False` (default). Update the Taxonomy dump, will increase run time.
 
 <br />
 
 <a id="options-to-add-your-personal-proteome"></a>
 ##### Options to add your personal proteome
 
-- perso_database: Path to personal proteome database. It should consist of a multifasta file with all the proteins you want to add to the search. 
-- perso_annotation: table in tabulated text format that contains the information of the annotation of the fasta file in perso_database, columns: protein_id, genome_id[, genome_name]
+- *perso_database*: Path to personal proteome database. It should consist of a multifasta file with all the proteins you want to add to the search. 
+- *perso_annotation*: table in tabulated text format that contains the information of the annotation of the fasta file in perso_database, columns: protein_id, genome_id[, genome_name]
 
-:warning: **Common mistake**: path in windows uses the backward slash `\`, but unix uses foreward slash `/`. Make ure to use the latter. 
+:warning: **Common mistake**: path in windows uses backward slashes `\`, but unix uses forward slashes `/`. Make ure to use the latter. 
 
 <br />
 
 <a id="speed-up-options"></a>
 ##### Speed up options
 
-- speedup: `True` or `False`. Define if you want to use psi-blast or hmmsearch to filter your proteome before running a blast all vs all. It is recommended on very large amount of genomes.
+- *speedup*: `True` or `False`. Define if you want to use psi-blast or hmmsearch to filter your proteome before running a blast all vs all. It is recommended on very large amount of genomes.
 
 <a id="default-psiblast-options"></a>
 ###### default psiblast options
 
-  - psiblast_e_val: Number between 0 and 1, default `0.01`. E-value used to accept a result in psi-blast. It is recommended to use a high e-value to gather super family related protein rather than being too stringent in this step. 
-  - iteration: Number between 0 and 5, default `5`. Number of iteration of the psi-blast. The more iterations, the more you gather phylogenetically distant proteins.
+  - *psiblast_e_val*: Number between 0 and 1, default `0.01`. E-value used to accept a result in psi-blast. It is recommended to use a high e-value to gather super family related protein rather than being too stringent in this step. 
+  - *iteration*: Number between 0 and 5, default `5`. Number of iteration of the psi-blast. The more iterations, the more you gather phylogenetically distant proteins.
 
 <a id="default-hmm-options"></a>
 ###### default HMM options
 
-- hmm_profiles: path and name of your folder containing all the hmm profiles mentioned in your seed file.
-- e_val: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
-- focus: `domain` or `full` (default: full). Analyse the results over the full size of the query or based on domain detection.
+- *hmm_profiles*: path and name of your folder containing all the hmm profiles mentioned in your seed file.
+- *e_val*: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
+- *focus**: `domain` or `full` (default: full). Analyse the results over the full size of the query or based on domain detection.
 
 <br />
 
@@ -248,26 +248,26 @@ This file is in the `config` folder, and is named `config.yaml`. You can edit th
 <a id="default-psiblast-options"></a>
 ###### default blast options
 
-  - filter: `e_value`, `score` or `both` (default: e_value). Se up if you want to filter your blast results by e-value, bit score or both. 
-  - e_val: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
-  - pid: Number between 0 and 1, default `0.35`. Percentage of identity (expressed in frequency) default threshold if left empty in the seed file. 
-  - cov: Number between 0 and 1, default `0.8`. Coverage of the query (expressed in frequency) default threshold if left empty in the seed file.
+  - *filter*: `e_value`, `score` or `both` (default: e_value). Se up if you want to filter your blast results by e-value, bit score or both. 
+  - *e_val*: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
+  - *pid*: Number between 0 and 1, default `0.35`. Percentage of identity (expressed in frequency) default threshold if left empty in the seed file. 
+  - *cov*: Number between 0 and 1, default `0.8`. Coverage of the query (expressed in frequency) default threshold if left empty in the seed file.
 
 <a id="silix-options"></a> 
 ###### silix options
 
-  - cov_min: `mean`, `subject`, `query`, `shortest` or `longest` (default: mean). Source or the length divider to calculate the coverage (from query, subject or an average of both)
-  - pid_min: `mean`, `subject`, `query`, `shortest`, `longest` or `HSP` (default: mean). Source or the length divider to calculate the percentage of identity (from query, subject or an average of both)
-  - length_min: positive number, default 100. Mininimum length to accept partial sequences in families
+  - *cov_min*: `mean`, `subject`, `query`, `shortest` or `longest` (default: mean). Source or the length divider to calculate the coverage (from query, subject or an average of both)
+  - *pid_min*: `mean`, `subject`, `query`, `shortest`, `longest` or `HSP` (default: mean). Source or the length divider to calculate the percentage of identity (from query, subject or an average of both)
+  - *length_min*: positive number, default 100. Mininimum length to accept partial sequences in families
   
 <br />
 
 <a id="plot-settings"></a>
 ##### Plot settings
 
-default_values_plot:
-- color: hexadecimal color, (default: `#131516`)
-- colored_border: `True` or `False` (default). Turn the color of the border a darker shade inferred from the background.
+*default_values_plot*:
+- *color*: hexadecimal color, (default: `#131516`)
+- *colored_border*: `True` or `False` (default). Turn the color of the border a darker shade inferred from the background.
 
 
 Here a comparison of the two behaviours:
@@ -276,8 +276,7 @@ Here a comparison of the two behaviours:
   <img src="doc/colored_border_option.png?raw=true">
 </p>    
 
-- round_border: `True` or `False` (default). Turn border to roundish shape.
-
+- *round_border*: `True` or `False` (default). Turn border to roundish shape.
 
 Here a comparison of the two behaviours:
 
@@ -290,7 +289,7 @@ Here a comparison of the two behaviours:
 <a id="only-plot-table-options"></a>
 ##### Only plot table options
 
-- PAtab_table: Path of the table you want to use to transform it into the plot figure. The table has to be a tabulated text file of a table that has the seeds in columns, the genomes in lines.
+- *PAtab_table*: Path of the table you want to use to transform it into the plot figure. The table has to be a tabulated text file of a table that has the seeds in columns, the genomes in lines.
 
 [▲ Back to table of content ▲](#table-of-content)
 
@@ -345,8 +344,6 @@ The resulting report.zip file can be passed on to collaborators, provided as a s
 
 <a id="important-notes-for-running-on-the-ufl-cluster"></a>
 ## Important Notes for running on the UFL cluster
-
-<br />
 
 <a id="step-c1-log-on-the-cluster-ufl-users"></a>
 ### Step C1: log on the cluster [UFL users]
