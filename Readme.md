@@ -107,6 +107,7 @@ For all following commands (step 2 to 5) ensure that this environment is activat
 conda activate snakemake
 ```
 :warning: **This command has to be used every single time you want to use sORTholog to be able to activate the conda environment that contains snakemake.**
+
 [▲ Back to table of content ▲](#table-of-content)
 
 <br />
