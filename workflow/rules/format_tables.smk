@@ -123,7 +123,7 @@ rule prepare_for_silix:
             "prepare_for_silix.log",
         ),
     resources:
-        time=30,
+        time=120,
     conda:
         "../envs/pandas_plots.yaml"
     script:
