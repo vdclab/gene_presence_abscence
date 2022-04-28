@@ -930,8 +930,6 @@ Rule description: Plot the table from `make_PA_table` in a colored table.
 <a id="additional-rules"></a>
 ### Additional rules
 
-<br />
-
 <a id="rule-a1-report_threshold"></a>
 #### Rule A1: report_threshold
 
