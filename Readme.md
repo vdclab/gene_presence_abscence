@@ -167,7 +167,7 @@ This file is in the `config` folder, and is named `config.yaml`. You can edit th
 
 NB: For windows user, unix uses forward slashes `/`. Make sure to use the latter. 
 
-*Options to download proteomes*
+**Options to download proteomes**
 
 - ndg_option:
   - section: `refseq` (default) or `genbank`. Database from which you are pulling the proteomes. 
@@ -176,23 +176,23 @@ NB: For windows user, unix uses forward slashes `/`. Make sure to use the latter
   - groups: `all` (default), `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other`, `viral`. Set this group if unspecified in the `NCBITaxId` columns of the [Taxid file](#taxid-file).
 - update_db: `True` or `False` (default). Update the Taxonomy dump, will increase run time.
 
-*Options to add your personal proteome*
+**Options to add your personal proteome**
 
 - perso_database: path to personal proteome database. It should consist of a multifasta file with all the proteins you want to add to the search. 
 - perso_annotation: table in tabulated text format that contains the information of the annotation of the fasta file in `perso_database`, columns: protein_id, genome_id[, genome_name]
 
 NB: For windows user, unix uses forward slashes `/`. Make sure to use the latter. 
 
-*Speed up options*
+**Speed up options**
 
 - speedup: `True` or `False`. Define if you want to use psi-blast or hmmsearch to filter your proteome before running a blast all vs all. It is recommended on very large amount of genomes.
 
-*Psiblast options*
+**Psiblast options**
 
   - psiblast_e_val: Number between 0 and 1, default `0.01`. E-value used to accept a result in psi-blast. It is recommended to use a high e-value to gather super family related protein rather than being too stringent in this step. 
   - iteration: Number between 0 and 5, default `5`. Number of iteration of the psi-blast. The more iterations, the more you gather phylogenetically distant proteins.
 
-*HMMsearch options*
+**HMMsearch options**
 
 - hmm_profiles: path and name of your folder containing all the hmm profiles mentioned in your seed file.
 - e_val: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
@@ -200,20 +200,20 @@ NB: For windows user, unix uses forward slashes `/`. Make sure to use the latter
 
 **Analysis options**
 
-*Default blast options*
+**Default blast options**
 
   - filter: `e_value`, `score` or `both` (default: e_value). Se up if you want to filter your blast results by e-value, bit score or both. 
   - e_val: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
   - pid: Number between 0 and 1, default `0.35`. Percentage of identity (expressed in frequency) default threshold if left empty in the seed file. 
   - cov: Number between 0 and 1, default `0.8`. Coverage of the query (expressed in frequency) default threshold if left empty in the seed file.
   
-*Silix options*
+**Silix options**
 
   - cov_min: `mean`, `subject`, `query`, `shortest` or `longest` (default: mean). Source or the length divider to calculate the coverage (from query, subject or an average of both)
   - pid_min: `mean`, `subject`, `query`, `shortest`, `longest` or `HSP` (default: mean). Source or the length divider to calculate the percentage of identity (from query, subject or an average of both)
   - length_min: positive number, default 100. Mininimum length to accept partial sequences in families
   
-*Plot settings*
+**Plot settings**
 
 default_values_plot:
 - color: hexadecimal color, (default: `#131516`)
@@ -233,7 +233,7 @@ Here a comparison of the two behaviours:
   <img src="doc/round_border_option.png?raw=true">
 </p>
 
-*Only plot table options*
+**Only plot table options**
 
 - PAtab_table: Path of the table you want to use to transform it into the plot figure. The table has to be a tabulated text file of a table that has the seeds in columns, the genomes in lines.
 
@@ -318,7 +318,7 @@ Before running the workflow, another config file need to be assessed to configur
 Here are the options:
 
 - account: account linked to your HiPerGator. (insert your account here)
-- qos: qos account name for HiPerGator.
+- qos: qos account name for HiPerGator. (insert your account here)
 - time: time per rule in minutes.
 - nodes: number of nodes to use per rules.
 - ntasks: number of simultaneous tasks.
