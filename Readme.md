@@ -17,12 +17,10 @@ The primary output will be the table of sORTholog protein data filled using the 
   - [Table of content](#table-of-content)
   - [Installation and Running](#installation-and-running)
     - [Step 1: install Snakemake and Snakedeploy](#step-1-install-snakemake-and-snakedeploy)
-      - [Notes](#notes)
     - [Step 2: deploy workflow](#step-2-deploy-workflow)
     - [Step 3: configure workflow](#step-3-configure-workflow)
       - [Taxid file](#taxid-file)
       - [Seed file](#seed-file)
-      - [Common mistakes](#common-mistakes)
       - [Config file](#config-file)
     - [Step 4: run the workflow](#step-4-run-the-workflow)
     - [Step 5: generate report](#step-5-generate-report)
@@ -34,8 +32,6 @@ The primary output will be the table of sORTholog protein data filled using the 
     - [Additional information](#additional-information)
   - [Walk-Through and File Production](#walk-through-and-file-production)
     - [Pipeline in image](#pipeline-in-image)
-      - [Only blast and silix behavior](#only-blast-and-silix-behavior)
-      - [Speedup behavior](#speedup-behavior)
     - [Rule desciptions](#rule-desciptions)
       - [Rule 1: fetch_fasta_from_seed](#rule-1-fetch_fasta_from_seed)
       - [Rule 2: fetch_proteins_database](#rule-2-fetch_proteins_database)
@@ -83,7 +79,7 @@ mamba create -c bioconda -c conda-forge --name snakemake snakemake snakedeploy
 
 to install both Snakemake and Snakedeploy in an isolated environment. 
 
-#### Notes 
+**Notes**
 
 For all following commands (step 2 to 5) ensure that this environment is activated via 
 
@@ -152,7 +148,7 @@ Here is a list of collumns for this file:
 - color: hexadecimal code of the color you want the positive results to be in the final figure for this seed.
 Example provided in the file [doc/dummy_seeds.tsv](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_seeds.tsv) folder in the GitHub page.
 
-#### Common mistakes
+**Common mistakes**
 
 - Columns in the seed files should be separated by tabulation, introduction of spaces or other hidden characters might disrupt the reading of the file.
 - Do not introduce empty lines in the seed file.
@@ -453,13 +449,13 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 
 ### Pipeline in image 
 
-#### Only blast and silix behavior
+**Only blast and silix behavior**
 
 <p align="center">
   <img src="doc/dummy_dag.png?raw=true" height="400">
 </p>
 
-#### Speedup behavior
+**Speedup behavior**
 
 <p align="center">
   <img src="doc/dummy_dag_speedup.png?raw=true" height="500">
