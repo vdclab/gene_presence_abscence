@@ -154,8 +154,8 @@ Example provided in the file [doc/dummy_taxids.tsv](https://github.com/vdclab/sO
 #### Seed file
 The seed file contains the list of proteins you want to identify in your genomes. It is a table, in the format of a  tabulated text file (e.g. .txt, .tsv). Ideally your seed file should be in your `workdir` folder or in the `config` folder. 
 Here is a list of collumns for this file:
-- seed: **Mandatory**, name of the protein as you want it to appear in the final figure.
-- protein_id: **Mandatory**, either the NCBI protein id of a protein you are sure have the function you are searching for.
+- seed: Mandatory, name of the protein as you want it to appear in the final figure.
+- protein_id: Mandatory, either the NCBI protein id of a protein you are sure have the function you are searching for.
 - hmm: name of the hmm profile file associated with the protein family, including the extension, often `.hmm`. (no default, if not mentioned, psiBLAST will be triggered instead)
 - evalue: Number between 0 and 1, e-value threshold of blast.
 - pident: Number between 0 and 1, percentage of identity (expressed in frequency) threshold of blast.
