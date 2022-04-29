@@ -63,7 +63,7 @@ This pipeline uses the Snakemake workflow, that is only available on unix enviro
 
 Snakemake and Snakedeploy are best installed via the [Mamba package manager](https://github.com/mamba-org/mamba) (a drop-in replacement for conda). If you have neither Conda nor Mamba, it can be installed via [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge). For other options see [here](https://github.com/mamba-org/mamba).
 
-**Make sure that mamba is properly configure in your PATH**
+**NB: Make sure that conda/mamba is properly configure in your PATH**
 
 To install Mamba by conda, run
 
