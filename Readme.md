@@ -10,8 +10,6 @@ This software will produce a table visualization of the presence or absence of e
 
 The primary output will be the table of sORTholog protein data filled using the NCBI Protein Database, as well as PDF and PNG files of the table visualization.
 
-<a id="table-of-content"></a>
-
 ## Table of content
 
 - [Snakemake workflow: sORTholog](#snakemake-workflow-sortholog)
@@ -74,11 +72,7 @@ The primary output will be the table of sORTholog protein data filled using the 
       - [Rule A3: quick_plots](#rule-a3-quick_plots)
       - [Rule A4: clean](#rule-a4-clean)
 
-<a id="installation-and-running"></a>
-
 ## Installation and Running
-
-<a id="step-1-install-snakemake-and-snakedeploy"></a>
 
 ### Step 1: install Snakemake and Snakedeploy
 
@@ -110,8 +104,6 @@ For all following commands (step 2 to 5) ensure that this environment is activat
 conda activate snakemake
 ```
 :warning: **This command has to be used every single time you want to use sORTholog to be able to activate the conda environment that contains snakemake.**
-
-<a id="step-2-deploy-workflow"></a>
 
 ### Step 2: deploy workflow
 
@@ -148,13 +140,9 @@ Snakedeploy will create two folders `workflow` and `config`. The former contains
 
 [▲ Back to table of content ▲](#table-of-content)
 
-<a id="step-3-configure-workflow"></a>
-
 ### Step 3: configure workflow
 
 The three files described in this section ([Taxid file](#taxid-file), [Seed file](#seed-file), and [Config file](#config-file)) can be edited with a text editor. We recommend [VScode](https://code.visualstudio.com/) or [SublimeText](https://www.sublimetext.com/) if you do not have already a favorite text editor.
-
-<a id="taxid-file"></a>
 
 #### Taxid file
 The taxid file is a table, in the format of a tabulated text file (e.g. .txt, .tsv). This table should contain 2 columns: `TaxId` and `NCBIGroups`. 
@@ -162,8 +150,6 @@ The `TaxId` columns should be filled with the TaxId of the genome you want to an
 The `NCBIGroups` can be left blanked, but knowing this group would make the download of genomes faster. Here a list of accepted terms: `all`, `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other`, `viral`. This will allow to look in the right folder in the FTP of NCBI to download the proteome. By choosing `all`, it will look in all folders and slow down the process.
 Ideally your taxid file should be in your sORTholog working directory or in the `config` folder. 
 Example provided in the file [doc/dummy_taxids.tsv](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_taxids.tsv) folder in the GitHub page.
-
-<a id="seed-file"></a>
 
 #### Seed file
 The seed file contains the list of proteins you want to identify in your genomes. It is a table, in the format of a  tabulated text file (e.g. .txt, .tsv). Ideally your seed file should be in your `workdir` folder or in the `config` folder. 
@@ -182,8 +168,6 @@ Example provided in the file [doc/dummy_seeds.tsv](https://github.com/vdclab/sOR
 - Columns in the seed files should be separated by tabulation, introduction of spaces or other hidden characters might disrupt the reading of the file.
 - Do not introduce empty lines in the seed file.
 - Make sure to have the correct extension for your hmm profile.
-
-<a id="config-file"></a>
 
 #### Config file
 
@@ -269,8 +253,6 @@ Here a comparison of the two behaviours:
 
 [▲ Back to table of content ▲](#table-of-content)
 
-<a id="step-4-run-the-workflow"></a>
-
 ### Step 4: run the workflow
 
 Given that the workflow has been properly deployed and configured, it can be executed as follows.
@@ -295,8 +277,6 @@ You will find the table of presence of absence `patab_table.tsv`, the melt versi
 
 [▲ Back to table of content ▲](#table-of-content)
 
-<a id="step-5-generate-report"></a>
-
 ### Step 5: generate report
 
 After finalizing your data analysis, you can automatically generate an interactive visual HTML report for inspection of results together with parameters and code inside of the browser via 
@@ -308,11 +288,7 @@ The resulting report.zip file can be passed on to collaborators, provided as a s
 
 [▲ Back to table of content ▲](#table-of-content)
 
-<a id="important-notes-for-running-on-the-ufl-cluster"></a>
-
 ## Important Notes for running on the UFL cluster
-
-<a id="step-c1-log-on-the-cluster-ufl-users"></a>
 
 ### Step C1: log on the cluster [UFL users]
 
@@ -335,8 +311,6 @@ cd /blue/(your group)/(GatorLink ID)
 You can access to the files of this folder on your computer by adding a server. The address for Windows is as follow: `\\exasmb.rc.ufl.edu`, for Unix (Linux or MacOS) the address: `smb://exasmb.rc.ufl.edu`.  
 More info [here](https://help.rc.ufl.edu/doc/Samba_Access).
 
-<a id="step-c2-load-conda"></a>
-
 ### Step C2: load conda
 
 Before starting the installation of the program, you will need to load `conda`; this required software is listed as follows:
@@ -350,8 +324,6 @@ module load conda
 After that the step are the same as in [Step 1: install Snakemake and Snakedeploy](#step-1-install-snakemake-and-snakedeploy), [Step 2: deploy workflow](#step-2-deploy-workflow), and [Step 3: configure workflow](#step-3-configure-workflow).
 
 [▲ Back to table of content ▲](#table-of-content)
-
-<a id="step-c3-configure-sbatch"></a>
 
 ### Step C3: configure sbatch jobs
 
@@ -371,8 +343,6 @@ Here are the options:
 - job-name: name of the job on HiPerGator.
 
 [▲ Back to table of content ▲](#table-of-content)
-
-<a id="step-c4-run-the-workflow"></a>
 
 ### Step C4: run the workflow
 
@@ -395,8 +365,6 @@ snakemake -j 5 --use-conda --profile config/slurm -C speedup=True
 As previously you can also generate a report following [Step 5: Generate report](#step-5-generate-report).
 
 [▲ Back to table of content ▲](#table-of-content)
-
-<a id="additional-information"></a>
 
 ### Additional information
 
@@ -442,8 +410,6 @@ sbatch my_project.sh
 ```
 
 [▲ Back to table of content ▲](#table-of-content)
-
-<a id="walk-through-and-file-production"></a>
 
 ## Walk-Through and File Production
 
@@ -495,8 +461,6 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 
 [▲ Back to table of content ▲](#table-of-content)
 
-<a id="pipeline-in-image"></a>
-
 ### Pipeline in image 
 
 #### only blasta and silix behavior
@@ -512,8 +476,6 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 </p>
 
 [▲ Back to table of content ▲](#table-of-content)
-
-<a id="rule-descriptions"></a>
 
 ### Rule desciptions
 
@@ -803,9 +765,6 @@ Rule description: Plot the table from `make_PA_table` in a colored table.
     - png: type = list of str
            description = plots in png of the final table centered on one seed
 ```
-
-
-<a id="additional-rules"></a>
 
 ### Additional rules
 
