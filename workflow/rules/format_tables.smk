@@ -48,8 +48,6 @@ rule read_hmmsearch:
         ),
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "hmmer", "format_hmmsearch.log",),
-    resources:
-        time=30,
     conda:
         "../envs/pandas_plots.yaml"
     script:
@@ -122,8 +120,6 @@ rule prepare_for_silix:
             "format_table",
             "prepare_for_silix.log",
         ),
-    resources:
-        time=120,
     conda:
         "../envs/pandas_plots.yaml"
     script:

@@ -110,13 +110,13 @@ NB: [More on the cd command.](https://en.wikipedia.org/wiki/Cd_(command))
 Second, run (if your are in the sORTholog directory)
 
 ```shell
-snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.4.7
+snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.4.8
 ```
 
 else, run 
 
 ```shell
-snakedeploy deploy-workflow https://github.com/vdclab/sORTholog path/to/sORTholog --tag 0.4.7
+snakedeploy deploy-workflow https://github.com/vdclab/sORTholog path/to/sORTholog --tag 0.4.8
 ```
 
 Snakedeploy will create two folders `workflow` and `config`. The former contains the deployment of the chosen workflow as a [Snakemake module](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#using-and-combining-pre-exising-workflows), the latter contains configuration files which will be modified in the next step in order to configure the workflow to your needs. Later, when executing the workflow, Snakemake will automatically find the main `Snakefile` in the `workflow` subfolder.
@@ -283,7 +283,7 @@ The resulting report.zip file can be passed on to collaborators, provided as a s
 
 1) To work on the HiPerGator server, user must first open a terminal. 
 
-User must access the server by entering the following command:  
+User must access the server by entering the following command:
 
 ```
 ssh (GatorLink ID)@hpg.rc.ufl.edu
@@ -297,7 +297,7 @@ User will be required to enter their GatorLink account password, then asked to b
 cd /blue/(your group)/(GatorLink ID)
 ```
 
-You can access to the files of this folder on your computer by adding a server. The address for Windows is as follow: `\\exasmb.rc.ufl.edu`, for Unix (Linux or MacOS) the address: `smb://exasmb.rc.ufl.edu`.  
+You can access to the files of this folder on your computer by adding a server. The address for Windows is as follow: `\\exasmb.rc.ufl.edu`, for Unix (Linux or MacOS) the address: `smb://exasmb.rc.ufl.edu`.
 More info [here](https://help.rc.ufl.edu/doc/Samba_Access).
 
 ### Step C2: load conda
