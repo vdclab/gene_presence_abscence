@@ -328,6 +328,8 @@ Here are the options:
 - error: destination of the error log.
 - job-name: name of the job on HiPerGator.
 
+Only the account and qos parameters need to be changed, the other values can be left as defaults.
+
 [▲ Back to table of content ▲](#table-of-content)
 
 ### Step C4: run the workflow
