@@ -317,7 +317,7 @@ Before running the workflow, another config file need to be assessed to configur
 
 Here are the options:
 
-- <u>account:</u> account linked to your HiPerGator. (insert your account here)
+- <ins>account:</ins> account linked to your HiPerGator. (insert your account here)
 - <u>qos:</u> qos account name for HiPerGator. (insert your account here)
 - <u>time:</u> time per rule in minutes.
 - <u>nodes:</u> number of nodes to use per rules.
@@ -328,7 +328,7 @@ Here are the options:
 - <u>error:</u> destination of the error log.
 - <u>job-name:</u> name of the job on HiPerGator.
 
-Only the account and qos need to be changed, the other values can be left as defaults.
+Only the account and qos options need to be changed, the other values can be left as defaults.
 
 [▲ Back to table of content ▲](#table-of-content)
 
