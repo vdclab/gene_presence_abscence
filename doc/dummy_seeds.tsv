@@ -1,5 +1,4 @@
 seed	protein_id	hmm	evalue	pident	coverage	color
 Gene_A	YP_xxxxxx	GeneA.hmm	0.001	0.2	0.3	#00760e
 Gene_B	YP_yyyyyy	GeneB.hmm	0.01	0.6	0.3	#00cc00
-Gene_C	YP_zzzzzz	GeneC.hmm	0.01	0.2	0.5	#06d81f
-
+Gene_C	YP_zzzzzz		0.01	0.2	0.5	#06d81f
