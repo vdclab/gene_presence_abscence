@@ -317,18 +317,16 @@ Before running the workflow, another config file need to be assessed to configur
 
 Here are the options:
 
-- <ins>account:</ins> account linked to your HiPerGator. (insert your account here)
-- <u>qos:</u> qos account name for HiPerGator. (insert your account here)
-- <u>time:</u> time per rule in minutes.
-- <u>nodes:</u> number of nodes to use per rules.
-- <u>ntasks:</u> number of simultaneous tasks.
-- <u>cpus-per-task:</u> number of CPU per tasks on HiPerGator.
-- <u>mem:</u> memory allocated per rule if not indicated elsewhere.
-- <u>output:</u> destination of the output log.
-- <u>error:</u> destination of the error log.
-- <u>job-name:</u> name of the job on HiPerGator.
-
-Only the account and qos options need to be changed, the other values can be left as defaults.
+- account: account linked to your HiPerGator. (insert your account here)
+- qos: qos account name for HiPerGator. (insert your account here)
+- time: time per rule in minutes.
+- nodes: number of nodes to use per rules.
+- ntasks: number of simultaneous tasks.
+- cpus-per-task: number of CPU per tasks on HiPerGator.
+- mem: memory allocated per rule if not indicated elsewhere.
+- output: destination of the output log.
+- error: destination of the error log.
+- job-name: name of the job on HiPerGator.
 
 [▲ Back to table of content ▲](#table-of-content)
 
