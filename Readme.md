@@ -65,7 +65,7 @@ The primary output will be the table of sORTholog protein data filled using the 
       - [Rule 6: silix](#rule-6-silix)
       - [Rule 7: find_family](#rule-7-find_family)
       - [Rule 8: make_PA_table](#rule-8-make_pa_table)
-    - [Rule 9: plots](#rule-9-plots)
+      - [Rule 9: plots](#rule-9-plots)
     - [Additional rules](#additional-rules)
       - [Rule A1: report_threshold](#rule-a1-report_threshold)
         - [Sub rule A1a: blast2threshold_table](#sub-rule-a1a-blast2threshold_table)
@@ -517,8 +517,6 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 
 ### Rule desciptions
 
-<a id="rule-1-fetch_fasta_from_seed"></a>
-
 #### Rule 1: fetch_fasta_from_seed
 
 Rule description: Fetch the fasta protein sequence of the seed from the seed table. Then they are writen in the output file.
@@ -536,9 +534,6 @@ Rule description: Fetch the fasta protein sequence of the seed from the seed tab
                      columns = seed name | protein id | hmm | e-value | percentage of identity | coverage | color      
                      description = Same file as input but the 'protein id' of each file is changed to match the fasta file                
 ```
-
-
-<a id="rule-2-fetch_proteins_database"></a>  
 
 #### Rule 2: fetch_proteins_database
 
@@ -564,9 +559,6 @@ Rule description: Fetch the information for each protein of each genome in the t
                       
 ```
 
-
-<a id="rule-211-make_seed_psiblast-optional"></a>
-
 #### Rule 2.1.1: make_seed_psiblast (optional)
 
 Rule description: filter the seed fasta to keep only the seed that do not have a hmm profile associated with them in the seed initial seed file
@@ -581,9 +573,6 @@ Rule description: filter the seed fasta to keep only the seed that do not have a
              description = multifasta of the seed sequences that do not have a hmm profile associated with 
              
 ```
-
-
-<a id="rule-212-psiblast-optional"></a>
 
 #### Rule 2.1.2: psiblast (optional)
 
@@ -602,9 +591,6 @@ Rule description: Use the seed protein sequences to make a psi-BLAST against all
                  description = blast out format 6 in tabulation, no header
 ```
 
-
-<a id="rule-213-read_psiblast-optional"></a>
-
 #### Rule 2.1.3: read_psiblast (optional)
 
 Rule description: Read the psiBLAST output, remove unwanted lines and extract the list of protein matches. 
@@ -619,9 +605,6 @@ Rule description: Read the psiBLAST output, remove unwanted lines and extract th
     - list all prot: type = str
                      description = list of all potein identifications gathered in the psiBLAST in column
 ```
-
-
-<a id="rule-221-hmmsearch-optional"></a>
 
 #### Rule 2.2.1: hmmsearch (optional)
 
@@ -643,9 +626,6 @@ Rule description: Use hmm profile(s) provided to fetch similar proteins in the t
 
 ```
 
-
-<a id="rule-222-read_hmmsearch-optional"></a>
-
 #### Rule 2.2.2: read_hmmsearch (optional)
 
 Rule description: Read the hmmsearch output and extract the list of protein matches. 
@@ -660,9 +640,6 @@ Rule description: Read the hmmsearch output and extract the list of protein matc
     - list all prot: type = str
                      description = list of all potein identifications gathered in the hmmsearch in column
 ```
-
-
-<a id="rule-23-merge_hmmsearch_psiblast-optional"></a>
 
 #### Rule 2.3: merge_hmmsearch_psiblast (optional)
 
@@ -679,9 +656,6 @@ Rule description: merge the list of proteines from both the psiBLAT and hmmsearc
     - list all prot: type = str
                      description = list of all potein identifications gathered in both the psiblast and the hmmsearch in column
 ```
-
-
-<a id="rule-24-make_fasta-optional"></a>
 
 #### Rule 2.4: make_fasta (optional)
 
@@ -700,9 +674,6 @@ Rule description: Create a fasta file from the psiblast results and the result o
                   description = multifasta file of all the unique protein ids.
 ```
 
-
-<a id="rule-3-merge_fasta"></a>
-
 #### Rule 3: merge_fasta
 
 Rule description: Merge the proteome of interest with the seeds 
@@ -719,9 +690,6 @@ Rule description: Merge the proteome of interest with the seeds
                        description = concatenation of the 2 input multifasta files
 ```
 
-
-<a id="rule-4-blast"></a>
-
 #### Rule 4: blast
 
 Rule description: Blast all versus all of the fasta of all proteins. 
@@ -736,9 +704,6 @@ Rule description: Blast all versus all of the fasta of all proteins.
                  format = query id | subject id | percentage of identity | length of match  | mismatch | gapopen | query start position | query end position | subject start position | subject end position | e-value | bitscore
                  description = output format 6 of blast, no header
 ```
-
-
-<a id="rule-5-prepare_for_silix"></a>
 
 #### Rule 5: prepare_for_silix
 
@@ -760,9 +725,6 @@ Rule description: Filter the blast results from the rule blast with the threshol
                                    
 ```
 
-
-<a id="rule-6-silix"></a>
-
 #### Rule 6: silix
 
 Rule description: Uses Silix to create a network of protein and give a file of the protein segregated in groups.  If the blast output file is empty, just create an empty file. 
@@ -780,9 +742,6 @@ Rule description: Uses Silix to create a network of protein and give a file of t
               format = family | protein id
               description = fnodes file, table of protein id and family number, without headers.        
 ```
-
-
-<a id="rule-7-find_family"></a>
 
 #### Rule 7: find_family
  
@@ -802,9 +761,6 @@ Rule description: Find the group of each seed in each individual seed and record
                        format = family | protein id | seed
                        description = updated fnodes with only the family of the seed.
 ```
-
-
-<a id="rule-8-make_pa_table"></a>
 
 #### Rule 8: make_PA_table
 
@@ -831,10 +787,7 @@ Rule description: Check the presence of protein similar to the seed in each taxi
                             description = presence/abscence table, with header. Each line is a genome, each column is a seed.                   
 ```
 
-
-<a id="rule-9-plots"></a>
-
-### Rule 9: plots
+#### Rule 9: plots
 
 Rule description: Plot the table from `make_PA_table` in a colored table.
 
@@ -855,8 +808,6 @@ Rule description: Plot the table from `make_PA_table` in a colored table.
 <a id="additional-rules"></a>
 
 ### Additional rules
-
-<a id="rule-a1-report_threshold"></a>
 
 #### Rule A1: report_threshold
 
@@ -905,9 +856,6 @@ snakemake report_threshold --cores 1 --use-conda
 
 ```
 
-
-<a id="rule-a2-extract_protein"></a>
-
 #### Rule A2: extract_protein
 
 Rule description: Create a fasta for each orthologs found (one fasta file per seed)
@@ -936,9 +884,6 @@ snakemake extract_protein --use_conda --cores 1 --profile config/slurm
     - fasta files : type = list of str
                     description = name of all the fasta output with the format [name of the seed].fasta
 ```
-
-
-<a id="rule-a3-quick_plots"></a>
 
 #### Rule A3: quick_plots
 
@@ -969,9 +914,6 @@ Example of the `presence/absence table` in the [doc](https://github.com/vdclab/s
     - png: type = list of str
            description = plots in png of the final table centered on one seed
 ```
-
-
-<a id="rule-a4-clean"></a>
 
 #### Rule A4: clean
 
