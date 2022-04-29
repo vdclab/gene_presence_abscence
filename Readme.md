@@ -17,24 +17,8 @@ The primary output will be the table of sORTholog protein data filled using the 
   - [Table of content](#table-of-content)
   - [Installation and Running](#installation-and-running)
     - [Step 1: install Snakemake and Snakedeploy](#step-1-install-snakemake-and-snakedeploy)
-      - [Notes](#notes)
     - [Step 2: deploy workflow](#step-2-deploy-workflow)
     - [Step 3: configure workflow](#step-3-configure-workflow)
-      - [Taxid file](#taxid-file)
-      - [Seed file](#seed-file)
-      - [Common mistakes](#common-mistakes)
-      - [Config file](#config-file)
-        - [General settings](#general-settings)
-        - [Options to download proteomes](#options-to-download-proteomes)
-        - [Options to add your personal proteome](#options-to-add-your-personal-proteome)
-        - [Speed up options](#speed-up-options)
-          - [default psiblast options](#default-psiblast-options)
-          - [default HMM options](#default-hmm-options)
-        - [Analysis options](#analysis-options)
-          - [default blast options](#default-blast-options)
-          - [silix options](#silix-options)
-        - [Plot settings](#plot-settings)
-        - [Only plot table options](#only-plot-table-options)
     - [Step 4: run the workflow](#step-4-run-the-workflow)
     - [Step 5: generate report](#step-5-generate-report)
   - [Important Notes for running on the UFL cluster](#important-notes-for-running-on-the-ufl-cluster)
@@ -45,32 +29,8 @@ The primary output will be the table of sORTholog protein data filled using the 
     - [Additional information](#additional-information)
   - [Walk-Through and File Production](#walk-through-and-file-production)
     - [Pipeline in image](#pipeline-in-image)
-      - [only blasta and silix behavior](#only-blasta-and-silix-behavior)
-      - [Speedup behavior](#speedup-behavior)
     - [Rule desciptions](#rule-desciptions)
-      - [Rule 1: fetch_fasta_from_seed](#rule-1-fetch_fasta_from_seed)
-      - [Rule 2: fetch_proteins_database](#rule-2-fetch_proteins_database)
-      - [Rule 2.1.1: make_seed_psiblast (optional)](#rule-211-make_seed_psiblast-optional)
-      - [Rule 2.1.2: psiblast (optional)](#rule-212-psiblast-optional)
-      - [Rule 2.1.3: read_psiblast (optional)](#rule-213-read_psiblast-optional)
-      - [Rule 2.2.1: hmmsearch (optional)](#rule-221-hmmsearch-optional)
-      - [Rule 2.2.2: read_hmmsearch (optional)](#rule-222-read_hmmsearch-optional)
-      - [Rule 2.3: merge_hmmsearch_psiblast (optional)](#rule-23-merge_hmmsearch_psiblast-optional)
-      - [Rule 2.4: make_fasta (optional)](#rule-24-make_fasta-optional)
-      - [Rule 3: merge_fasta](#rule-3-merge_fasta)
-      - [Rule 4: blast](#rule-4-blast)
-      - [Rule 5: prepare_for_silix](#rule-5-prepare_for_silix)
-      - [Rule 6: silix](#rule-6-silix)
-      - [Rule 7: find_family](#rule-7-find_family)
-      - [Rule 8: make_PA_table](#rule-8-make_pa_table)
-      - [Rule 9: plots](#rule-9-plots)
     - [Additional rules](#additional-rules)
-      - [Rule A1: report_threshold](#rule-a1-report_threshold)
-        - [Sub rule A1a: blast2threshold_table](#sub-rule-a1a-blast2threshold_table)
-        - [Sub rule A1a: report_threshold](#sub-rule-a1a-report_threshold)
-      - [Rule A2: extract_protein](#rule-a2-extract_protein)
-      - [Rule A3: quick_plots](#rule-a3-quick_plots)
-      - [Rule A4: clean](#rule-a4-clean)
 
 ## Installation and Running
 
@@ -96,7 +56,7 @@ mamba create -c bioconda -c conda-forge --name snakemake snakemake snakedeploy
 
 to install both Snakemake and Snakedeploy in an isolated environment. 
 
-#### Notes 
+*Notes*
 
 For all following commands (step 2 to 5) ensure that this environment is activated via 
 
@@ -144,14 +104,16 @@ Snakedeploy will create two folders `workflow` and `config`. The former contains
 
 The three files described in this section ([Taxid file](#taxid-file), [Seed file](#seed-file), and [Config file](#config-file)) can be edited with a text editor. We recommend [VScode](https://code.visualstudio.com/) or [SublimeText](https://www.sublimetext.com/) if you do not have already a favorite text editor.
 
-#### Taxid file
+*Taxid file*
+
 The taxid file is a table, in the format of a tabulated text file (e.g. .txt, .tsv). This table should contain 2 columns: `TaxId` and `NCBIGroups`. 
 The `TaxId` columns should be filled with the TaxId of the genome you want to analyze. You can use any clade TaxId, sORTholog will take care of downloading all the genome of this clade.
 The `NCBIGroups` can be left blanked, but knowing this group would make the download of genomes faster. Here a list of accepted terms: `all`, `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other`, `viral`. This will allow to look in the right folder in the FTP of NCBI to download the proteome. By choosing `all`, it will look in all folders and slow down the process.
 Ideally your taxid file should be in your sORTholog working directory or in the `config` folder. 
 Example provided in the file [doc/dummy_taxids.tsv](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_taxids.tsv) folder in the GitHub page.
 
-#### Seed file
+*Seed file*
+
 The seed file contains the list of proteins you want to identify in your genomes. It is a table, in the format of a  tabulated text file (e.g. .txt, .tsv). Ideally your seed file should be in your `workdir` folder or in the `config` folder. 
 Here is a list of collumns for this file:
 - seed: Mandatory, name of the protein as you want it to appear in the final figure.
@@ -163,17 +125,17 @@ Here is a list of collumns for this file:
 - color: hexadecimal code of the color you want the positive results to be in the final figure for this seed.
 Example provided in the file [doc/dummy_seeds.tsv](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_seeds.tsv) folder in the GitHub page.
 
-#### Common mistakes
+*Common mistakes*
 
 - Columns in the seed files should be separated by tabulation, introduction of spaces or other hidden characters might disrupt the reading of the file.
 - Do not introduce empty lines in the seed file.
 - Make sure to have the correct extension for your hmm profile.
 
-#### Config file
+*Config file*
 
 This file is in the `config` folder, and is named `config.yaml`. You can edit this file following these instructions (also in comments in the `config.yaml` file)
 
-##### General settings
+*General settings*
 
 - seed: absolute or relative path and name of your seed file.
 - taxid: absolute or relative path and name of your taxid file.
@@ -182,7 +144,7 @@ This file is in the `config` folder, and is named `config.yaml`. You can edit th
 
 NB: For windows user, unix uses forward slashes `/`. Make sure to use the latter. 
 
-##### Options to download proteomes
+*Options to download proteomes*
 
 - ndg_option:
   - section: `refseq` (default) or `genbank`. Database from which you are pulling the proteomes. 
@@ -191,43 +153,43 @@ NB: For windows user, unix uses forward slashes `/`. Make sure to use the latter
   - groups: `all` (default), `archaea`, `bacteria`, `fungi`, `invertebrate`, `metagenomes`, `plant`, `protozoa`, `vertebrate_mammalian`, `vertebrate_other`, `viral`. Set this group if unspecified in the `NCBITaxId` columns of the [Taxid file](#taxid-file).
 - update_db: `True` or `False` (default). Update the Taxonomy dump, will increase run time.
 
-##### Options to add your personal proteome
+*Options to add your personal proteome*
 
 - perso_database: path to personal proteome database. It should consist of a multifasta file with all the proteins you want to add to the search. 
 - perso_annotation: table in tabulated text format that contains the information of the annotation of the fasta file in `perso_database`, columns: protein_id, genome_id[, genome_name]
 
 NB: For windows user, unix uses forward slashes `/`. Make sure to use the latter. 
 
-##### Speed up options
+*Speed up options*
 
 - speedup: `True` or `False`. Define if you want to use psi-blast or hmmsearch to filter your proteome before running a blast all vs all. It is recommended on very large amount of genomes.
 
-###### default psiblast options
+*#default psiblast options*
 
   - psiblast_e_val: Number between 0 and 1, default `0.01`. E-value used to accept a result in psi-blast. It is recommended to use a high e-value to gather super family related protein rather than being too stringent in this step. 
   - iteration: Number between 0 and 5, default `5`. Number of iteration of the psi-blast. The more iterations, the more you gather phylogenetically distant proteins.
 
-###### default HMM options
+*#default HMM options*
 
 - hmm_profiles: path and name of your folder containing all the hmm profiles mentioned in your seed file.
 - e_val: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
 - focus: `domain` or `full` (default: full). Analyse the results over the full size of the query or based on domain detection.
-##### Analysis options
+*Analysis options*
 
-###### default blast options
+*#default blast options*
 
   - filter: `e_value`, `score` or `both` (default: e_value). Se up if you want to filter your blast results by e-value, bit score or both. 
   - e_val: Number between 0 and 1, default `0.0001`. E-value default threshold if left empty in the seed file.
   - pid: Number between 0 and 1, default `0.35`. Percentage of identity (expressed in frequency) default threshold if left empty in the seed file. 
   - cov: Number between 0 and 1, default `0.8`. Coverage of the query (expressed in frequency) default threshold if left empty in the seed file.
   
-###### silix options
+*#silix options*
 
   - cov_min: `mean`, `subject`, `query`, `shortest` or `longest` (default: mean). Source or the length divider to calculate the coverage (from query, subject or an average of both)
   - pid_min: `mean`, `subject`, `query`, `shortest`, `longest` or `HSP` (default: mean). Source or the length divider to calculate the percentage of identity (from query, subject or an average of both)
   - length_min: positive number, default 100. Mininimum length to accept partial sequences in families
   
-##### Plot settings
+*Plot settings*
 
 default_values_plot:
 - color: hexadecimal color, (default: `#131516`)
@@ -247,7 +209,7 @@ Here a comparison of the two behaviours:
   <img src="doc/round_border_option.png?raw=true">
 </p>
 
-##### Only plot table options
+*Only plot table options*
 
 - PAtab_table: Path of the table you want to use to transform it into the plot figure. The table has to be a tabulated text file of a table that has the seeds in columns, the genomes in lines.
 
@@ -463,13 +425,13 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 
 ### Pipeline in image 
 
-#### only blasta and silix behavior
+*Only blasta and silix behavior*
 
 <p align="center">
   <img src="doc/dummy_dag.png?raw=true" height="400">
 </p>
 
-#### Speedup behavior
+*Speedup behavior*
 
 <p align="center">
   <img src="doc/dummy_dag_speedup.png?raw=true" height="500">
@@ -479,7 +441,7 @@ This pipeline consists of 9/12 steps called rules that take input files and crea
 
 ### Rule desciptions
 
-#### Rule 1: fetch_fasta_from_seed
+*Rule 1: fetch_fasta_from_seed*
 
 Rule description: Fetch the fasta protein sequence of the seed from the seed table. Then they are writen in the output file.
 
@@ -497,7 +459,7 @@ Rule description: Fetch the fasta protein sequence of the seed from the seed tab
                      description = Same file as input but the 'protein id' of each file is changed to match the fasta file                
 ```
 
-#### Rule 2: fetch_proteins_database
+*Rule 2: fetch_proteins_database*
 
 Rule description: Fetch the information for each protein of each genome in the taxid list. That includes: the protein ncbi id, sequence, length and annotation, as well as in which genome it is found. Information for the genome include genome ncbi id, name, taxid and if complete or partial.
  
@@ -521,7 +483,7 @@ Rule description: Fetch the information for each protein of each genome in the t
                       
 ```
 
-#### Rule 2.1.1: make_seed_psiblast (optional)
+*Rule 2.1.1: make_seed_psiblast (optional)*
 
 Rule description: filter the seed fasta to keep only the seed that do not have a hmm profile associated with them in the seed initial seed file
 
@@ -536,7 +498,7 @@ Rule description: filter the seed fasta to keep only the seed that do not have a
              
 ```
 
-#### Rule 2.1.2: psiblast (optional)
+*Rule 2.1.2: psiblast (optional)*
 
 Rule description: Use the seed protein sequences to make a psi-BLAST against all the taxid proteome. 
  
@@ -553,7 +515,7 @@ Rule description: Use the seed protein sequences to make a psi-BLAST against all
                  description = blast out format 6 in tabulation, no header
 ```
 
-#### Rule 2.1.3: read_psiblast (optional)
+*Rule 2.1.3: read_psiblast (optional)*
 
 Rule description: Read the psiBLAST output, remove unwanted lines and extract the list of protein matches. 
 
@@ -568,7 +530,7 @@ Rule description: Read the psiBLAST output, remove unwanted lines and extract th
                      description = list of all potein identifications gathered in the psiBLAST in column
 ```
 
-#### Rule 2.2.1: hmmsearch (optional)
+*Rule 2.2.1: hmmsearch (optional)*
 
 Rule description: Use hmm profile(s) provided to fetch similar proteins in the taxid proteome using hmmsearch from hmmer 
 
@@ -588,7 +550,7 @@ Rule description: Use hmm profile(s) provided to fetch similar proteins in the t
 
 ```
 
-#### Rule 2.2.2: read_hmmsearch (optional)
+*Rule 2.2.2: read_hmmsearch (optional)*
 
 Rule description: Read the hmmsearch output and extract the list of protein matches. 
 
@@ -603,7 +565,7 @@ Rule description: Read the hmmsearch output and extract the list of protein matc
                      description = list of all potein identifications gathered in the hmmsearch in column
 ```
 
-#### Rule 2.3: merge_hmmsearch_psiblast (optional)
+*Rule 2.3: merge_hmmsearch_psiblast (optional)*
 
 Rule description: merge the list of proteines from both the psiBLAT and hmmsearch results. 
 
@@ -619,7 +581,7 @@ Rule description: merge the list of proteines from both the psiBLAT and hmmsearc
                      description = list of all potein identifications gathered in both the psiblast and the hmmsearch in column
 ```
 
-#### Rule 2.4: make_fasta (optional)
+*Rule 2.4: make_fasta (optional)*
 
 Rule description: Create a fasta file from the psiblast results and the result of the protein information in the rule cat_proteins_info. 
 
@@ -636,7 +598,7 @@ Rule description: Create a fasta file from the psiblast results and the result o
                   description = multifasta file of all the unique protein ids.
 ```
 
-#### Rule 3: merge_fasta
+*Rule 3: merge_fasta*
 
 Rule description: Merge the proteome of interest with the seeds 
 
@@ -652,7 +614,7 @@ Rule description: Merge the proteome of interest with the seeds
                        description = concatenation of the 2 input multifasta files
 ```
 
-#### Rule 4: blast
+*Rule 4: blast*
 
 Rule description: Blast all versus all of the fasta of all proteins. 
 
@@ -667,7 +629,7 @@ Rule description: Blast all versus all of the fasta of all proteins.
                  description = output format 6 of blast, no header
 ```
 
-#### Rule 5: prepare_for_silix
+*Rule 5: prepare_for_silix*
 
 Rule description: Filter the blast results from the rule blast with the threshold specified for each seed in the seed file. Filters include the identity score, coverage and e-value, decided by the user. Create one new filtered blast result for each seed.
 
@@ -687,7 +649,7 @@ Rule description: Filter the blast results from the rule blast with the threshol
                                    
 ```
 
-#### Rule 6: silix
+*Rule 6: silix*
 
 Rule description: Uses Silix to create a network of protein and give a file of the protein segregated in groups.  If the blast output file is empty, just create an empty file. 
 
@@ -705,7 +667,7 @@ Rule description: Uses Silix to create a network of protein and give a file of t
               description = fnodes file, table of protein id and family number, without headers.        
 ```
 
-#### Rule 7: find_family
+*Rule 7: find_family*
  
 Rule description: Find the group of each seed in each individual seed and record it. 
 
@@ -724,7 +686,7 @@ Rule description: Find the group of each seed in each individual seed and record
                        description = updated fnodes with only the family of the seed.
 ```
 
-#### Rule 8: make_PA_table
+*Rule 8: make_PA_table*
 
 Rule description: Check the presence of protein similar to the seed in each taxid and create a table of presence abscence. This table will be plotted in a colored table.
 
@@ -749,7 +711,7 @@ Rule description: Check the presence of protein similar to the seed in each taxi
                             description = presence/abscence table, with header. Each line is a genome, each column is a seed.                   
 ```
 
-#### Rule 9: plots
+*Rule 9: plots*
 
 Rule description: Plot the table from `make_PA_table` in a colored table.
 
@@ -768,7 +730,7 @@ Rule description: Plot the table from `make_PA_table` in a colored table.
 
 ### Additional rules
 
-#### Rule A1: report_threshold
+*Rule A1: report_threshold*
 
 Rule description: Pair of rules that works together. From the blast output, create a report containing 2 scatter plots: one comparing the coverage and percentage identity of the hits and the other adding the evalue to the comparaison.
 
@@ -778,7 +740,7 @@ To run the rules do
 snakemake report_threshold --cores 1 --use-conda
 ```
 
-##### Sub rule A1a: blast2threshold_table
+*Sub rule A1a: blast2threshold_table*
 
 ```
 · input files:
@@ -801,7 +763,7 @@ snakemake report_threshold --cores 1 --use-conda
                          description = table with the columns from the blast output of only the pairs containing at least one member of the seed family.
 ```
 
-##### Sub rule A1a: report_threshold
+*Sub rule A1a: report_threshold*
 
 ```
 · input file:
@@ -815,7 +777,7 @@ snakemake report_threshold --cores 1 --use-conda
 
 ```
 
-#### Rule A2: extract_protein
+*Rule A2: extract_protein*
 
 Rule description: Create a fasta for each orthologs found (one fasta file per seed)
 
@@ -844,7 +806,7 @@ snakemake extract_protein --use_conda --cores 1 --profile config/slurm
                     description = name of all the fasta output with the format [name of the seed].fasta
 ```
 
-#### Rule A3: quick_plots
+*Rule A3: quick_plots*
 
 Rule description: Plot a presence absence table that you may have edited in pdf and png.
 
@@ -874,7 +836,7 @@ Example of the `presence/absence table` in the [doc](https://github.com/vdclab/s
            description = plots in png of the final table centered on one seed
 ```
 
-#### Rule A4: clean
+*Rule A4: clean*
 
 Rule description: Remove the folder database, logs and processing_files to only keep results
 
