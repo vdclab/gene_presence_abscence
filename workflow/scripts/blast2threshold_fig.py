@@ -48,8 +48,10 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
         df_fam.replace(f"out_family_{seed}", 'Only one in the family', inplace=True)
         
         # Reductio of the dataframe to remove the point in the same place on the plot 
-        df_fam_drop = df_fam.drop_duplicates(['pident', 'coverage', 'fam']).reset_index(drop=True)  
+        df_fam_drop = df_fam.drop_duplicates(['pident', 'coverage', 'fam']).reset_index(drop=True)
 
+        if df_fam_drop.shape[0] > 100000:
+            df_fam_drop = df_fam_drop.sample(n=100000)
 
         # create a figur efor the two histograms
         tmp_fig = px.scatter(df_fam, x='pident', y='coverage', color='fam', 
