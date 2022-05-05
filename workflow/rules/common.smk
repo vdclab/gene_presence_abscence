@@ -111,18 +111,20 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
 
         seed_df = seed_df.astype(seed_dtypes)
 
+        msg_rerun = "If you want to rerun sORTolog with a new seed file, please change the project name or remove the old project folder"
+
         # If seed is added
         if seed_df.shape[0] != start_seed_df.shape[0]:
             # seed_df.to_csv(start_seed_file, sep="\t", index=False)
-            sys.exit("WARNING:: Your seed file is different from your last run\nWhy? Because not the same size")
+            sys.exit(f"WARNING:: Your seed file is different from your last run\nWhy? Because a seed was removed or added\n{msg_rerun}")
         # If protein name change
         elif not seed_df.protein_id.equals(start_seed_df.protein_id):
             # seed_df.to_csv(start_seed_file, sep="\t", index=False)
-            sys.exit("WARNING:: Your seed file is different from your last run\nWhy? Because not the same protein ids")
+            sys.exit(f"WARNING:: Your seed file is different from your last run\nWhy? Because not the same protein ids\n{msg_rerun}")
         # If hmm name change
         elif not seed_df.hmm.equals(start_seed_df.hmm):
             # seed_df.to_csv(start_seed_file, sep="\t", index=False)
-            sys.exit("WARNING:: Your seed file is different from your last run\nWhy? Because HMM column changed (added or deleted hmm)")
+            sys.exit(f"WARNING:: Your seed file is different from your last run\nWhy? Because HMM column changed (added or deleted hmm)\n{msg_rerun}")
         # If something else change
         elif not seed_df[columns2change].equals(new_seed_df[columns2change]):
             # Update new seed with information of seed

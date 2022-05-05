@@ -110,13 +110,13 @@ NB: [More on the cd command.](https://en.wikipedia.org/wiki/Cd_(command))
 Second, run (if your are in the sORTholog directory)
 
 ```shell
-snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.4.8
+snakedeploy deploy-workflow https://github.com/vdclab/sORTholog . --tag 0.4.9
 ```
 
 else, run 
 
 ```shell
-snakedeploy deploy-workflow https://github.com/vdclab/sORTholog path/to/sORTholog --tag 0.4.8
+snakedeploy deploy-workflow https://github.com/vdclab/sORTholog path/to/sORTholog --tag 0.4.9
 ```
 
 Snakedeploy will create two folders `workflow` and `config`. The former contains the deployment of the chosen workflow as a [Snakemake module](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#using-and-combining-pre-exising-workflows), the latter contains configuration files which will be modified in the next step in order to configure the workflow to your needs. Later, when executing the workflow, Snakemake will automatically find the main `Snakefile` in the `workflow` subfolder.
