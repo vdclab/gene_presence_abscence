@@ -19,8 +19,8 @@ The primary output will be the table of sORTholog protein data filled using the 
     - [Step 1: install Snakemake and Snakedeploy](#step-1-install-snakemake-and-snakedeploy)
     - [Step 2: deploy workflow](#step-2-deploy-workflow)
     - [Step 3: configure workflow](#step-3-configure-workflow)
-      - [Taxid file](#taxid-file)
-      - [Seed file](#seed-file)
+      - [Taxids file](#taxids-file)
+      - [Seeds file](#seeds-file)
       - [Config file](#config-file)
     - [Step 4: run the workflow](#step-4-run-the-workflow)
     - [Step 5: generate report](#step-5-generate-report)
@@ -125,9 +125,9 @@ Snakedeploy will create two folders `workflow` and `config`. The former contains
 
 ### Step 3: configure workflow
 
-The three files described in this section ([Taxid file](#taxid-file), [Seed file](#seed-file), and [Config file](#config-file)) can be edited with a text editor. We recommend [VScode](https://code.visualstudio.com/) or [SublimeText](https://www.sublimetext.com/) if you do not have already a favorite text editor.
+The three files described in this section ([Taxids file](#taxids-file), [Seeds file](#seeds-file), and [Config file](#config-file)) can be edited with a text editor. We recommend [VScode](https://code.visualstudio.com/) or [SublimeText](https://www.sublimetext.com/) if you do not have already a favorite text editor.
 
-#### Taxid file
+#### Taxids file
 
 The taxid file is a table, in the format of a tabulated text file (e.g. .txt, .tsv). This table should contain 2 columns: `TaxId` and `NCBIGroups`. 
 The `TaxId` columns should be filled with the TaxId of the genome you want to analyze. You can use any clade TaxId, sORTholog will take care of downloading all the genome of this clade.
@@ -135,7 +135,7 @@ The `NCBIGroups` can be left blanked, but knowing this group would make the down
 Ideally your taxid file should be in your sORTholog working directory or in the `config` folder. 
 Example provided in the file [doc/dummy_taxids.tsv](https://github.com/vdclab/sORTholog/blob/main/doc/dummy_taxids.tsv) folder in the GitHub page.
 
-#### Seed file
+#### Seeds file
 
 The seed file contains the list of proteins you want to identify in your genomes. It is a table, in the format of a  tabulated text file (e.g. .txt, .tsv). Ideally your seed file should be in your `workdir` folder or in the `config` folder. 
 
