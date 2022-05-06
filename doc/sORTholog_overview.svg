@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="297mm"
+   height="210mm"
+   viewBox="0 0 297 210"
+   version="1.1"
+   id="svg598"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="sORTholog_overview.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview600"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1"
+     inkscape:cx="552.5"
+     inkscape:cy="337"
+     inkscape:window-width="1920"
+     inkscape:window-height="939"
+     inkscape:window-x="1440"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer4" />
+  <defs
+     id="defs595">
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lstart"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) translate(12.5,0)"
+         style="fill-rule:evenodd;fill:context-stroke;stroke:context-stroke;stroke-width:1.0pt"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path148527" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     sodipodi:insensitive="true">
+    <polygon
+       fill="#ffffff"
+       stroke="transparent"
+       points="-4,4 -4,-643 290,-643 290,4 "
+       id="polygon279"
+       transform="matrix(0,0.71683637,-0.45967908,0,1.4404352,2.5808035)" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Layer 2">
+    <g
+       id="node3"
+       class="node"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,227.24853)">
+      <title
+         id="title302">2</title>
+      <path
+         fill="none"
+         stroke="#56d8b9"
+         stroke-width="4.41583"
+         d="m 238.2182,-170.25165 c 0,0 -186.813972,0 -186.813972,0 -16.729602,0 -33.459215,10.49013 -33.459215,20.98025 0,0 0,20.98025 0,20.98025 0,10.49013 16.729613,20.98025 33.459215,20.98025 0,0 186.813972,0 186.813972,0 16.72962,0 33.45923,-10.49012 33.45923,-20.98025 0,0 0,-20.98025 0,-20.98025 0,-10.49012 -16.72961,-20.98025 -33.45923,-20.98025"
+         id="path304"
+         style="stroke:#00ae63;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="143.5"
+         y="-149"
+         font-family="sans"
+         font-size="10px"
+         id="text306"><tspan
+           sodipodi:role="line"
+           id="tspan130592"
+           x="143.5"
+           y="-149">Selection of the families containing the seeds</tspan><tspan
+           sodipodi:role="line"
+           id="tspan130594"
+           x="143.5"
+           y="-136.5">and summarize the information on</tspan><tspan
+           sodipodi:role="line"
+           x="143.5"
+           y="-124"
+           id="tspan130596">a tsv table and a plot</tspan></text>
+    </g>
+    <g
+       id="edge3"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,230.42355)">
+      <title
+         id="title323">3-&gt;2</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 71.98,-215.7 c 12.08,8.9 26.97,19.88 40.04,29.5"
+         id="path325" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="114.31,-188.85 120.29,-180.1 110.16,-183.22 "
+         id="polygon327" />
+    </g>
+    <g
+       id="node6"
+       class="node"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,228.098)">
+      <title
+         id="title352">5</title>
+      <path
+         fill="none"
+         stroke="#bed856"
+         stroke-width="3.44839"
+         d="m 225.07161,-430.80127 c 0,0 -159.811983,0 -159.811983,0 -12.957746,0 -25.915464,8.25936 -25.915464,16.51871 0,0 0,16.51873 0,16.51873 0,8.25937 12.957718,16.51872 25.915464,16.51872 0,0 159.811983,0 159.811983,0 12.95773,0 25.91546,-8.25935 25.91546,-16.51872 0,0 0,-16.51873 0,-16.51873 0,-8.25935 -12.95773,-16.51871 -25.91546,-16.51871"
+         id="path354"
+         style="fill:#ffffff" />
+      <text
+         text-anchor="middle"
+         x="143.5"
+         y="-416"
+         font-family="sans"
+         font-size="10px"
+         id="text356"><tspan
+           sodipodi:role="line"
+           id="tspan44198"
+           x="143.5"
+           y="-416">Separation of the blast output</tspan><tspan
+           sodipodi:role="line"
+           id="tspan44200"
+           x="143.5"
+           y="-403.5">to specify a treshold of protein families</tspan><tspan
+           sodipodi:role="line"
+           x="143.5"
+           y="-391"
+           id="tspan44202">by provided seed proteins</tspan></text>
+    </g>
+    <g
+       id="edge7"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,230.42355)">
+      <title
+         id="title359">5-&gt;4</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 122.57,-386.7 c -10.14,8.39 -22.74,18.8 -34.92,28.87"
+         id="path361" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="89.67,-354.96 79.73,-351.28 85.21,-360.35 "
+         id="polygon363" />
+    </g>
+    <g
+       id="edge13"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,230.42355)">
+      <title
+         id="title381">5-&gt;11</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 143.5,-386.7 c 0,7.43 0,16.45 0,25.41"
+         id="path383" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="147,-361.28 143.5,-351.28 140,-361.28 "
+         id="polygon385" />
+    </g>
+    <g
+       id="edge15"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,230.42355)">
+      <title
+         id="title403">5-&gt;13</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 164.43,-386.7 c 10.14,8.39 22.74,18.8 34.92,28.87"
+         id="path405" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="201.79,-360.35 207.27,-351.28 197.33,-354.96 "
+         id="polygon407" />
+    </g>
+    <g
+       id="edge8"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,224.07351)">
+      <title
+         id="title417">6-&gt;5</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 143.5,-458.7 c 0,7.72 0,16.99 0,25.59"
+         id="path419" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="147,-433.1 143.5,-423.1 140,-433.1 "
+         id="polygon421" />
+    </g>
+    <g
+       id="node8"
+       class="node"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,245.76948)">
+      <title
+         id="title424">7</title>
+      <path
+         fill="none"
+         stroke="#5682d8"
+         stroke-width="4.2649"
+         d="m 217.93811,-580.22072 c 0,0 -153.821963,0 -153.821963,0 -17.091326,0 -34.182664,9.57807 -34.182664,19.15613 0,0 0,19.15613 0,19.15613 0,9.57806 17.091338,19.15612 34.182664,19.15612 0,0 153.821963,0 153.821963,0 17.09132,0 34.18265,-9.57806 34.18265,-19.15612 0,0 0,-19.15613 0,-19.15613 0,-9.57806 -17.09133,-19.15613 -34.18265,-19.15613"
+         id="path426"
+         style="fill:#ffffff;stroke:#bed856;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="143.5"
+         y="-563"
+         font-family="sans"
+         font-size="10px"
+         id="text428"><tspan
+           sodipodi:role="line"
+           id="tspan38499"
+           x="143.5"
+           y="-563">BLAST all vs all used to compare</tspan><tspan
+           sodipodi:role="line"
+           x="143.5"
+           y="-550.5"
+           id="tspan38503">all the proteins between each other</tspan></text>
+    </g>
+    <g
+       id="node9"
+       class="node"
+       transform="matrix(0.35277777,0,0,0.35277777,167.26222,243.32896)">
+      <title
+         id="title438">8</title>
+      <path
+         fill="none"
+         stroke="#56c9d8"
+         stroke-width="2.37702"
+         d="m -293.67538,-661.93426 c 0,0 -113,0 -113,0 -6,0 -12,8.47538 -12,16.95075 0,0 0,16.95074 0,16.95074 0,8.47537 6,16.95074 12,16.95074 0,0 113,0 113,0 6,0 12,-8.47537 12,-16.95074 0,0 0,-16.95074 0,-16.95074 0,-8.47537 -6,-16.95075 -12,-16.95075"
+         id="path440"
+         style="fill:#ffffff;stroke:#8fd856;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="-350.17538"
+         y="-644.58203"
+         font-family="sans"
+         font-size="10px"
+         id="text442"><tspan
+           sodipodi:role="line"
+           id="tspan24621"
+           x="-350.17538"
+           y="-644.58203">Fasta of proteomes</tspan><tspan
+           sodipodi:role="line"
+           id="tspan24623"
+           x="-350.17538"
+           y="-632.08203">(provided by the user</tspan><tspan
+           sodipodi:role="line"
+           x="-350.17538"
+           y="-619.58203"
+           id="tspan25381">or downloaded NCBI</tspan></text>
+    </g>
+    <g
+       id="edge10"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,240.47778)">
+      <title
+         id="title445">8-&gt;7</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 87.04,-602.7 c 9.26,8.65 20.62,19.25 30.72,28.67"
+         id="path447" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="115.48,-571.37 120.25,-576.49 125.17,-567.1 "
+         id="polygon449" />
+    </g>
+    <g
+       id="node10"
+       class="node"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,240.47778)">
+      <title
+         id="title452">9</title>
+      <path
+         fill="none"
+         stroke="#8fd856"
+         stroke-width="2.49223"
+         d="m 276.84573,-653.68571 c 0,0 -114.70117,0 -114.70117,0 -6.61738,0 -13.23475,8.44762 -13.23475,16.89523 0,0 0,16.89525 0,16.89525 0,8.44761 6.61737,16.89523 13.23475,16.89523 0,0 114.70117,0 114.70117,0 6.61737,0 13.23475,-8.44762 13.23475,-16.89523 0,0 0,-16.89525 0,-16.89525 0,-8.44761 -6.61738,-16.89523 -13.23475,-16.89523"
+         id="path454"
+         style="fill:#ffffff" />
+      <text
+         text-anchor="middle"
+         x="219.5"
+         y="-638"
+         font-family="sans"
+         font-size="10px"
+         id="text456"><tspan
+           sodipodi:role="line"
+           id="tspan31007"
+           x="219.5"
+           y="-638">Fasta of proteines</tspan><tspan
+           sodipodi:role="line"
+           x="219.5"
+           y="-625.5"
+           id="tspan31011">used to find homologs</tspan><tspan
+           sodipodi:role="line"
+           x="219.5"
+           y="-613"
+           id="tspan31013">in the proteomes</tspan></text>
+    </g>
+    <g
+       id="edge11"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,240.47778)">
+      <title
+         id="title459">9-&gt;7</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 200.71,-602.7 c -9.38,8.65 -20.89,19.25 -31.12,28.67"
+         id="path461" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="167.05,-576.45 171.8,-571.3 162.07,-567.1 "
+         id="polygon463" />
+    </g>
+    <g
+       id="edge4"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,230.42355)">
+      <title
+         id="title473">10-&gt;2</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 143.5,-215.7 c 0,7.72 0,16.99 0,25.59"
+         id="path475" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="147,-190.1 143.5,-180.1 140,-190.1 "
+         id="polygon477" />
+    </g>
+    <g
+       id="edge5"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,19.562853,230.42355)">
+      <title
+         id="title494">12-&gt;2</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 215.02,-215.7 c -12.08,8.9 -26.97,19.88 -40.04,29.5"
+         id="path496" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="176.84,-183.22 166.71,-180.1 172.69,-188.85 "
+         id="polygon498" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="44.705013"
+       y="52.416901"
+       id="text5311"><tspan
+         sodipodi:role="line"
+         id="tspan5309"
+         style="stroke-width:0.264583"
+         x="44.705013"
+         y="52.416901" /></text>
+    <g
+       id="node5"
+       class="node"
+       transform="matrix(0.35270621,0,0,0.36047193,19.572971,233.12806)">
+      <title
+         id="title330">4</title>
+      <path
+         fill="none"
+         stroke="#56d892"
+         stroke-width="5.27142"
+         d="m 240.62829,-350.20359 c 0,0 -198.465928,0 -198.465928,0 -20.182976,0 -40.3659508,12.39117 -40.3659508,24.78234 0,0 0,80.54262 0,80.54262 0,12.39117 20.1829748,24.78234 40.3659508,24.78234 0,0 198.465928,0 198.465928,0 20.18297,0 40.36595,-12.39117 40.36595,-24.78234 0,0 0,-80.54262 0,-80.54262 0,-12.39117 -20.18298,-24.78234 -40.36595,-24.78234"
+         id="path332"
+         style="fill:#ffffff;stroke:#bfd858;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="138.10869"
+         y="-329.31491"
+         font-family="sans"
+         font-size="10px"
+         id="text334"><tspan
+           sodipodi:role="line"
+           id="tspan55874"
+           x="138.10869"
+           y="-329.31491">Use Silix to separate proteins into different</tspan><tspan
+           sodipodi:role="line"
+           id="tspan55876"
+           x="138.10869"
+           y="-316.81491">clusters (families) depending</tspan><tspan
+           sodipodi:role="line"
+           x="138.10869"
+           y="-304.31491"
+           id="tspan55882">on the thresholds set per seeds</tspan></text>
+    </g>
+    <g
+       id="node4"
+       class="node"
+       transform="matrix(0.35277777,0,0,0.35277777,21.679524,219.84015)">
+      <title
+         id="title316">3</title>
+      <path
+         fill="none"
+         stroke="#61d856"
+         stroke-width="2"
+         d="m 72,-252 c 0,0 -47,0 -47,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 47,0 47,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path318"
+         style="fill:#ffffff;stroke:#d6ea85;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="48.5"
+         y="-231.5"
+         font-family="sans"
+         font-size="10px"
+         id="text320">Seed A</text>
+    </g>
+    <g
+       id="node11"
+       class="node"
+       transform="matrix(0.35277777,0,0,0.35277777,18.504517,219.84015)">
+      <title
+         id="title466">10</title>
+      <path
+         fill="none"
+         stroke="#61d856"
+         stroke-width="2"
+         d="m 167,-252 c 0,0 -47,0 -47,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 47,0 47,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path468"
+         style="fill:#ffffff;stroke:#d6ea85;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="143.5"
+         y="-231.5"
+         font-family="sans"
+         font-size="10px"
+         id="text470">Seed B</text>
+    </g>
+    <g
+       id="node13"
+       class="node"
+       transform="matrix(0.35277777,0,0,0.35277777,15.858687,219.84015)">
+      <title
+         id="title487">12</title>
+      <path
+         fill="none"
+         stroke="#61d856"
+         stroke-width="2"
+         d="m 262,-252 c 0,0 -47,0 -47,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 47,0 47,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path489"
+         style="fill:#ffffff;stroke:#d6ea85;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="238.5"
+         y="-231.5"
+         font-family="sans"
+         font-size="10px"
+         id="text491">Seed C</text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.52778px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="68.016556"
+       y="58.808132"
+       id="text103160"><tspan
+         sodipodi:role="line"
+         id="tspan103158"
+         style="font-style:italic;font-size:3.52778px;stroke-width:0.264583"
+         x="68.016556"
+         y="58.808132">Altschul et al 1990</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.52778px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="81.658974"
+       y="151.19585"
+       id="text127374"><tspan
+         sodipodi:role="line"
+         id="tspan127372"
+         style="font-style:italic;font-size:3.52778px;stroke-width:0.264583"
+         x="81.658974"
+         y="151.19585">Miele et al 2011</tspan></text>
+    <rect
+       style="opacity:0.79957;fill:#f4e3d7;fill-opacity:1;stroke:#ff6600;stroke-width:0.99229;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.97688, 2.97688;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect148897"
+       width="130.28557"
+       height="126.15079"
+       x="145.7726"
+       y="37.311253" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.64444px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="149.42293"
+       y="44.223328"
+       id="text161036"><tspan
+         sodipodi:role="line"
+         id="tspan161034"
+         style="font-size:5.64444px;stroke-width:0.264583"
+         x="149.42293"
+         y="44.223328">Speedup search</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Layer 3"
+     style="display:inline">
+    <g
+       id="node10-6"
+       class="node"
+       transform="matrix(0.35277777,0,0,0.35277777,160.74688,381.97664)">
+      <title
+         id="title2165">9</title>
+      <path
+         fill="none"
+         stroke="#61d856"
+         stroke-width="3.5657"
+         d="m 251.75063,-710.21715 c 0,0 -214.791635,0 -214.791635,0 -9.837784,0 -19.675569,11.63142 -19.675569,23.26286 0,0 0,23.26286 0,23.26286 0,11.63143 9.837785,23.26286 19.675569,23.26286 0,0 214.791635,0 214.791635,0 9.83779,0 19.67557,-11.63143 19.67557,-23.26286 0,0 0,-23.26286 0,-23.26286 0,-11.63144 -9.83778,-23.26286 -19.67557,-23.26286"
+         id="path2167"
+         style="fill:#ffffff" />
+      <text
+         text-anchor="middle"
+         x="142.5"
+         y="-690.5"
+         font-family="sans"
+         font-size="10px"
+         id="text2169"><tspan
+           sodipodi:role="line"
+           id="tspan259936"
+           x="142.5"
+           y="-690.5">All the proteins hits with an evalue</tspan><tspan
+           sodipodi:role="line"
+           x="142.5"
+           y="-678"
+           id="tspan261974">below 1e-2 are selected and used</tspan><tspan
+           sodipodi:role="line"
+           x="142.5"
+           y="-665.5"
+           id="tspan261978">as new starting point instead</tspan><tspan
+           sodipodi:role="line"
+           x="142.5"
+           y="-653"
+           id="tspan261980">of the full proteome</tspan></text>
+    </g>
+    <g
+       id="edge12-3"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,146.98846,381.97664)">
+      <title
+         id="title2186">10-&gt;9</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 101.1,-746.7 c 6.52,8.31 14.47,18.42 21.65,27.56"
+         id="path2188" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="125.63,-721.13 129.06,-711.1 120.13,-716.81 "
+         id="polygon2190" />
+    </g>
+    <g
+       id="node12-5"
+       class="node"
+       transform="matrix(0.35277777,0,0,0.35277777,155.98435,389.91419)">
+      <title
+         id="title2193">11</title>
+      <path
+         fill="none"
+         stroke="#56d8a2"
+         stroke-width="4.66901"
+         d="m 131.73305,-854.23293 c 0,0 -117.325061,0 -117.325061,0 -14.07900624,0 -28.158013,13.9353 -28.158013,27.8706 0,0 0,27.87061 0,27.87061 0,13.93529 14.07900676,27.87059 28.158013,27.87059 0,0 117.325061,0 117.325061,0 14.07901,0 28.15802,-13.9353 28.15802,-27.87059 0,0 0,-27.87061 0,-27.87061 0,-13.9353 -14.07901,-27.8706 -28.15802,-27.8706"
+         id="path2195"
+         style="fill:#ffffff" />
+      <text
+         text-anchor="middle"
+         x="72.5"
+         y="-837.5"
+         font-family="sans"
+         font-size="10px"
+         id="text2197"><tspan
+           sodipodi:role="line"
+           x="72.5"
+           y="-837.5"
+           id="tspan199115">Hmmsearch can be used to</tspan><tspan
+           sodipodi:role="line"
+           x="72.5"
+           y="-825"
+           id="tspan209447">search for putative homologs</tspan><tspan
+           sodipodi:role="line"
+           x="72.5"
+           y="-812.5"
+           id="tspan209443">using HMM profiles</tspan><tspan
+           sodipodi:role="line"
+           x="72.5"
+           y="-800"
+           id="tspan204201">provided by the user</tspan></text>
+    </g>
+    <g
+       id="node13-2"
+       class="node"
+       transform="matrix(0.35277777,0,0,0.35277777,158.10103,397.85174)">
+      <title
+         id="title2207">12</title>
+      <path
+         fill="none"
+         stroke="#d88556"
+         stroke-width="3.75613"
+         d="m 258.196,-981.88472 c 0,0 -215.439415,0 -215.439415,0 -11.439261,0 -22.878522,11.10006 -22.878522,22.20011 0,0 0,22.20011 0,22.20011 0,11.10006 11.439261,22.20011 22.878522,22.20011 0,0 215.439415,0 215.439415,0 11.43926,0 22.87851,-11.10005 22.87851,-22.20011 0,0 0,-22.20011 0,-22.20011 0,-11.10005 -11.43925,-22.20011 -22.87851,-22.20011"
+         id="path2209"
+         style="fill:#ffffff" />
+      <text
+         text-anchor="middle"
+         x="152.23328"
+         y="-963.81805"
+         font-family="sans"
+         font-size="10px"
+         id="text2211"><tspan
+           sodipodi:role="line"
+           id="tspan185367"
+           x="152.23328"
+           y="-963.81805">To accelerate the speed of the blast all vs all</tspan><tspan
+           sodipodi:role="line"
+           x="152.23328"
+           y="-951.31805"
+           id="tspan185375">a prefilter of the putativehomologues is made</tspan><tspan
+           sodipodi:role="line"
+           x="152.23328"
+           y="-938.81805"
+           id="tspan185379">using two different methods depending on</tspan><tspan
+           sodipodi:role="line"
+           x="152.23328"
+           y="-926.31805"
+           id="tspan193619">the user choice</tspan></text>
+    </g>
+    <g
+       id="edge15-9"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,151.22182,389.91419)">
+      <title
+         id="title2214">12-&gt;11</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 87.5,-890.7 c 0,7.72 0,16.99 0,25.59"
+         id="path2216" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="84,-865.1 91,-865.1 87.5,-855.1 "
+         id="polygon2218" />
+    </g>
+    <g
+       id="node15"
+       class="node"
+       transform="matrix(0.35295036,0,0,0.34236484,155.94124,380.99833)">
+      <title
+         id="title2221">14</title>
+      <path
+         fill="none"
+         stroke="#d6d856"
+         stroke-width="5.22345"
+         d="m 293.79182,-854.88827 c 0,0 -88.08333,0 -88.08333,0 -17.04837,0 -34.09676,14.40372 -34.09676,28.80744 0,0 0,28.80745 0,28.80745 0,14.40371 17.04839,28.80744 34.09676,28.80744 0,0 88.08333,0 88.08333,0 17.04837,0 34.09676,-14.40373 34.09676,-28.80744 0,0 0,-28.80745 0,-28.80745 0,-14.40372 -17.04839,-28.80744 -34.09676,-28.80744"
+         id="path2223"
+         style="fill:#ffffff" />
+      <text
+         text-anchor="middle"
+         x="253"
+         y="-837.5"
+         font-family="sans"
+         font-size="10px"
+         id="text2225"><tspan
+           sodipodi:role="line"
+           id="tspan212553"
+           x="253"
+           y="-837.5">Psiblast can be use to</tspan><tspan
+           sodipodi:role="line"
+           x="253"
+           y="-825"
+           id="tspan212557">search for putative</tspan><tspan
+           sodipodi:role="line"
+           x="253"
+           y="-812.5"
+           id="tspan212559">homologs using the seeds</tspan><tspan
+           sodipodi:role="line"
+           x="253"
+           y="-800"
+           id="tspan215409">as starting point</tspan></text>
+    </g>
+    <g
+       id="edge13-2"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,177.15115,381.97664)">
+      <title
+         id="title2242">13-&gt;9</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 183.9,-746.7 c -6.52,8.31 -14.47,18.42 -21.65,27.56"
+         id="path2244" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="164.87,-716.81 155.94,-711.1 159.37,-721.13 "
+         id="polygon2246" />
+    </g>
+    <g
+       id="edge16"
+       class="edge"
+       transform="matrix(0.35277777,0,0,0.35277777,172.91779,364.51403)"
+       style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:#808080;fill-opacity:1;stroke:#808080;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1">
+      <title
+         id="title2249">14-&gt;13</title>
+      <path
+         fill="none"
+         stroke="#808080"
+         stroke-width="2"
+         d="m 197.5,-818.7 c 0,7.72 0,16.99 0,25.59"
+         id="path2251"
+         style="font-variation-settings:normal;vector-effect:none;fill:#808080;fill-opacity:1;stroke:#808080;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1" />
+      <polygon
+         fill="#808080"
+         stroke="#808080"
+         stroke-width="2"
+         points="201,-793.1 197.5,-783.1 194,-793.1 "
+         id="polygon2253"
+         style="font-variation-settings:normal;vector-effect:none;fill:#808080;fill-opacity:1;stroke:#808080;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="228.98027"
+       y="52.19355"
+       id="text190407"><tspan
+         sodipodi:role="line"
+         id="tspan190405"
+         style="stroke-width:0.264583"
+         x="228.98027"
+         y="52.19355" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.52778px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="184.92322"
+       y="114.96284"
+       id="text103160-9"><tspan
+         sodipodi:role="line"
+         id="tspan103158-2"
+         style="font-style:italic;font-size:3.52778px;stroke-width:0.264583"
+         x="184.92322"
+         y="114.96284">Eddy, 2011</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.52778px;line-height:1.25;font-family:sans-serif;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="230.19383"
+       y="114.6002"
+       id="text103160-9-0"><tspan
+         sodipodi:role="line"
+         id="tspan103158-2-6"
+         style="font-style:italic;font-size:3.52778px;stroke-width:0.264583"
+         x="230.19383"
+         y="114.6002">Altschul et al 1997</tspan></text>
+  </g>
+</svg>
