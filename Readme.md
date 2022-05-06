@@ -22,8 +22,6 @@ This pipeline uses the Snakemake workflow, that is only available on unix enviro
 
 Snakemake and Snakedeploy are best installed via the [Mamba package manager](https://github.com/mamba-org/mamba) (a drop-in replacement for conda). If you have neither Conda nor Mamba, it can be installed via [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge). For other options see [here](https://github.com/mamba-org/mamba).
 
-**NB: Make sure that conda/mamba is properly configure in your PATH**
-
 To install Mamba by conda, run
 
 ```shell
@@ -56,15 +54,11 @@ First, create an appropriate working directory, in which sORTholog will be deplo
 ```shell
 mkdir path/to/sORTholog
 ```
-NB: [More on the mkdir command.](https://en.wikipedia.org/wiki/Mkdir)
-
 Then go to your sORTholog working directory as follow:
 
 ```shell
 cd path/to/sORTholog
 ```
-
-NB: [More on the cd command.](https://en.wikipedia.org/wiki/Cd_(command))
 
 Second, run (if your are in the sORTholog directory)
 
@@ -82,7 +76,7 @@ Snakedeploy will create two folders `workflow` and `config`. The former contains
 
 ### Step 3: Configure workflow
 
-The three files described in this section ([Taxids file](#taxids-file), [Seeds file](#seeds-file), and [Config file](#config-file)) can be edited with a text editor. We recommend [VScode](https://code.visualstudio.com/) or [SublimeText](https://www.sublimetext.com/) if you do not have already a favorite text editor.
+The three files described in this section ([Taxids file](#taxids-file), [Seeds file](#seeds-file), and [Config file](#config-file)) can be edited with a text editor.
 
 #### Taxids file
 
@@ -146,8 +140,6 @@ After finalizing your data analysis, you can automatically generate an interacti
 snakemake --report report.zip --report-stylesheet config/report.css
 ```
 The resulting report.zip file can be passed on to collaborators, provided as a supplementary file in publications.
-
-[▲ Back to table of content ▲](#table-of-content)
 
 ## Important Notes for running on the UFL cluster
 
