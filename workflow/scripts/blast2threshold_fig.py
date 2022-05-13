@@ -2,13 +2,86 @@ import plotly.io as pio
 import plotly.express as px
 import plotly
 import pandas as pd
+import numpy as np
 import sys, os
 
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
+
 ##########################################################################
 
-def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
+def dataframe_reduction(df_list, max_number, round_value):
+    '''
+    Take a list of dataframe, remove duplicates in each dataframe and take a random amount of line if above max number.
+    '''
+
+    def kl_divergence(p, q):
+        # Get the Kullback–Leibler (KL) divergence KL(p||q)
+        return np.sum(np.where(p != 0, p * np.log(p / q), 0))
+
+    def get_histogram(dataframe, on):
+        # Get normalized density histogram distribution for the "on" axis
+        hist2normalize, bins = np.histogram(dataframe[on].to_list(), bins=np.linspace(0, 100, 21))
+        hist_sum = np.sum(hist2normalize)
+        normalizer = lambda x: x / hist_sum
+        return normalizer(hist2normalize)
+
+    def reduction_data(dataframe, limit_value, round_value):
+        # Check the KL divergence to decide what should be the minimal amount of data to show
+        kldf = pd.DataFrame((np.logspace(start=np.log10(limit_value), stop=np.log10(dataframe.shape[0]), num=200)),
+                            columns=['n'])
+        kldf['n'] = kldf.n.apply(lambda x: round(x))
+
+        for variable in ['pident', 'coverage']:
+            hist = get_histogram(dataframe, variable)
+            kldf[variable] = round(
+                kldf.n.apply(lambda x:
+                             kl_divergence(get_histogram(dataframe.sample(n=x), variable), hist)
+                             ),
+                round_value
+            )
+
+        kldf.set_index('n', inplace=True)
+        min_pident = kldf.pident.idxmin()
+        min_coverage = kldf.coverage.idxmin()
+
+        return dataframe.sample(n=max(min_pident, min_coverage))
+
+    df2return = []
+
+    for df2reduce_file in df_list:
+        df2reduce = pd.read_table(df2reduce_file,
+                                  usecols=['protein1', 'protein2', 'pident', 'evalue', 'coverage', 'fam'],
+                                  dtype={'protein1': 'string',
+                                         'protein2': 'string',
+                                         'pident': 'float',
+                                         'evalue': 'float',
+                                         'coverage': 'float',
+                                         'fam': 'category', }
+                                  )
+
+        # Reduction of the dataframe to remove the point in the same place on the plot
+        df2reduce_drop = df2reduce.drop_duplicates(['pident', 'coverage', 'fam']).reset_index(drop=True)
+
+        if df2reduce_drop.shape[0] > max_number:
+            df2reduce_drop = reduction_data(df2reduce_drop, max_number, round_value).reset_index()
+
+        # Save the seed in the dataframe
+        seed = df2reduce_drop.fam[0].split('family_')[-1]
+        df2reduce_drop['seed'] = seed
+
+        # Change the name inside the columns to be more readable in the legend of the figure
+        df2reduce_drop.replace(f"in_family_{seed}", 'Both in the family', inplace=True)
+        df2reduce_drop.replace(f"out_family_{seed}", 'Only one in the family', inplace=True)
+
+        df2return.append(df2reduce_drop)
+
+    return df2return
+
+
+##########################################################################
+
+def scatter2D_plotly(all_df_fam, name_tmp="tmp_interactive_scatter.html"):
     '''
     Function that take files that contains 5 columns:
     ['protein1', 'protein2', 'pident', 'evalue', 'coverage', 'fam']
@@ -25,52 +98,35 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
     # Help to keep an eye on the order of the dataframes plotted
     index = 0
 
-    for fam_file in all_fam_file :
-        df_fam = pd.read_table(fam_file, usecols=['protein1', 'protein2','pident', 'evalue', 'coverage', 'fam'],
-                                dtype = {'protein1': 'string',
-                               'protein2': 'string',
-                               'pident': 'float',
-                               'evalue': 'float',
-                               'coverage': 'float',
-                               'fam': 'category',}
-                                  )
-        
+    for df_fam in all_df_fam:
+
         # First element of family columns = in|out_family_seed
-        seed = df_fam.fam[0].split('family_')[-1]
+        seed = df_fam.seed[0]
         all_seeds.append(seed)
-        
+
         # It is multiply by 6 because there is 6 traces for one plot 3 for in_fam et 3 for out_fam
         # As one of the category could not exists we look at the possible values
         list_trace += [seed] * df_fam.fam.unique().shape[0] * 3
-        
-        # Change the name inside the columns to be more readable in the legend of the figure
-        df_fam.replace(f"in_family_{seed}", 'Both in the family', inplace=True)
-        df_fam.replace(f"out_family_{seed}", 'Only one in the family', inplace=True)
-        
-        # Reductio of the dataframe to remove the point in the same place on the plot 
-        df_fam_drop = df_fam.drop_duplicates(['pident', 'coverage', 'fam']).reset_index(drop=True)
 
-        if df_fam_drop.shape[0] > 100000:
-            df_fam_drop = df_fam_drop.sample(n=100000)
-
-        # create a figur efor the two histograms
-        tmp_fig = px.scatter(df_fam, x='pident', y='coverage', color='fam', 
-                            marginal_x='histogram', 
-                            marginal_y='histogram',
-                            color_discrete_map={'Only one in the family':'#E41A1C', 'Both in the family':'#377EB8'},
-                            labels={"fam": "Pair of proteins"},
-                            category_orders={"fam": ["Only one in the family", "Both in the family"]},
-                            custom_data=['protein1','protein2', 'evalue'])
+        # create a figure for the two histograms
+        tmp_fig = px.scatter(df_fam, x='pident', y='coverage', color='fam',
+                             marginal_x='histogram',
+                             marginal_y='histogram',
+                             color_discrete_map={'Only one in the family': '#E41A1C', 'Both in the family': '#377EB8'},
+                             labels={"fam": "Pair of proteins"},
+                             category_orders={"fam": ["Only one in the family", "Both in the family"]},
+                             custom_data=['protein1', 'protein2', 'evalue'])
 
         # Create a figure for the scatter plot 
-        tmp_fig_drop = px.scatter(df_fam_drop, x='pident', y='coverage', color='fam', 
-                                marginal_x='histogram', 
-                                marginal_y='histogram',
-                                color_discrete_map={'Only one in the family':'#E41A1C', 'Both in the family':'#377EB8'},
-                                labels={"fam": "Pair of proteins"},
-                                category_orders={"fam": ["Only one in the family", "Both in the family"]},
-                                custom_data=['protein1','protein2', 'evalue'],
-                                )  
+        tmp_fig_drop = px.scatter(df_fam, x='pident', y='coverage', color='fam',
+                                  marginal_x='histogram',
+                                  marginal_y='histogram',
+                                  color_discrete_map={'Only one in the family': '#E41A1C',
+                                                      'Both in the family': '#377EB8'},
+                                  labels={"fam": "Pair of proteins"},
+                                  category_orders={"fam": ["Only one in the family", "Both in the family"]},
+                                  custom_data=['protein1', 'protein2', 'evalue'],
+                                  )
 
         # Update the information show when cliking on the point
         i = 0
@@ -80,61 +136,61 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
         # traco 1 and 4 are the histogram of the percentage of identity
         # trace 2 and 5 are the histogram of the coverage
         for data in tmp_fig.data:
-            if i == 0 or i == 3 :
+            if i == 0 or i == 3:
                 # Replace the scatter plot of the drop dataframe instead of the full one
                 data['customdata'] = tmp_fig_drop.data[i]['customdata']
                 data['x'] = tmp_fig_drop.data[i]['x']
                 data['y'] = tmp_fig_drop.data[i]['y']
 
                 data['hovertemplate'] = "<br>".join([
-                        "Protein 1 id: %{customdata[0]}",
-                        "Protein 2 id: %{customdata[1]}",
-                        "Percentage of identity: %{x}%",
-                        "Coverage: %{y}%",
-                        "E-value: %{customdata[2]}",
-                    ])
+                    "Protein 1 id: %{customdata[0]}",
+                    "Protein 2 id: %{customdata[1]}",
+                    "Percentage of identity: %{x}%",
+                    "Coverage: %{y}%",
+                    "E-value: %{customdata[2]}",
+                ])
             # Here only the value x (percentage id) and y (count)
             # are to change
-            elif i == 1 or i == 4 :
+            elif i == 1 or i == 4:
                 data['hovertemplate'] = "<br>".join([
-                        "Percentage of identity: %{x}%",
-                        "Number: %{y}",
-                    ])  
-            # Here only the value y (coverage) and x (count)
+                    "Percentage of identity: %{x}%",
+                    "Number: %{y}",
+                ])
+                # Here only the value y (coverage) and x (count)
             # are to change
-            else :
+            else:
                 data['hovertemplate'] = "<br>".join([
-                        "Coverage: %{y}%",
-                        "Number: %{x}",
-                    ])              
-            i+=1        
+                    "Coverage: %{y}%",
+                    "Number: %{x}",
+                ])
+            i += 1
 
         for data in tmp_fig.data:
             # We want here to see the first figure but not the other one
-            if index == 0 :
+            if index == 0:
                 data['visible'] = True
                 fig = tmp_fig
-            else :
+            else:
                 data['visible'] = False
                 fig.add_trace(data)
 
         index += 1
-        
+
     # Deal with the button to see one plot by seed 
     list_button = []
 
-    # We create a list that will contains all the informations for the button
+    # We create a list that will contains all the information for the button
     # Here it is a button that when press will update the visualisation of the plot
     # So each buttons created will make visible the plot of the wanted seed
     for seed in all_seeds:
         list_button.append(dict(label=seed,
-                method="update",
-                args=[{"visible": [i == seed for i in list_trace]},
-                    {"title": f"{seed} familly".capitalize(),
-                     "title_x": 0.5,
-                      },
-                     ]
-               ))
+                                method="update",
+                                args=[{"visible": [i == seed for i in list_trace]},
+                                      {"title": f"{seed} familly".capitalize(),
+                                       "title_x": 0.5,
+                                       },
+                                      ]
+                                ))
 
     # We update the layout of the figure to add the button created before
     fig.update_layout(
@@ -142,39 +198,38 @@ def scatter2D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter.html"):
             dict(
                 active=0,
                 buttons=list(list_button),
-                bordercolor = "#BEC8D9",  # default
+                bordercolor="#BEC8D9",  # default
                 type="dropdown",  # "dropdown", "buttons"
                 direction="down",
-                showactive=True, # Highlights active dropdown item or active button if True.    
+                showactive=True,  # Highlights active dropdown item or active button if True.
                 y=0.9,
                 x=-0.05
             )
-        ])   
-
+        ])
 
     # Set axis name
     fig.update_layout(
-                    xaxis_title="Percentage of identity",
-                    yaxis_title= "Coverage")
+        xaxis_title="Percentage of identity",
+        yaxis_title="Coverage")
 
     # Set title
     fig.update_layout(
-                     title={
-                    'text': f"{all_seeds[0]} familly".capitalize(),
-                    'font':{'size':30}
-                     },)
-
+        title={
+            'text': f"{all_seeds[0]} familly".capitalize(),
+            'font': {'size': 30}
+        }, )
 
     # Put the title in the middle
     fig.update_layout(title_x=0.5)
 
-    plotly.offline.plot(fig, auto_open=False, filename=name_tmp)     
+    plotly.offline.plot(fig, auto_open=False, filename=name_tmp)
 
     return name_tmp
 
+
 ##########################################################################
 
-def scatter3D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter3D.html"):
+def scatter3D_plotly(all_fam_df, name_tmp="tmp_interactive_scatter3D.html"):
     '''
     Function that take files that contains 5 columns:
     ['protein1', 'protein2', 'pident', 'evalue', 'coverage', 'fam']
@@ -191,36 +246,23 @@ def scatter3D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter3D.html"):
     # Help to keep an eye on the order of the dataframes plotted
     index = 0
 
-    for fam_file in all_fam_file :
-        df_fam = pd.read_table(fam_file, usecols=['protein1', 'protein2','pident', 'evalue', 'coverage', 'fam'],
-                                dtype = {'protein1': 'string',
-                               'protein2': 'string',
-                               'pident': 'float',
-                               'evalue': 'float',
-                               'coverage': 'float',
-                               'fam': 'category',}
-                                  )
-        
-        df_fam = df_fam.drop_duplicates(['pident', 'coverage', 'evalue', 'fam']).reset_index(drop=True)
+    for df_fam in all_fam_df:
 
         # First element of family columns = in|out_family_seed
-        seed = df_fam.fam[0].split('family_')[-1]
+        seed = df_fam.seed[0]
         all_seeds.append(seed)
 
-        # Change the name inside the columns to be more readable in the legend of the figure
-        df_fam.replace(f"in_family_{seed}", 'Both in the family', inplace=True)
-        df_fam.replace(f"out_family_{seed}", 'Only one in the family', inplace=True)    
-        
         # list of the trace, two traces per seed (one in and one out)
         list_trace += [seed] * df_fam.fam.unique().shape[0]
 
-        tmp_fig = px.scatter_3d(df_fam, x='pident', y='coverage', z='evalue',color='fam', 
-                               color_discrete_map={'Only one in the family':'#E41A1C', 'Both in the family':'#377EB8'},
-                               labels={"fam": "Pair of proteins"},
-                               category_orders={"fam": ["Only one in the family", "Both in the family"]},
-                               custom_data=['protein1','protein2', 'evalue'])
-        
-        tmp_fig.update_scenes(zaxis={'exponentformat':'e'})
+        tmp_fig = px.scatter_3d(df_fam, x='pident', y='coverage', z='evalue', color='fam',
+                                color_discrete_map={'Only one in the family': '#E41A1C',
+                                                    'Both in the family': '#377EB8'},
+                                labels={"fam": "Pair of proteins"},
+                                category_orders={"fam": ["Only one in the family", "Both in the family"]},
+                                custom_data=['protein1', 'protein2', 'evalue'])
+
+        tmp_fig.update_scenes(zaxis={'exponentformat': 'e'})
 
         # Update the information show when cliking on the point
         tmp_fig.update_traces(
@@ -231,18 +273,18 @@ def scatter3D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter3D.html"):
                 "Coverage: %{y}%",
                 "E-value: %{z}",
             ])
-        )   
-        
+        )
+
         for data in tmp_fig.data:
-            if index == 0 :
+            if index == 0:
                 data['visible'] = False
                 fig = tmp_fig
-            else :
+            else:
                 data['visible'] = False
                 fig.add_trace(data)
-                
+
         index += 1
-        
+
     # Deal with the button to see one plot by seed 
     list_button = []
 
@@ -250,90 +292,91 @@ def scatter3D_plotly(all_fam_file, name_tmp="tmp_interactive_scatter3D.html"):
         # We want here to see no figure but warn user of the size of it
         if seed == '(no seed)':
             list_button.append(dict(label=seed,
-                    method="update",
-                    args=[{"visible": [i == seed for i in list_trace]},
-                          {"title": f"Choose a family of seed to see the distribution.<br>WARNING:: Depending on your dataset you may need lot of memory",
-                           "title_x": 0.5,
-                          },
-                         ]
-                   ))
-        else :
+                                    method="update",
+                                    args=[{"visible": [i == seed for i in list_trace]},
+                                          {
+                                              "title": f"Choose a family of seed to see the distribution.<br>WARNING:: Depending on your dataset you may need lot of memory",
+                                              "title_x": 0.5,
+                                          },
+                                          ]
+                                    ))
+        else:
             list_button.append(dict(label=seed,
-            method="update",
-            args=[{"visible": [i == seed for i in list_trace]},
-                  {"title": f"{seed} familly".capitalize(),
-                           "title_x": 0.5,
-                          },
-                 ]
-           ))
+                                    method="update",
+                                    args=[{"visible": [i == seed for i in list_trace]},
+                                          {"title": f"{seed} familly".capitalize(),
+                                           "title_x": 0.5,
+                                           },
+                                          ]
+                                    ))
 
     # Deal with the scale of the zaxis from linear to log
     list_button2 = []
 
     for ztype in ['linear', 'log']:
-            list_button2.append(dict(label=ztype,
-            method="relayout",
-            args=[{"scene.zaxis.type":ztype}]
-           ))    
+        list_button2.append(dict(label=ztype,
+                                 method="relayout",
+                                 args=[{"scene.zaxis.type": ztype}]
+                                 ))
 
-
-    # Update layout for the seeds
+        # Update layout for the seeds
     fig.update_layout(
         updatemenus=[
             dict(
                 active=0,
                 buttons=list(list_button),
-                bordercolor = "#BEC8D9",  # default
+                bordercolor="#BEC8D9",  # default
                 type="dropdown",  # "dropdown", "buttons"
                 direction="down",
-                showactive=True, # Highlights active dropdown item or active button if True.  
+                showactive=True,  # Highlights active dropdown item or active button if True.
                 y=0.8,
                 x=-0.05
             ),
             dict(
                 active=0,
                 buttons=list(list_button2),
-                bordercolor = "#BEC8D9",
+                bordercolor="#BEC8D9",
                 type="buttons",
                 direction="left",
                 showactive=True,
                 y=0.9,
                 x=-0.05
-                ),
-        ])   
+            ),
+        ])
 
     # Set axis name
-    fig.update_layout(scene = dict(
-                        xaxis_title='Percentage of identity',
-                        yaxis_title='Coverage',
-                        zaxis_title='E-value')
-                     )
+    fig.update_layout(scene=dict(
+        xaxis_title='Percentage of identity',
+        yaxis_title='Coverage',
+        zaxis_title='E-value')
+    )
     # Set title
     fig.update_layout(
-                     title={
-                        'text': f"Choose a family of seed to see the distribution.<br>WARNING:: Depending on your dataset you may need lot of memory",
-                        'font':{'size':30}
-                     },
-                     # annotate the buttons
-                     annotations=[
-                        dict(text="Evalue axis scale", x=-0.135, y=0.93,
-                                             align="left", showarrow=False),
-                        dict(text="Seeds", x=-0.13, y=0.83,
-                                             showarrow=False),
-                     ])
+        title={
+            'text': f"Choose a family of seed to see the distribution.<br>WARNING:: Depending on your dataset you may need lot of memory",
+            'font': {'size': 30}
+        },
+        # annotate the buttons
+        annotations=[
+            dict(text="Evalue axis scale", x=-0.135, y=0.93,
+                 align="left", showarrow=False),
+            dict(text="Seeds", x=-0.13, y=0.83,
+                 showarrow=False),
+        ])
 
     # Put the title in the middle
     fig.update_layout(title_x=0.5)
 
-    plotly.offline.plot(fig, auto_open=False, filename=name_tmp)    
+    plotly.offline.plot(fig, auto_open=False, filename=name_tmp)
 
     return name_tmp
+
 
 ##########################################################################
 
 def fig2html(plot2D_file, plot3D_file, report, css=snakemake.params.css):
     '''
-    Function thst take the two html figure, read it and put it inside the 
+    Function that take the two html figure, read it and put it inside the
     big report
     '''
 
@@ -346,23 +389,23 @@ def fig2html(plot2D_file, plot3D_file, report, css=snakemake.params.css):
     with open(plot2D_file, 'r', encoding='utf8') as r_file:
         for line in r_file:
             split_line = line.split()
-            if line.strip().startswith('<script') :
+            if line.strip().startswith('<script'):
                 plot2D += line
                 begin = True
-            elif split_line[-1] == '</div>' and split_line[-2] == '</script>' :
+            elif split_line[-1] == '</div>' and split_line[-2] == '</script>':
                 plot2D += line.replace('</div>', '')
                 begin = False
             elif begin:
                 plot2D += line
-       
+
     # Read plot line by line to remove non useful part of the html 
     with open(plot3D_file, 'r', encoding='utf8') as r_file:
-        for line in r_file :
+        for line in r_file:
             split_line = line.split()
-            if line.strip().startswith('<script')  :
+            if line.strip().startswith('<script'):
                 plot3D += line
                 begin = True
-            elif split_line[-1] == '</div>' and split_line[-2] == '</script>' :
+            elif split_line[-1] == '</div>' and split_line[-2] == '</script>':
                 plot3D += line.replace('</div>', '')
                 begin = False
             elif begin:
@@ -532,19 +575,19 @@ def fig2html(plot2D_file, plot3D_file, report, css=snakemake.params.css):
 
     return
 
+
 ##########################################################################
 
-# Choose the plotl template
+# Choose the plotly template
 pio.templates.default = "plotly"
 
 # Get all the different dataframes
-all_fam_file = snakemake.input
+all_fam_df = dataframe_reduction(snakemake.input, snakemake.params['min_lines'], snakemake.params['round_value'])
 
-tmp_plot2D = scatter2D_plotly(all_fam_file)
+tmp_plot2D = scatter2D_plotly(all_fam_df)
 
-tmp_plot3D = scatter3D_plotly(all_fam_file)
+tmp_plot3D = scatter3D_plotly(all_fam_df)
 
 fig2html(tmp_plot2D, tmp_plot3D, snakemake.output[0])
 
 ##########################################################################
-

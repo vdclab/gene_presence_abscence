@@ -71,6 +71,8 @@ rule report_threshold:
         ),
     params:
         css=workflow.source_path("../report/threshold_report.css"),
+        round_value=config['default_threshold']['round_value'],
+        min_lines=config['default_threshold']['min_lines'],
     log:
         os.path.join(
             OUTPUT_FOLDER,
