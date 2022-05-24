@@ -40,7 +40,7 @@ rule blast2threshold_table:
             "blast2threshold_table--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.log"
         ),
     resources:
-        mem_mb=8000,
+        mem_mb=10000,
         time=600,
     conda:
         "../envs/pandas_plots.yaml"
