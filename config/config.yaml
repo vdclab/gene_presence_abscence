@@ -115,3 +115,14 @@ default_values_plot:
 
 # If you only want the plot need a table (TSV format, columns: gene1, gene2..., index: genome_ids)
 PAtab_table: ''
+
+
+###############################
+# Threshold analysis settings #
+###############################
+
+default_threshold:
+    # minimum amount of point to trigger the data reduction
+    min_lines: 1000
+    # Statistical accuracy of the Kl-divergence test, decimals to use when rounding the number
+    round_value: 5
