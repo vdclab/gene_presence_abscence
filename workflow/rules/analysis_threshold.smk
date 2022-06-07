@@ -41,7 +41,7 @@ rule blast2threshold_table:
         ),
     resources:
         mem_mb=10000,
-        time=600,
+        time=720,
     conda:
         "../envs/pandas_plots.yaml"
     script:
