@@ -30,8 +30,7 @@ rule hmmsearch:
         time=7200,
     log:
         os.path.join(OUTPUT_FOLDER, "logs", "hmmer", "hmmsearch.log"),
-    threads:
-        5
+    threads: 5
     conda:
         "../envs/hmmer.yaml"
     envmodules:

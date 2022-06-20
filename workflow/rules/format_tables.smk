@@ -47,7 +47,12 @@ rule read_hmmsearch:
             f"list_all_proteins_hmmsearch--eval_{e_val_HMM:.0e}.tsv",
         ),
     log:
-        os.path.join(OUTPUT_FOLDER, "logs", "hmmer", "format_hmmsearch.log",),
+        os.path.join(
+            OUTPUT_FOLDER,
+            "logs",
+            "hmmer",
+            "format_hmmsearch.log",
+        ),
     conda:
         "../envs/pandas_plots.yaml"
     script:
@@ -65,7 +70,7 @@ rule merge_hmmsearch_psiblast:
             "processing_files",
             "hmmsearch",
             f"list_all_proteins_hmmsearch--eval_{e_val_HMM:.0e}.tsv",
-        ),        
+        ),
         list_psiblast=os.path.join(
             OUTPUT_FOLDER,
             "processing_files",
@@ -112,7 +117,7 @@ rule prepare_for_silix:
             gene_constrains=gene_constrains,
         ),
     params:
-        minimum_length = length_min,
+        minimum_length=length_min,
     log:
         os.path.join(
             OUTPUT_FOLDER,

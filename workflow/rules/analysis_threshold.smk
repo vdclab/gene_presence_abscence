@@ -8,10 +8,7 @@ rule blast2threshold_table:
     input:
         seed_file=os.path.join(OUTPUT_FOLDER, "databases", "seeds", "new_seeds.tsv"),
         blast_out=os.path.join(
-            OUTPUT_FOLDER,
-            "processing_files",
-            "blast",
-            "blastp--blast_evalue_1e-2.out"
+            OUTPUT_FOLDER, "processing_files", "blast", "blastp--blast_evalue_1e-2.out"
         ),
         fnodes=os.path.join(
             OUTPUT_FOLDER,
@@ -26,18 +23,18 @@ rule blast2threshold_table:
             OUTPUT_FOLDER,
             "analysis_thresholds",
             "tables",
-            "table_hits_family--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.tsv"
+            "table_hits_family--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.tsv",
         ),
     params:
-        option_cov = cov_min,
-        option_pid = pid_min,
-        minimum_length = length_min,
+        option_cov=cov_min,
+        option_pid=pid_min,
+        minimum_length=length_min,
     log:
         os.path.join(
             OUTPUT_FOLDER,
             "logs",
             "analysis_thresholds",
-            "blast2threshold_table--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.log"
+            "blast2threshold_table--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.log",
         ),
     resources:
         mem_mb=10000,
@@ -59,7 +56,7 @@ rule report_threshold:
                 OUTPUT_FOLDER,
                 "analysis_thresholds",
                 "tables",
-                "table_hits_family--{gene_constrains}.tsv"
+                "table_hits_family--{gene_constrains}.tsv",
             ),
             gene_constrains=gene_constrains,
         ),
@@ -71,14 +68,11 @@ rule report_threshold:
         ),
     params:
         css=workflow.source_path("../report/threshold_report.css"),
-        round_value=config['default_threshold']['round_value'],
-        min_lines=config['default_threshold']['min_lines'],
+        round_value=config["default_threshold"]["round_value"],
+        min_lines=config["default_threshold"]["min_lines"],
     log:
         os.path.join(
-            OUTPUT_FOLDER,
-            "logs",
-            "analysis_thresholds",
-            "analysis_thresholds_fig.log"
+            OUTPUT_FOLDER, "logs", "analysis_thresholds", "analysis_thresholds_fig.log"
         ),
     conda:
         "../envs/plotly.yaml"

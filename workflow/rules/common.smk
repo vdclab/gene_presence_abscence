@@ -77,9 +77,11 @@ def check_color_seed(seed_df):
     """
 
     if "color" not in seed_df.columns:
-        seed_df['color'] = config["default_values_plot"]["color"]
+        seed_df["color"] = config["default_values_plot"]["color"]
     else:
-        seed_df.fillna(value={'color':config["default_values_plot"]["color"]}, inplace=True)
+        seed_df.fillna(
+            value={"color": config["default_values_plot"]["color"]}, inplace=True
+        )
 
     return seed_df
 
@@ -116,15 +118,21 @@ def compare_seed_table(seed_df, new_seed_file, start_seed_file, seed_dtypes):
         # If seed is added
         if seed_df.shape[0] != start_seed_df.shape[0]:
             # seed_df.to_csv(start_seed_file, sep="\t", index=False)
-            sys.exit(f"WARNING:: Your seed file is different from your last run\nWhy? Because a seed was removed or added\n{msg_rerun}")
+            sys.exit(
+                f"WARNING:: Your seed file is different from your last run\nWhy? Because a seed was removed or added\n{msg_rerun}"
+            )
         # If protein name change
         elif not seed_df.protein_id.equals(start_seed_df.protein_id):
             # seed_df.to_csv(start_seed_file, sep="\t", index=False)
-            sys.exit(f"WARNING:: Your seed file is different from your last run\nWhy? Because not the same protein ids\n{msg_rerun}")
+            sys.exit(
+                f"WARNING:: Your seed file is different from your last run\nWhy? Because not the same protein ids\n{msg_rerun}"
+            )
         # If hmm name change
         elif not seed_df.hmm.equals(start_seed_df.hmm):
             # seed_df.to_csv(start_seed_file, sep="\t", index=False)
-            sys.exit(f"WARNING:: Your seed file is different from your last run\nWhy? Because HMM column changed (added or deleted hmm)\n{msg_rerun}")
+            sys.exit(
+                f"WARNING:: Your seed file is different from your last run\nWhy? Because HMM column changed (added or deleted hmm)\n{msg_rerun}"
+            )
         # If something else change
         elif not seed_df[columns2change].equals(new_seed_df[columns2change]):
             # Update new seed with information of seed
@@ -146,12 +154,12 @@ def get_list_hmm(seed_df):
     """
 
     if "hmm" not in seed_df.columns:
-        seed_df['hmm'] = ''
+        seed_df["hmm"] = ""
     else:
-        seed_df.fillna(value={'hmm':''}, inplace=True)
+        seed_df.fillna(value={"hmm": ""}, inplace=True)
 
     # Check the index where hmm are
-    index_hmm = (seed_df.hmm != '')
+    index_hmm = seed_df.hmm != ""
 
     list_psiblast = seed_df[~index_hmm].protein_id.tolist()
     list_hmm = seed_df[index_hmm].hmm.tolist()
@@ -160,6 +168,7 @@ def get_list_hmm(seed_df):
 
 
 ##########################################################################
+
 
 def create_folder(mypath):
     """
@@ -182,7 +191,7 @@ def create_folder(mypath):
 
 def check_annotation(mypath):
     """
-    Check the presence of annotation file or if at least the name are in 
+    Check the presence of annotation file or if at least the name are in
     right format in the fasta file
     :param mypath: path to perso_database if exists
     :type: string
@@ -194,17 +203,18 @@ def check_annotation(mypath):
         first_header = r_file.readline()
 
         if "perso_annotation" in config and os.path.isfile(config["perso_annotation"]):
-            perso_annotation = pd.read_table(config["perso_annotation"], 
-                                             dtype="string")
+            perso_annotation = pd.read_table(config["perso_annotation"], dtype="string")
             validate(perso_annotation, schema="../schemas/annotations.schema.yaml")
 
             return config["perso_annotation"]
         elif "--" in first_header:
             return ""
         else:
-            sys.exit("ERROR: Please provided an annotation file for your database or \
+            sys.exit(
+                "ERROR: Please provided an annotation file for your database or \
                      format the header of the fasta file as: sequence_name--genome_id \
-                     description")
+                     description"
+            )
 
 
 ##########################################################################
@@ -321,13 +331,13 @@ length_min = config["silix_options"]["length_min"]
 
 # Dictionary translation option for silix
 silix_dict = {
-    "mean":"0",
-    "subject":"1",
-    "query":"-1",
-    "shortest":"2",
-    "longest":"-2",
-    "HSP":"3",
-    }
+    "mean": "0",
+    "subject": "1",
+    "query": "-1",
+    "shortest": "2",
+    "longest": "-2",
+    "HSP": "3",
+}
 
 # Option for ncbi_genome_download
 section = config["ndg_options"]["section"]
@@ -338,38 +348,40 @@ assembly_levels = config["ndg_options"]["assembly_levels"]
 # Values for refseq_categories :
 refseq_categories = config["ndg_options"]["refseq_categories"]
 
-# Name of the file with all the taxids 
+# Name of the file with all the taxids
 starting_database = os.path.join(
-        OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
-    )
+    OUTPUT_FOLDER, "databases", "all_taxid", "taxid_all_together.fasta"
+)
 
 merge_db = os.path.join(
-            OUTPUT_FOLDER,
-            "databases",
-            "merge_databases",
-            "databases_all_together.fasta",
-        )
+    OUTPUT_FOLDER,
+    "databases",
+    "merge_databases",
+    "databases_all_together.fasta",
+)
 
 # Get the output protein table name to activate the needed rules
 protein_table_taxid = os.path.join(
-            OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
-        )
+    OUTPUT_FOLDER, "databases", "all_taxid", "protein_table.tsv"
+)
 
 protein_table_merge = os.path.join(
-            OUTPUT_FOLDER,
-            "databases",
-            "merge_databases",
-            "protein_table.merged.tsv"
-        )
+    OUTPUT_FOLDER, "databases", "merge_databases", "protein_table.merged.tsv"
+)
 
 
 proteinTable = protein_table_merge
 
 # Check if there is a database specified in the config file
-if 'perso_database' in config and os.path.isfile(config["perso_database"]) and "taxid" in config and not taxid_table.empty :
+if (
+    "perso_database" in config
+    and os.path.isfile(config["perso_database"])
+    and "taxid" in config
+    and not taxid_table.empty
+):
     list_starting_database = [config["perso_database"], starting_database]
     annotationTable = [check_annotation(config["perso_database"]), protein_table_taxid]
-elif "taxid" in config and not taxid_table.empty :
+elif "taxid" in config and not taxid_table.empty:
     list_starting_database = starting_database
     merge_db = starting_database
     proteinTable = protein_table_taxid
@@ -390,7 +402,7 @@ start_seed_file = os.path.join(OUTPUT_FOLDER, "databases", "seeds", "start_seeds
 compare_seed_table(seed_table, new_seed_file, start_seed_file, seed_dtypes)
 
 # HMM profile folder
-hmm_folder = config['hmm_profiles']
+hmm_folder = config["hmm_profiles"]
 
 # Check HMMs exist
 HMM = [os.path.join(hmm_folder, hmm) for hmm in HMM]
@@ -400,10 +412,10 @@ for hmm_file in HMM:
         sys.exit(f"ERROR:: The provided hmm file does not exists: {hmm_file}")
 
 # HMM default e-value threshold
-e_val_HMM = config['default_hmmsearch_options']['e_val']
+e_val_HMM = config["default_hmmsearch_options"]["e_val"]
 
 # HMM type of filtering
-hmm_type = '-E' if config['default_hmmsearch_options']['focus'] == 'full' else '--domE'
+hmm_type = "-E" if config["default_hmmsearch_options"]["focus"] == "full" else "--domE"
 
 # Seepup option that create a reduce dataset using a psiblast step with the seed
 if config["speedup"]:
@@ -416,26 +428,26 @@ if config["speedup"]:
 
     # Once we know that there is a speedup just need to check if HMM or not
     if HMM and PSIBLAST:
-        tsv_prot=os.path.join(
+        tsv_prot = os.path.join(
             OUTPUT_FOLDER,
             "processing_files",
             "reduce_taxid",
             "list_all_proteins.tsv",
         )
     elif PSIBLAST:
-        tsv_prot=os.path.join(
+        tsv_prot = os.path.join(
             OUTPUT_FOLDER,
             "processing_files",
             "psiblast",
             f"list_all_proteins_psiblast--eval_{e_val_psiblast:.0e}.tsv",
         )
-    else: 
-        tsv_prot=os.path.join(
+    else:
+        tsv_prot = os.path.join(
             OUTPUT_FOLDER,
             "processing_files",
             "hmmsearch",
             f"list_all_proteins_hmmsearch--eval_{e_val_HMM:.0e}.tsv",
-        )   
+        )
 else:
     speedup = merge_db
-    tsv_prot = ''
+    tsv_prot = ""

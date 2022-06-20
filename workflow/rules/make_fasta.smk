@@ -99,25 +99,27 @@ rule merge_fasta:
 
 rule merge_databases:
     input:
-        all_databases = list_starting_database,
-        annotations = annotationTable,
+        all_databases=list_starting_database,
+        annotations=annotationTable,
     output:
-        taxid_db=temp(os.path.join(
-            OUTPUT_FOLDER, "databases", "merge_databases", "databases_all_together.fasta"
-        )),
+        taxid_db=temp(
+            os.path.join(
+                OUTPUT_FOLDER,
+                "databases",
+                "merge_databases",
+                "databases_all_together.fasta",
+            )
+        ),
         tsv=os.path.join(
-            OUTPUT_FOLDER,
-            "databases",
-            "merge_databases",
-            "protein_table.merged.tsv"
+            OUTPUT_FOLDER, "databases", "merge_databases", "protein_table.merged.tsv"
         ),
     log:
-         os.path.join(
+        os.path.join(
             OUTPUT_FOLDER,
             "logs",
             "fetch_proteins",
             "merge_databases.log",
-        ),   
+        ),
     conda:
         "../envs/biopython_ete3.yaml"
     script:

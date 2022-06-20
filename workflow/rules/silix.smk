@@ -25,9 +25,9 @@ rule silix:
             "filtered_blast--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.fnodes",
         ),
     params:
-        minimum_overlap = silix_dict[cov_min],
-        minimum_percId = silix_dict[pid_min],
-        minimum_length = length_min,
+        minimum_overlap=silix_dict[cov_min],
+        minimum_percId=silix_dict[pid_min],
+        minimum_length=length_min,
     log:
         os.path.join(
             OUTPUT_FOLDER,
