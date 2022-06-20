@@ -4,10 +4,10 @@
  
 
 # path to seeds sheet (TSV format, columns: seed, protein_id, ...)
-seed: config/seeds.tsv
+seed: doc/dummy_seeds.tsv
 
 # path to taxonomic id to search seeds in (TSV format, columns: TaxId, NCBIGroups)
-taxid: config/taxids.tsv
+taxid: doc/dummy_taxids.tsv
 
 # name of the project 
 project_name: your_project_name
@@ -121,8 +121,9 @@ PAtab_table: ''
 # Threshold analysis settings #
 ###############################
 
+# if you want to remove the options to have the  full data put 0 everywhere or remove the lines below
 default_threshold:
     # minimum amount of point to trigger the data reduction
-    min_lines: 1000
+    min_lines: 0
     # Statistical accuracy of the Kl-divergence test, decimals to use when rounding the number
-    round_value: 5
+    round_value: 0

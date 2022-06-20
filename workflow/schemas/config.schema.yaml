@@ -119,6 +119,19 @@ properties:
       round_border:
         type: boolean
         
+  default_threshold:
+    type: object
+    properties:
+      min_lines:
+        type: number
+        minimum: 0
+      round_value:
+        type: number
+        minimum: 0
+    required:
+      - min_lines
+      - round_value
+
   PAtab_table:
     type: string
 
