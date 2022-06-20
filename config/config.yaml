@@ -4,16 +4,16 @@
  
 
 # path to seeds sheet (TSV format, columns: seed, protein_id, ...)
-seed: doc/dummy_seeds.tsv
+seed: config/seeds.tsv
 
 # path to taxonomic id to search seeds in (TSV format, columns: TaxId, NCBIGroups)
-taxid: doc/dummy_taxids.tsv
+taxid: config/taxids.tsv
 
 # name of the project 
 project_name: your_project_name
 
 # path to the result folder
-output_folder: results_dummmy
+output_folder: results
 
 
 #################################
@@ -109,9 +109,20 @@ default_values_plot:
     # Color
     color: '#131516' # This color is a dark grey similar to black
     # Turn color of the border a darker shade infer from the background if True else set the color to black
-    colored_border: True
+    colored_border: False
     # Turn border to roundish shape
     round_border: False
 
 # If you only want the plot need a table (TSV format, columns: gene1, gene2..., index: genome_ids)
 PAtab_table: ''
+
+
+###############################
+# Threshold analysis settings #
+###############################
+
+default_threshold:
+    # minimum amount of point to trigger the data reduction
+    min_lines: 1000
+    # Statistical accuracy of the Kl-divergence test, decimals to use when rounding the number
+    round_value: 5

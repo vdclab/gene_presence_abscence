@@ -40,8 +40,8 @@ rule blast2threshold_table:
             "blast2threshold_table--{seed}_evalue_{eval}_cov_{coverage}_pid_{pid}.log"
         ),
     resources:
-        mem_mb=8000,
-        time=600,
+        mem_mb=10000,
+        time=720,
     conda:
         "../envs/pandas_plots.yaml"
     script:
@@ -71,6 +71,8 @@ rule report_threshold:
         ),
     params:
         css=workflow.source_path("../report/threshold_report.css"),
+        round_value=config['default_threshold']['round_value'],
+        min_lines=config['default_threshold']['min_lines'],
     log:
         os.path.join(
             OUTPUT_FOLDER,
