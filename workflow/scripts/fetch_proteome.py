@@ -46,7 +46,7 @@ def get_cmdline_ndg(
                                       -m {metadata_table} -R {refseq_categories}\
                                       -t {','.join(taxids)} {groups}"
 
-    cmd_line = cmd_line.replace(" "*37, "")
+    cmd_line = cmd_line.replace(" " * 37, "")
 
     print("---------------------------------")
     print(f"INFO:: Cmdline used = {cmd_line}")
