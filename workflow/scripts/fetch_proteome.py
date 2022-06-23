@@ -1,3 +1,4 @@
+from distutils import cmd
 import pandas as pd
 from ete3 import NCBITaxa
 import os, sys
@@ -44,6 +45,13 @@ def get_cmdline_ndg(
                                       -o {output} -p {parallel}\
                                       -m {metadata_table} -R {refseq_categories}\
                                       -t {','.join(taxids)} {groups}"
+
+    cmd_line = cmd_line.replace(" "*37, "")
+
+    print("---------------------------------")
+    print(f"INFO:: Cmdline used = {cmd_line}")
+    print(f"Length of the cmdlin: {len(cmd_line)}")
+    print("---------------------------------")
 
     subprocess.run(shlex.split(cmd_line))
     return
@@ -165,8 +173,9 @@ def main():
     bug sometime when it is not this format of script
     """
 
-    # The soft limit imposed by the current configuration
-    soft_limit = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
+    # The hard limit imposed by the current configuration on internet they seems to say that is always the value
+    # hard_limit = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
+    hard_limit = 131072
 
     # If never done, will download the last version of NCBI Taxonomy dump and create the SQL database
     ncbi = NCBITaxa()
@@ -222,8 +231,14 @@ def main():
         keyargs["groups"] = NCBIgroup
 
         # Test if the number of TaxId is inferior to the soft limit imposed by the current configuration
-        if soft_limit < group.shape[0]:
-            number_of_file = soft_limit - 20
+
+        # This calculation is the size all the taxid merge together + the comma included there for ncbi_genome_download
+        all_len = group.TaxId.astype("string").apply(len)
+        len_max = all_len.sum() + group.shape[0]
+
+        if hard_limit < len_max:
+            # Here 10000 is the size of the cmdline even if the cmdline is smaller
+            number_of_file = (hard_limit - 1000) / (all_len.max() + 1)
             batch_group = np.arange(group.shape[0]) // number_of_file
 
             for index, batch in group.groupby(batch_group):
