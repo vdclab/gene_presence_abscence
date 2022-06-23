@@ -4,6 +4,7 @@ import plotly
 import pandas as pd
 import numpy as np
 import sys, os
+from typing import List
 
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
