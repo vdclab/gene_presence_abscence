@@ -453,8 +453,8 @@ else:
     tsv_prot = ""
 
 if "default_threshold" in config:
-    round_value=config["default_threshold"]["round_value"],
-    min_lines=config["default_threshold"]["min_lines"],
+    round_value=config["default_threshold"]["round_value"]
+    min_lines=config["default_threshold"]["min_lines"]
 else :
     round_value = False
     min_lines = False
