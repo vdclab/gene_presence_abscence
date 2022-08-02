@@ -125,7 +125,7 @@ def run_job(group_tuple):
         blast_database = "nt"
 
     job_str = (
-        f"blastn -query {group_tuple[2]} -out {group_tuple[1]} "
+        f"blastp -query {group_tuple[2]} -out {group_tuple[1]} "
         f"-db '{blast_database}' -evalue 0.01 -outfmt 6 -num_alignments 25000"
     )
 
@@ -134,7 +134,7 @@ def run_job(group_tuple):
         stderr = ""
     else:
         stdout, stderr = execute(job_str)
-    print(f"----BLASTn - stdout----\n{stdout}\n----BLASTn - stderr----\n{stderr}\n")
+    print(f"----BLASTp - stdout----\n{stdout}\n----BLASTp - stderr----\n{stderr}\n")
     if os.path.isfile(f"{group_tuple[1]}") and os.path.getsize(
         f"{group_tuple[1]}"
     ):
