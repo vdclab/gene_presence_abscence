@@ -104,5 +104,5 @@ rule blast:
     envmodules:
         "ncbi_blast/2.10.1",
     threads: 5
-    shell:
-        "../scripts/blastn_wrapper.py"
+    script:
+        "../scripts/blastp_wrapper.py"
