@@ -120,20 +120,20 @@ def run_job(group_tuple):
     blast_database = args.database
 
     job_str = (
-        f"blastp -query {group_tuple[2]} -out {group_tuple[1]} "
+        f"blastp -query {group_tuple[2]} -out {group_tuple[1]}/blast-output.txt "
         f"-db '{blast_database}' -evalue 0.01 -outfmt 6 -num_alignments 25000"
     )
 
-    if os.path.isfile(f"{group_tuple[1]}"):
+    if os.path.isfile(f"{group_tuple[1]}/blast-output.txt"):
         stdout = "File already exists"
         stderr = ""
     else:
         stdout, stderr = execute(job_str)
     print(f"----BLASTp - stdout----\n{stdout}\n----BLASTp - stderr----\n{stderr}\n")
-    if os.path.isfile(f"{group_tuple[1]}") and os.path.getsize(
-        f"{group_tuple[1]}"
+    if os.path.isfile(f"{group_tuple[1]}/blast-output.txt") and os.path.getsize(
+        f"{group_tuple[1]}/blast-output.txt"
     ):
-        df = pd.read_csv(f"{group_tuple[1]}", sep="\t", header=None)
+        df = pd.read_csv(f"{group_tuple[1]}/blast-output.txt", sep="\t", header=None)
     else:
         df = pd.DataFrame()
     return df
