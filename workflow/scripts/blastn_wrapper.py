@@ -117,12 +117,7 @@ def main(args):
 
 
 def run_job(group_tuple):
-    if args.database:
-        blast_remote = ""
-        blast_database = args.database
-    else:
-        blast_remote = "-task blastn -remote"
-        blast_database = "nt"
+    blast_database = args.database
 
     job_str = (
         f"blastp -query {group_tuple[2]} -out {group_tuple[1]} "
