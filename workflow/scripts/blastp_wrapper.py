@@ -58,7 +58,7 @@ def parse_args():
         "--seqs_per_file",
         help="The number of sequences in each slice",
         type=int,
-        default=1,
+        default=3250,
     )
     parser.add_argument("--job_number", type=int, default=snakemake.threads)
     # Parse arguments
