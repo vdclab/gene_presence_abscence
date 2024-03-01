@@ -286,11 +286,11 @@ config["__workflow_basedir__"] = workflow.basedir
 config["__workflow_basedir_short__"] = os.path.basename(workflow.basedir)
 config["__workflow_workdir__"] = os.getcwd()
 
-if workflow.config_args:
-    tmp_config_arg = '" '.join(workflow.config_args).replace("=", '="')
-    config["__config_args__"] = f' -C {tmp_config_arg}"'
+if workflow.configfiles:
+    tmp_config_arg = '" '.join(workflow.configfiles).replace("=", '="')
+    config["__configfiles__"] = f' -C {tmp_config_arg}"'
 else:
-    config["__config_args__"] = ""
+    config["__configfiles__"] = ""
 
 with open(os.path.join(workflow.basedir, "../config/VERSION"), "rt") as version:
     url = "https://github.com/vdclab/sORTholog/releases/tag"
