@@ -1,15 +1,13 @@
-from distutils import cmd
-import pandas as pd
-from ete3 import NCBITaxa
-import os, sys
-import gzip
-from Bio import SeqIO
-from urllib.request import urlopen
-import subprocess
 import shlex
-import ncbi_genome_download as ngd
-import resource
+import os
+import sys
+import gzip
+import subprocess
+import pandas as pd
 import numpy as np
+from ete3 import NCBITaxa
+from Bio import SeqIO
+import ncbi_genome_download as ngd
 
 ##########################################################################
 
@@ -38,12 +36,14 @@ def get_cmdline_ndg(
                                       -l {assembly_levels} --flat-output\
                                       -o {output} -p {parallel}\
                                       -m {metadata_table} -R {refseq_categories}\
+                                      --uri https://ftp.ncbi.nlm.nih.gov/genomes\
                                       -t {','.join(taxids)} {groups}"
     else:
         cmd_line = f"python{python_version} {ncbi_genome_download} -s {section} -F {file_formats}\
                                       -l {assembly_levels}\
                                       -o {output} -p {parallel}\
                                       -m {metadata_table} -R {refseq_categories}\
+                                      --uri https://ftp.ncbi.nlm.nih.gov/genomes\
                                       -t {','.join(taxids)} {groups}"
 
     cmd_line = cmd_line.replace(" " * 37, "")
